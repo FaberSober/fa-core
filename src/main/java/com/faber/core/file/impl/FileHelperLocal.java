@@ -2,12 +2,12 @@ package com.faber.core.file.impl;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.img.ImgUtil;
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.faber.core.constant.FaSetting;
 import com.faber.core.exception.BuzzException;
 import com.faber.core.file.FileHelperImpl;
+import com.faber.core.service.ConfigSysService;
 import com.faber.core.utils.FaFileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -26,6 +26,7 @@ import java.net.URLEncoder;
 
 /**
  * 本地文件存储
+ *
  * @author xu.pengfei
  * @date 2022/11/28 14:20
  */
@@ -41,7 +42,7 @@ public class FileHelperLocal implements FileHelperImpl {
     public String upload(InputStream is, String dir, String fileName) throws IOException {
         String fileSavePath = getDirPath() + dir + "/" + DateUtil.today() + "/" + FaFileUtils.addTimestampToFileName(fileName);
 
-        File exportFile = new File(getAbsolutePath(), fileSavePath);
+        File exportFile = new File(getStorePath(), fileSavePath);
         FileUtils.copyInputStreamToFile(is, exportFile);
 
         return fileSavePath;
@@ -49,12 +50,12 @@ public class FileHelperLocal implements FileHelperImpl {
 
     @Override
     public String getImgPreview(String fileUrl) throws IOException {
-        File file = new File(getAbsolutePath(), fileUrl);
+        File file = new File(getStorePath(), fileUrl);
 
         String extName = FileNameUtil.extName(file);
         if (FaFileUtils.isImg(extName)) {
             String previewFileUrl = FaFileUtils.addSuffixToFileName(fileUrl, "_preview");
-            File previewFile = new File(getAbsolutePath(), previewFileUrl);
+            File previewFile = new File(getStorePath(), previewFileUrl);
 
             ImgUtil.scale(
                     file,
@@ -70,29 +71,20 @@ public class FileHelperLocal implements FileHelperImpl {
 
     @Override
     public void delete(String filePath) throws IOException {
-        File file = new File(getAbsolutePath(), filePath);
+        File file = new File(getStorePath(), filePath);
         if (file.exists()) {
             file.delete();
         }
     }
 
-    public static String getAbsolutePath() throws IOException {
-        // 开发环境获取编译class路径
-        if ("dev".equals(SpringUtil.getActiveProfile())) {
-            File path = new File(ResourceUtils.getURL("classpath:").getPath());
-            if(!path.exists()) path = new File("");
-            return path.getAbsolutePath() + "/static";
-        }
-
-        // 执行jar的环境获取jar的路径
-        ApplicationHome home = new ApplicationHome(FileHelperLocal.class);
-        File jarFile = home.getSource();
-        String path = jarFile.getParentFile().toString();
-        return path + "/static";
+    public static String getStorePath() throws IOException {
+        ConfigSysService configSysService = SpringUtil.getBean(ConfigSysService.class);
+        return configSysService.getStoreLocalPath();
     }
 
     /**
      * 获取文件存储路径
+     *
      * @return
      */
     private String getDirPath() {
@@ -104,12 +96,13 @@ public class FileHelperLocal implements FileHelperImpl {
             throw new BuzzException("非法文件名");
         }
 
-        return new File(getAbsolutePath(), filePath);
+        return new File(getStorePath(), filePath);
     }
 
 
     /**
      * 根据文件路径，获取存储文件，返回到http流进行下载
+     *
      * @param filePath
      * @throws IOException
      */
@@ -118,7 +111,7 @@ public class FileHelperLocal implements FileHelperImpl {
             throw new BuzzException("非法文件名");
         }
 
-        File file = new File(getAbsolutePath(), filePath);
+        File file = new File(getStorePath(), filePath);
 
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
         response.setCharacterEncoding("utf-8");

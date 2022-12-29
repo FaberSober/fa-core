@@ -1,7 +1,11 @@
 package com.faber.core.utils;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.extra.spring.SpringUtil;
+import com.faber.core.file.impl.FileHelperLocal;
+import org.springframework.boot.system.ApplicationHome;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -21,6 +25,22 @@ import java.util.List;
 public class FaFileUtils {
 
     public static final List<String> IMG_EXTS = Arrays.asList("png", "jpg", "jpeg");
+
+
+    public static String getAbsolutePath() throws IOException {
+        // 开发环境获取编译class路径
+        if ("dev".equals(SpringUtil.getActiveProfile())) {
+            File path = new File(ResourceUtils.getURL("classpath:").getPath());
+            if(!path.exists()) path = new File("");
+            return path.getAbsolutePath();
+        }
+
+        // 执行jar的环境获取jar的路径
+        ApplicationHome home = new ApplicationHome(FileHelperLocal.class);
+        File jarFile = home.getSource();
+        String path = jarFile.getParentFile().toString();
+        return path;
+    }
 
     /**
      * 下载文件
