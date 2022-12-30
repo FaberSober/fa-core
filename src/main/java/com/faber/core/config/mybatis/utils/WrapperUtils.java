@@ -1,4 +1,4 @@
-package com.faber.core.config.mybatis;
+package com.faber.core.config.mybatis.utils;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;

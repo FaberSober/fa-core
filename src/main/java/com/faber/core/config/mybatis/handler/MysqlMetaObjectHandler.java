@@ -1,4 +1,4 @@
-package com.faber.core.config.mybatis;
+package com.faber.core.config.mybatis.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.faber.core.context.BaseContextHandler;
