@@ -40,5 +40,18 @@ public interface FaBaseMapper<T> extends BaseMapper<T> {
      */
     int deleteAll();
 
+    /**
+     * 物理永久删除
+     * @param id
+     * @return
+     */
     int deletePermanentById(Serializable id);
+
+    /**
+     * id查询，不受逻辑删除字段限制
+     * @param id
+     * @return
+     */
+    T selectByIdPure(Serializable id);
+
 }

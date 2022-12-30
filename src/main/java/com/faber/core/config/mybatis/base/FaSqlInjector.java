@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.faber.core.config.mybatis.methods.DeleteAll;
 import com.faber.core.config.mybatis.methods.DeletePermanentById;
+import com.faber.core.config.mybatis.methods.SelectByIdPure;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class FaSqlInjector extends DefaultSqlInjector {
         //增加自定义方法
         methodList.add(new DeleteAll("deleteAll"));
         methodList.add(new DeletePermanentById("deletePermanentById"));
+        methodList.add(new SelectByIdPure("selectByIdPure"));
         return methodList;
     }
 }
