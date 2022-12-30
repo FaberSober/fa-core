@@ -34,6 +34,8 @@ import java.util.List;
  *         <tr><td>{@link BaseController#saveOrUpdateBatch}</td>    <td>批量新增or更新</td></tr>
  *         <tr><td>{@link BaseController#remove}</td>               <td>id删除</td></tr>
  *         <tr><td>{@link BaseController#removeBatchByIds}</td>     <td>ids批量删除</td></tr>
+ *         <tr><td>{@link BaseController#removePer}</td>            <td>id永久删除</td></tr>
+ *         <tr><td>{@link BaseController#removePerBatchByIds}</td>  <td>ids批量永久删除</td></tr>
  *         <tr><td>{@link BaseController#all}</td>                  <td>获取所有List</td></tr>
  *         <tr><td>{@link BaseController#list}</td>                 <td>获取List，带过滤查询条件</td></tr>
  *         <tr><td>{@link BaseController#mineList}</td>             <td>获取List(限定登录用户创建)，带过滤查询条件</td></tr>
@@ -130,6 +132,22 @@ public class BaseController<Biz extends BaseBiz, Entity, Key extends Serializabl
     @ResponseBody
     public Ret<Boolean> removeBatchByIds(@RequestBody List<Key> ids) {
         baseBiz.removeBatchByIds(ids);
+        return ok();
+    }
+
+    @FaLogOpr(value = "永久删除", crud = LogCrudEnum.D)
+    @RequestMapping(value = "/removePer/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public Ret<Entity> removePer(@PathVariable Key id) {
+        baseBiz.removePerById(id);
+        return ok();
+    }
+
+    @FaLogOpr(value = "批量永久删除", crud = LogCrudEnum.D)
+    @RequestMapping(value = "/removePerBatchByIds", method = RequestMethod.POST)
+    @ResponseBody
+    public Ret<Boolean> removePerBatchByIds(@RequestBody List<Key> ids) {
+        baseBiz.removePerBatchByIds(ids);
         return ok();
     }
 

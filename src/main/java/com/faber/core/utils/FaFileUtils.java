@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class FaFileUtils {
 
-    public static final List<String> IMG_EXTS = Arrays.asList("png", "jpg", "jpeg");
+    public static final List<String> IMG_EXTS = Arrays.asList("png", "jpg", "jpeg", "gif");
 
 
     public static String getAbsolutePath() throws IOException {

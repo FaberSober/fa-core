@@ -25,6 +25,7 @@ import com.faber.core.vo.query.ConditionGroup;
 import com.faber.core.vo.query.QueryParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -207,6 +208,20 @@ public abstract class BaseBiz<M extends BaseMapper<T>, T> extends ServiceImpl<M,
 
     public String getCurrentUserId() {
         return BaseContextHandler.getUserId();
+    }
+
+    public void removePerById(Serializable id) {
+        // 如果表有逻辑删除字段，需要重写此方法，用SQL进行物理删除
+        super.removeById(id);
+    }
+
+    @Transactional(
+            rollbackFor = {Exception.class}
+    )
+    public void removePerBatchByIds(List<Serializable> ids) {
+        for (Serializable id : ids) {
+            this.removePerById(id);
+        }
     }
 
 }
