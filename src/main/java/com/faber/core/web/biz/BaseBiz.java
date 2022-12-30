@@ -8,18 +8,18 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.annotation.IEnum;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.faber.core.annotation.FaModalName;
+import com.faber.core.config.mybatis.base.FaBaseMapper;
+import com.faber.core.config.mybatis.utils.WrapperUtils;
 import com.faber.core.constant.CommonConstants;
 import com.faber.core.context.BaseContextHandler;
 import com.faber.core.exception.BuzzException;
 import com.faber.core.service.ConfigSceneService;
+import com.faber.core.utils.EasyExcelUtils;
 import com.faber.core.utils.FaEnumUtils;
 import com.faber.core.vo.msg.TableRet;
-import com.faber.core.config.mybatis.utils.WrapperUtils;
-import com.faber.core.utils.EasyExcelUtils;
 import com.faber.core.vo.query.ConditionGroup;
 import com.faber.core.vo.query.QueryParams;
 import org.slf4j.Logger;
@@ -44,7 +44,7 @@ import java.util.Map;
  * <p>
  * Version 1.0.0
  */
-public abstract class BaseBiz<M extends BaseMapper<T>, T> extends ServiceImpl<M, T> {
+public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<M, T> {
 
     protected final Logger _logger = LoggerFactory.getLogger(this.getClass());
 
@@ -209,8 +209,8 @@ public abstract class BaseBiz<M extends BaseMapper<T>, T> extends ServiceImpl<M,
     }
 
     public void removePerById(Serializable id) {
-        // 如果表有逻辑删除字段，需要重写此方法，用SQL进行物理删除
-        super.removeById(id);
+        // 用SQL进行物理删除
+        baseMapper.deletePermanentById(id);
     }
 
     @Transactional(

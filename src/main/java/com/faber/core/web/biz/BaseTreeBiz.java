@@ -4,17 +4,17 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.faber.core.annotation.SqlSorter;
 import com.faber.core.annotation.SqlTreeId;
 import com.faber.core.annotation.SqlTreeName;
 import com.faber.core.annotation.SqlTreeParentId;
+import com.faber.core.config.mybatis.base.FaBaseMapper;
 import com.faber.core.constant.CommonConstants;
 import com.faber.core.utils.TreeUtil;
+import com.faber.core.vo.query.QueryParams;
 import com.faber.core.vo.tree.TreeNode;
 import com.faber.core.vo.tree.TreePathVo;
 import com.faber.core.vo.tree.TreePosChangeVo;
-import com.faber.core.vo.query.QueryParams;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  * @param <M>
  * @param <T>
  */
-public abstract class BaseTreeBiz<M extends BaseMapper<T>, T> extends BaseBiz<M, T> {
+public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<M, T> {
 
     /**
      * 增强Tree数据查询，有的表可能会有一些自定义字段限制Tree结构的获取，子类可以覆盖重写此方法，来增加自定义字段的查询条件。
