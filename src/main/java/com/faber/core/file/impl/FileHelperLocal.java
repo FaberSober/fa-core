@@ -12,17 +12,16 @@ import com.faber.core.utils.FaFileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.system.ApplicationHome;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URLEncoder;
+
 
 /**
  * 本地文件存储
@@ -57,11 +56,28 @@ public class FileHelperLocal implements FileHelperImpl {
             String previewFileUrl = FaFileUtils.addSuffixToFileName(fileUrl, "_preview");
             File previewFile = new File(getStorePath(), previewFileUrl);
 
+            BufferedImage image = ImgUtil.read(file);
+            int width = image.getWidth();
+            int height = image.getHeight();
+
+            // small image, no need to create preview image
+            if (width <= 200 && height <= 200) {
+                return fileUrl;
+            }
+
+            int toWidth = 200;
+            int toHeight = 200;
+            if (width > height) {
+                toHeight = (int) Math.floor(height / (double) width * 200);
+            } else {
+                toWidth = (int) Math.floor(width / (double) height * 200);
+            }
+
             ImgUtil.scale(
                     file,
                     previewFile,
-                    200, 200,
-                    Color.WHITE
+                    toWidth, toHeight,
+                    null
             );
 
             return previewFileUrl;
