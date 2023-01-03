@@ -1,0 +1,1 @@
+UPDATE base_rbac_menu t SET t.link_url = REPLACE(t.link_url,'/home', '/demo') WHERE t.link_url LIKE '/admin/home%';
