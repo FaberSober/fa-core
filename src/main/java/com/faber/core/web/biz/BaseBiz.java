@@ -3,6 +3,7 @@ package com.faber.core.web.biz;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
@@ -35,6 +36,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -220,6 +222,15 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         for (Serializable id : ids) {
             this.removePerById(id);
         }
+    }
+
+    public String updateValueToStr(Field field, Object value) {
+        if (value == null) return "";
+        if (IEnum.class.isAssignableFrom(field.getType())) {
+            return (String) ReflectUtil.getFieldValue(value, "desc");
+        }
+        if (value instanceof Date) return DateUtil.formatDateTime((Date) value);
+        return StrUtil.toString(value);
     }
 
 }
