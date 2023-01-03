@@ -105,6 +105,12 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         }
     }
 
+    public T getDetailById(Serializable id) {
+        T item = super.getById(id);
+        this.decorateOne(item);
+        return item;
+    }
+
     public void decorateOne(T i) {}
 
     public void decorateList(List<T> list) {

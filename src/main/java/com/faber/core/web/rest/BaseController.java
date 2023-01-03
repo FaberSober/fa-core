@@ -27,6 +27,7 @@ import java.util.List;
  *         <tr><td>{@link BaseController#save}</td>                 <td>新增</td></tr>
  *         <tr><td>{@link BaseController#saveBatch}</td>            <td>新增批量</td></tr>
  *         <tr><td>{@link BaseController#getById}</td>              <td>id查询</td></tr>
+ *         <tr><td>{@link BaseController#getDetail}</td>            <td>id查询详情</td></tr>
  *         <tr><td>{@link BaseController#getByIds}</td>             <td>ids集合查询</td></tr>
  *         <tr><td>{@link BaseController#update}</td>               <td>更新</td></tr>
  *         <tr><td>{@link BaseController#updateBatch}</td>          <td>批量更新</td></tr>
@@ -76,6 +77,13 @@ public class BaseController<Biz extends BaseBiz, Entity, Key extends Serializabl
     @ResponseBody
     public Ret<Entity> getById(@PathVariable Key id) {
         Entity o = (Entity) baseBiz.getById(id);
+        return ok(o);
+    }
+
+    @RequestMapping(value = "/getDetail/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public Ret<Entity> getDetail(@PathVariable Key id) {
+        Entity o = (Entity) baseBiz.getDetailById(id);
         return ok(o);
     }
 
