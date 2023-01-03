@@ -80,6 +80,7 @@ public class BaseController<Biz extends BaseBiz, Entity, Key extends Serializabl
         return ok(o);
     }
 
+    @FaLogOpr(value = "查询详情", crud = LogCrudEnum.R)
     @RequestMapping(value = "/getDetail/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Ret<Entity> getDetail(@PathVariable Key id) {
