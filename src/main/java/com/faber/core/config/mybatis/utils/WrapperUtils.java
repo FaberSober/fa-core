@@ -132,7 +132,7 @@ public class WrapperUtils {
                 Object value = cond.getValue();
                 switch (cond.getOpr()) {
                     case EQ:
-                        ew.or().eq(column, value);
+                        ew.eq(column, value);
                         break;
                     case NE:
                         ew.ne(column, value);
