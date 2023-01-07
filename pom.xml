@@ -56,7 +56,7 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
+            <version>4.0.1</version>
         </dependency>
 
         <dependency>
@@ -68,19 +68,19 @@
         <dependency>
             <groupId>com.alicp.jetcache</groupId>
             <artifactId>jetcache-starter-redisson</artifactId>
-            <version>2.7.1</version>
+            <version>2.7.2</version>
         </dependency>
 
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.5.2</version>
+            <version>3.5.3.1</version>
         </dependency>
 
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>
-            <version>1.4.4</version>
+            <version>1.4.6</version>
         </dependency>
 
 <!--        <dependency>-->
@@ -118,7 +118,7 @@
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
-            <version>2.3.0</version>
+            <version>2.3.2</version>
         </dependency>
 
         <!-- netty-socketio -->
@@ -133,21 +133,20 @@
         <dependency>
             <groupId>com.qiniu</groupId>
             <artifactId>qiniu-java-sdk</artifactId>
-            <version>7.11.0</version>
+            <version>7.12.1</version>
         </dependency>
 
         <!-- 阿里云OSS sdk -->
         <dependency>
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>
-            <version>2.8.3</version>
+            <version>3.16.0</version>
         </dependency>
 
         <!--fastjson数据配置start-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.83</version>
         </dependency>
 
         <dependency>
@@ -160,27 +159,27 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
-            <version>3.1.1</version>
+            <version>3.1.5</version>
         </dependency>
 
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.8.5</version>
+            <version>5.8.11</version>
         </dependency>
 
         <!-- AES加密  https://www.hutool.cn/docs/#/crypto/%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86-SymmetricCrypto?id=%e4%bb%8b%e7%bb%8d -->
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15to18</artifactId>
-            <version>1.68</version>
+            <version>1.72</version>
         </dependency>
 
         <!-- Oshi是Java的免费基于JNA的操作系统和硬件信息库，Github地址是：https://github.com/oshi/oshi -->
         <dependency>
             <groupId>com.github.oshi</groupId>
             <artifactId>oshi-core</artifactId>
-            <version>5.6.1</version>
+            <version>6.4.0</version>
         </dependency>
 
         <!-- 声明式HTTP客户端框架: https://forest.dtflyx.com/ -->
@@ -199,7 +198,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.11</version>
+            <version>3.12.0</version>
         </dependency>
 
         <dependency>
@@ -211,7 +210,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.8.0</version>
+            <version>2.11.0</version>
         </dependency>
 
     </dependencies>
