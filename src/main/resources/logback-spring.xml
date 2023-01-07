@@ -24,12 +24,16 @@
             <level>DEBUG</level>
         </filter>
         <withJansi>false</withJansi>
-        <encoder>
+        <!--这里替换成AspectLogbackEncoder-->
+        <encoder class="com.yomahub.tlog.core.enhance.logback.AspectLogbackEncoder">
             <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
             <!--            <pattern>%red(%d{yyyy-MM-dd HH:mm:ss}) %green([%thread]) %highlight(%-5level) %boldMagenta(%logger) - %cyan(%msg%n)</pattern>-->
             <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
             <charset>UTF-8</charset>
         </encoder>
+    </appender>
+    <appender name="AsyncConsole" class="com.yomahub.tlog.core.enhance.logback.async.AspectLogbackAsyncAppender">
+        <appender-ref ref="console"/>
     </appender>
 
     <!--按天生成日志-->
@@ -81,11 +85,19 @@
                 <maxFileSize>${KEEP_FILE_MAX_SIZE}</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
-        <encoder>
+        <!--这里替换成AspectLogbackEncoder-->
+        <encoder class="com.yomahub.tlog.core.enhance.logback.AspectLogbackEncoder">
             <pattern>
                 %d{yyyy-MM-dd HH:mm:ss} - [%thread] - %-5level - %logger - %msg%n
             </pattern>
         </encoder>
+    </appender>
+    <!--异步日志：二 使用 AspectLogbackAsyncAppender 配置异步 -->
+    <appender name="AsyncLogFile" class="com.yomahub.tlog.core.enhance.logback.async.AspectLogbackAsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>2048</queueSize>
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="logErrorFile"/>
     </appender>
 
     <!-- 给spring-boot-admin查看用的日志，固定文件路径 -->
@@ -110,25 +122,25 @@
 <!--        <logger name="com.faber" level="WARN"/>-->
 
         <logger name="com.faber" level="INFO" additivity="false">
-            <appender-ref ref="console"/>
+            <appender-ref ref="AsyncConsole"/>
             <appender-ref ref="logFile"/>
-            <appender-ref ref="logErrorFile"/>
+            <appender-ref ref="AsyncLogFile"/>
             <appender-ref ref="logFileForAdmin"/>
         </logger>
         <logger name="tk.mybatis" level="INFO" />
 
         <root level="INFO">
             <appender-ref ref="logFile"/>
-            <appender-ref ref="logErrorFile"/>
+            <appender-ref ref="AsyncLogFile"/>
             <appender-ref ref="logFileForAdmin"/>
         </root>
     </springProfile>
 
     <springProfile name="test">
         <logger name="com.faber" level="INFO" additivity="false">
-            <appender-ref ref="console"/>
+            <appender-ref ref="AsyncConsole"/>
             <appender-ref ref="logFile"/>
-            <appender-ref ref="logErrorFile"/>
+            <appender-ref ref="AsyncLogFile"/>
             <appender-ref ref="logFileForAdmin"/>
         </logger>
         <logger name="tk.mybatis" level="INFO" />
@@ -142,18 +154,18 @@
 
     <springProfile name="dev">
         <logger name="com.faber" level="DEBUG" additivity="false">
-            <appender-ref ref="console"/>
+            <appender-ref ref="AsyncConsole"/>
             <appender-ref ref="logFile"/>
-            <appender-ref ref="logErrorFile"/>
+            <appender-ref ref="AsyncLogFile"/>
             <appender-ref ref="logFileForAdmin"/>
         </logger>
         <logger name="tk.mybatis" level="INFO" />
         <logger name="com.alicp.jetcache" level="INFO" />
 
         <root level="ERROR">
-            <appender-ref ref="console"/>
+            <appender-ref ref="AsyncConsole"/>
             <appender-ref ref="logFile"/>
-            <appender-ref ref="logErrorFile"/>
+            <appender-ref ref="AsyncLogFile"/>
             <appender-ref ref="logFileForAdmin"/>
         </root>
     </springProfile>
