@@ -17,8 +17,12 @@ public interface ConfigSysService {
      * 获取本地文件存储路径
      * @return
      */
-    default String getStoreLocalPath() throws IOException  {
-        return FaFileUtils.getAbsolutePath() + File.separator + "static";
+    default String getStoreLocalPath()  {
+        try {
+            return FaFileUtils.getAbsolutePath();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
