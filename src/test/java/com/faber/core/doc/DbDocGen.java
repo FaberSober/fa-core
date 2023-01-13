@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class DbDocGen {
 
-    public static final String VER = "1.0.0";
+    public static final String VER = "1.0.1";
 
     /**
      * 文档生成
