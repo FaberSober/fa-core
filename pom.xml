@@ -227,6 +227,13 @@
             <version>2.11.0</version>
         </dependency>
 
+        <!-- spring-file-storage: https://spring-file-storage.xuyanwu.cn/ -->
+        <dependency>
+            <groupId>cn.xuyanwu</groupId>
+            <artifactId>spring-file-storage</artifactId>
+            <version>0.7.0</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/cn.smallbun.screw/screw-core -->
         <dependency>
             <groupId>cn.smallbun.screw</groupId>

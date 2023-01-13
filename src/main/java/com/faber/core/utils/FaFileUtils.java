@@ -48,11 +48,20 @@ public class FaFileUtils {
      * @throws IOException
      */
     public static void downloadFile(File file) throws IOException {
+        downloadFile(file, file.getName());
+    }
+
+    /**
+     * 下载文件
+     * @param file
+     * @throws IOException
+     */
+    public static void downloadFile(File file, String filename) throws IOException {
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
         InputStream in = new FileInputStream(file);
 
         response.setCharacterEncoding("utf-8");
-        String fileName = URLEncoder.encode(file.getName(), "UTF-8");
+        String fileName = URLEncoder.encode(filename, "UTF-8");
         response.setHeader("Content-disposition", "attachment;filename=" + fileName);
         response.setHeader("fa-filename", fileName);
         //4.获取要下载的文件输入流
