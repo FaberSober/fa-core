@@ -2,7 +2,6 @@ package com.faber.core.utils;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import com.faber.core.file.impl.FileHelperLocal;
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.ResourceUtils;
@@ -36,7 +35,7 @@ public class FaFileUtils {
         }
 
         // 执行jar的环境获取jar的路径
-        ApplicationHome home = new ApplicationHome(FileHelperLocal.class);
+        ApplicationHome home = new ApplicationHome(FaFileUtils.class);
         File jarFile = home.getSource();
         String path = jarFile.getParentFile().toString();
         return path;
