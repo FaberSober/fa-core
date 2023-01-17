@@ -4,10 +4,13 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.MediaTypeFactory;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
@@ -75,6 +78,80 @@ public class FaFileUtils {
             out.write(buffer, 0, len);
         }
         in.close();
+    }
+
+
+    public static void downloadFileShard(File file, String filename) throws IOException {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+
+        response.setCharacterEncoding("utf-8");
+        //定义文件路径
+        InputStream is = null;
+        OutputStream os = null;
+        try {
+            //分片下载
+            long fSize = file.length();//获取长度
+            String fileName = URLEncoder.encode(filename, "utf-8");
+
+            String contentType = MediaTypeFactory.getMediaType(fileName).orElse(MediaType.APPLICATION_OCTET_STREAM).toString();
+//            response.setContentType("application/x-download");
+            response.setContentType(contentType);
+
+            if (contentType.startsWith("image")) {
+                response.addHeader("Content-Disposition",String.format("inline; filename=\"%1$s\"; filename*=utf-8''%2$s\n", fileName, fileName));
+            } else {
+                response.addHeader("Content-Disposition","attachment;filename="+fileName);
+            }
+
+            //根据前端传来的Range  判断支不支持分片下载
+            response.setHeader("Accept-Range","bytes");
+
+            //获取文件大小
+            response.setHeader("fa-size",String.valueOf(fSize));
+            response.setHeader("fa-filename",fileName);
+            //定义断点
+            long pos = 0,last = fSize-1,sum = 0;
+            //判断前端需不需要分片下载
+            if (null != request.getHeader("Range")) {
+                response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+                String numRange = request.getHeader("Range").replaceAll("bytes=","");
+                String[] strRange = numRange.split("-");
+                if (strRange.length == 2){
+                    pos = Long.parseLong(strRange[0].trim());
+                    last = Long.parseLong(strRange[1].trim());
+                    //若结束字节超出文件大小 取文件大小
+                    if (last>fSize-1){
+                        last = fSize-1;
+                    }
+                }else {
+                    //若只给一个长度  开始位置一直到结束
+                    pos = Long.parseLong(numRange.replaceAll("-","").trim());
+                }
+            }
+            long rangeLength = last-pos+1;
+            String contentRange = new StringBuffer("bytes").append(pos).append("-").append(last).append("/").append(fSize).toString();
+            response.setHeader("Content-Range",contentRange);
+            response.setHeader("Content-Length",String.valueOf(rangeLength));
+            os = new BufferedOutputStream(response.getOutputStream());
+            is = new BufferedInputStream(new FileInputStream(file));
+            is.skip(pos);//跳过已读的文件
+            byte[] buffer = new byte[1024];
+            int lenght = 0;
+            //相等证明读完
+            while (sum < rangeLength){
+                lenght = is.read(buffer,0, (rangeLength-sum)<=buffer.length? (int) (rangeLength - sum) :buffer.length);
+                sum = sum+lenght;
+                os.write(buffer,0,lenght);
+            }
+        }finally {
+            if (is!= null){
+                is.close();
+            }
+            if (os!=null){
+                os.close();
+            }
+        }
     }
 
     /**

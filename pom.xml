@@ -156,12 +156,6 @@
             <artifactId>fastjson</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.19.0</version>
-        </dependency>
-
         <!-- easyexcel -->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -202,6 +196,12 @@
             <artifactId>tlog-all-spring-boot-starter</artifactId>
             <version>1.5.0</version>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.apache.logging.log4j</groupId>-->
+<!--            <artifactId>log4j-core</artifactId>-->
+<!--            <version>2.19.0</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.google.guava</groupId>
