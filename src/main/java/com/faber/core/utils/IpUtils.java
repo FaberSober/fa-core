@@ -5,6 +5,7 @@ import cn.hutool.extra.spring.SpringUtil;
 import com.faber.core.service.IpService;
 import com.faber.core.vo.utils.IpAddr;
 import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
@@ -15,7 +16,7 @@ import java.net.UnknownHostException;
  * @author xu.pengfei
  * @date 2022/11/28 14:27
  */
-@Log
+@Slf4j
 public class IpUtils {
 
     /**
@@ -69,8 +70,13 @@ public class IpUtils {
      * @return
      */
     public static IpAddr getIpAddrByApi(String ip) {
-        IpService ipService = SpringUtil.getBean(IpService.class);
-        return ipService.ipJson(ip);
+        try {
+            IpService ipService = SpringUtil.getBean(IpService.class);
+            return ipService.ipJson(ip);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return null;
     }
 
 }
