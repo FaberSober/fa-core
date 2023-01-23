@@ -1,13 +1,11 @@
 package com.faber.core.utils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
 
+@Slf4j
 public class DBHelper {
-
-    private static Logger logger = LogManager.getLogger();
 
     public static final class JdbcDriver {
         public static final String OracleDriver = "oracle.jdbc.driver.OracleDriver";
@@ -36,7 +34,7 @@ public class DBHelper {
             conn.setAutoCommit(autoCommit);
         } catch (Exception se) {
             //连接失败
-            logger.error("ORACLE连接失败", se);
+            log.error("ORACLE连接失败", se);
             return null;
         }
         return conn;
@@ -60,7 +58,7 @@ public class DBHelper {
             conn = DriverManager.getConnection(jdbcurl, username, password);
             conn.setAutoCommit(autoCommit);
         } catch (Exception se) {
-            logger.error("DB2连接失败", se);
+            log.error("DB2连接失败", se);
             return null;
         }
         return conn;
@@ -106,7 +104,7 @@ public class DBHelper {
             conn.setAutoCommit(autoCommit);
         } catch (Exception se) {
             // 连接失败
-            logger.error("SQLSERVER连接失败", se);
+            log.error("SQLSERVER连接失败", se);
             return null;
         }
         return conn;
@@ -130,7 +128,7 @@ public class DBHelper {
             conn.setAutoCommit(autoCommit);
         } catch (Exception se) {
             // 连接失败
-            logger.error("GREENPLUM连接失败", se);
+            log.error("GREENPLUM连接失败", se);
             return null;
         }
         return conn;
@@ -153,7 +151,7 @@ public class DBHelper {
             conn.setAutoCommit(autoCommit);
         } catch (Exception se) {
             // 连接失败
-            logger.error("HIVE连接失败", se);
+            log.error("HIVE连接失败", se);
             return null;
         }
         return conn;
@@ -177,7 +175,7 @@ public class DBHelper {
             conn.setAutoCommit(autoCommit);
         } catch (Exception se) {
             // 连接失败
-            logger.error("连接失败", se);
+            log.error("连接失败", se);
             return null;
         }
         return conn;
@@ -207,7 +205,7 @@ public class DBHelper {
             }
             conn = null;
         } catch (Exception ee) {
-            logger.error("数据源关闭失败", ee);
+            log.error("数据源关闭失败", ee);
         }
     }
 
