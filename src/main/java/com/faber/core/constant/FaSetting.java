@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 public class FaSetting {
 
     private Jwt jwt;
+    private Api api;
     private File file;
     private Qiniu qiniu;
     private Amap amap;
@@ -26,6 +27,14 @@ public class FaSetting {
          */
         private Long expire;
         private String secret;
+    }
+
+    /**
+     * Api配置
+     */
+    @Data
+    public static class Api {
+        private String tokenApiHeader;
     }
 
     /**
