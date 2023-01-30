@@ -30,6 +30,22 @@ public class CommonConstants {
     public static final String JWT_KEY_USER_ID = "userId";
     public static final String JWT_KEY_NAME = "name";
 
+    // ---------------- Header自定义头 ----------------
+    /**
+     * 添加到请求的Header中，标识请求来源
+     */
+    public static final String FA_FROM = "FaFrom";
+
+    /**
+     * 添加到请求的Header中，标识客户端版本号
+     */
+    public static final String FA_VERSION_CODE = "FaVersionCode";
+
+    /**
+     * 添加到请求的Header中，标识客户端版本名
+     */
+    public static final String FA_VERSION_NAME = "FaVersionName";
+
     // ---------------- Tree形数据根节点默认ID=0 ----------------
     public final static int ROOT = 0;
 
