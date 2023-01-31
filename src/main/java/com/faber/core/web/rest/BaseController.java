@@ -182,7 +182,7 @@ public class BaseController<Biz extends BaseBiz, Entity, Key extends Serializabl
     @LogNoRet
     @RequestMapping(value = "/mineList", method = RequestMethod.POST)
     @ResponseBody
-    public Ret<List<Entity>> mineList(@RequestParam QueryParams query) {
+    public Ret<List<Entity>> mineList(@RequestBody QueryParams query) {
         List<Entity> list = baseBiz.mineList(query);
         return ok(list);
     }
