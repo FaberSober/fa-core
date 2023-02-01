@@ -15,4 +15,9 @@ public class FaEnumUtilsTest {
         System.out.println(options.toString());
     }
 
+    @Test
+    public void testEnumToOptions2() {
+        FaEnumUtils.toOptions(FileSaveDriveEnum.class);
+    }
+
 }

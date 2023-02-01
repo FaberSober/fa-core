@@ -1,6 +1,8 @@
 package com.faber.core.vo.msg;
 
+import com.baomidou.mybatisplus.annotation.IEnum;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.faber.core.utils.FaEnumUtils;
 import com.faber.core.vo.utils.DictOption;
 import com.github.pagehelper.PageInfo;
 
@@ -107,36 +109,45 @@ public class TableRet<T> extends BaseRet {
             return this;
         }
 
+        // FIXME 这里的范型不知道怎么修改。。。
+//        public TableData<T> addDictByClass(String column, Class<? extends IEnum<Y>> iEnumClass) {
+//            return this.addDict(column, FaEnumUtils.toOptions(iEnumClass));
+//        }
+
         public long getTotal() {
             return total;
         }
 
-        public void setTotal(long total) {
+        public TableData<T> setTotal(long total) {
             this.total = total;
+            return this;
         }
 
         public List<T> getRows() {
             return rows;
         }
 
-        public void setRows(List<T> rows) {
+        public TableData<T> setRows(List<T> rows) {
             this.rows = rows;
+            return this;
         }
 
         public Map<String, List<DictOption<Serializable>>> getDicts() {
             return dicts;
         }
 
-        public void setDicts(Map<String, List<DictOption<Serializable>>> dicts) {
+        public TableData<T> setDicts(Map<String, List<DictOption<Serializable>>> dicts) {
             this.dicts = dicts;
+            return this;
         }
 
         public Pagination getPagination() {
             return pagination;
         }
 
-        public void setPagination(Pagination pagination) {
+        public TableData<T> setPagination(Pagination pagination) {
             this.pagination = pagination;
+            return this;
         }
     }
 
