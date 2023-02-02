@@ -203,6 +203,15 @@ public class BaseController<Biz extends BaseBiz, Entity, Key extends Serializabl
         return baseBiz.selectPageByQuery(query);
     }
 
+    @FaLogOpr(value = "个人分页查询", crud = LogCrudEnum.R)
+    @LogNoRet
+    @RequestMapping(value = "/minePage", method = RequestMethod.POST)
+    @ResponseBody
+    public TableRet<Entity> minePage(@RequestBody QueryParams query) {
+        query.getQuery().put("crtUser", getCurrentUserId());
+        return baseBiz.selectPageByQuery(query);
+    }
+
     @FaLogOpr(value = "导出Excel", crud = LogCrudEnum.R)
     @LogNoRet
     @RequestMapping(value = "/exportExcel", method = RequestMethod.POST)
