@@ -167,6 +167,12 @@
             <version>5.8.11</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.55</version>
+        </dependency>
+
         <!-- AES加密  https://www.hutool.cn/docs/#/crypto/%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86-SymmetricCrypto?id=%e4%bb%8b%e7%bb%8d -->
         <dependency>
             <groupId>org.bouncycastle</groupId>
