@@ -84,6 +84,12 @@ public class RedisTest {
     }
 
     @Test
+    public void testDelKey() {
+        RKeys keys = redisson.getKeys();
+        keys.deleteByPattern("file-web:user:1");
+    }
+
+    @Test
     public void testLong() {
         RedissonClient client = getRedissonClient();
         RAtomicLong rAtomicLong = client.getAtomicLong("anyLong");
