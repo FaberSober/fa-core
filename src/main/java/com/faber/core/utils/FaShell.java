@@ -1,6 +1,7 @@
 package com.faber.core.utils;
 
 import com.jcraft.jsch.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.io.InputStreamReader;
  * @date 2023/2/5 15:05
  * @description
  */
+@Slf4j
 public class FaShell {
     private String host;
     private String username;
@@ -80,12 +82,11 @@ public class FaShell {
             }
 
             // 7. 输出 shell 命令执行日志
-            System.out.println("exitStatus=" + channelExec.getExitStatus() + ", openChannel.isClosed="
-                    + channelExec.isClosed());
-            System.out.println("命令执行完成，执行日志如下:");
-            System.out.println(runLog.toString());
-            System.out.println("命令执行完成，执行错误日志如下:");
-            System.out.println(errLog.toString());
+            log.debug("exitStatus=" + channelExec.getExitStatus() + ", openChannel.isClosed=" + channelExec.isClosed());
+            log.debug("命令执行完成，执行日志如下:");
+            log.debug(runLog.toString());
+            log.debug("命令执行完成，执行错误日志如下:");
+            log.debug(errLog.toString());
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -100,9 +101,9 @@ public class FaShell {
                 if (channelExec != null) {
                     channelExec.disconnect();
                 }
-                if (session != null) {
-                    session.disconnect();
-                }
+//                if (session != null) {
+//                    session.disconnect();
+//                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
