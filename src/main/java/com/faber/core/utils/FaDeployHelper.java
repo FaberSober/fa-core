@@ -7,7 +7,7 @@ import com.jcraft.jsch.SftpException;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
+import java.io.*;
 import java.util.Date;
 
 /**
@@ -32,6 +32,49 @@ public class FaDeployHelper {
     String jarName = "fa-admin.jar"; // 本地jar目录
     String jarLocalPath = "fa-admin/target/"; // 本地jar目录
     String webDistPath = "frontend/apps/admin/dist"; // 本地前端打包后的dist目录
+
+    /**
+     * 执行mvn打包命令
+     */
+    public void mvnPackage() throws IOException {
+        String modulePathStr = System.getProperty("user.dir");
+        File modulePath = new File(modulePathStr);
+        File prjPath = modulePath.getParentFile();
+
+        String property = System.getProperty("os.name");
+        String[] cmd_win = { "cmd", "/C", "cd " + prjPath.getAbsolutePath() + " && mvn package -Dmaven.test.skip=true " };
+        String[] cmd_linux = { "/bin/sh", "-c", "cd " + prjPath.getAbsolutePath() + " && mvn package -Dmaven.test.skip=true " };
+        String[] cmd = null;
+        System.out.println(property);
+
+        if (property.contains("Windows")) {
+            cmd = cmd_win;
+        }
+        else {
+            cmd = cmd_linux;
+        }
+
+        Process process =Runtime.getRuntime().exec(cmd);
+
+        // 取得命令结果输出流
+        InputStream inputStream = process.getInputStream();
+        // 用输出去读
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+        // 创建缓冲区
+        BufferedReader inputBufferedReader = new BufferedReader(inputStreamReader);
+        StringBuilder stringBuilder = new StringBuilder();
+        String line = null;
+        while ((line = inputBufferedReader.readLine()) != null) {
+            stringBuilder.append(line);
+            System.out.println(line);
+        }
+        inputBufferedReader.close();
+        inputBufferedReader = null;
+        inputStreamReader.close();
+        inputStreamReader = null;
+        inputStream.close();
+        inputStream = null;
+    }
 
 
     /**
