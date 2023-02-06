@@ -64,4 +64,10 @@ public class CommonConstants {
      */
     public final static long AREA_CODE_CHINA_12 = 100000000000L;
 
+    // ---------------- 系统配置相关 ----------------
+    /**
+     * 用户注册的默认用户角色名称
+     */
+    public final static String REGISTRY_USER_ROLE_NAME = "默认用户角色";
+
 }
