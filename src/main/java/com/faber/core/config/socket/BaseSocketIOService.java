@@ -2,14 +2,18 @@ package com.faber.core.config.socket;
 
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
+import com.corundumstudio.socketio.listener.EventInterceptor;
+import com.corundumstudio.socketio.transport.NamespaceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -60,9 +64,16 @@ public class BaseSocketIOService {
         // 监听客户端断开连接
         server.addDisconnectListener(client -> {
             String clientIp = FaSocketUtils.getIpByClient(client);
-            log.debug(clientIp + " *********************** " + "客户端已断开连接");
+            log.debug("************ 客户端： " + clientIp + " 断开连接 ************");
             client.disconnect();
             // 这里可以加clientMap移除逻辑
+        });
+
+        server.addEventInterceptor(new EventInterceptor() {
+            @Override
+            public void onEvent(NamespaceClient namespaceClient, String s, List<Object> list, AckRequest ackRequest) {
+                log.debug("EventInterceptor");
+            }
         });
 
         // 扫描实现了SocketIOService的业务bean，注册server监听接口
