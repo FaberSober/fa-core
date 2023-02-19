@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 public class FaDdl {
 
-    private long ver;
+    private Long ver;
     private String verNo;
     private String remark;
     private List<FaDdlTableCreate> tableCreateList;

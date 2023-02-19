@@ -14,6 +14,7 @@ public class FaSetting {
     private File file;
     private Qiniu qiniu;
     private Amap amap;
+    private Job job;
     private Url url;
 
     /**
@@ -72,6 +73,17 @@ public class FaSetting {
          * key
          */
         private String key;
+    }
+
+    /**
+     * 定时任务
+     */
+    @Data
+    public static class Job {
+        /**
+         * 系统启动时扫描任务class并启动
+         */
+        private Boolean startOnBoot;
     }
 
     /**
