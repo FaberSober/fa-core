@@ -14,8 +14,8 @@ public class FaSetting {
     private File file;
     private Qiniu qiniu;
     private Amap amap;
-    private Job job;
     private Url url;
+    private Config config;
 
     /**
      * JWT配置
@@ -76,14 +76,18 @@ public class FaSetting {
     }
 
     /**
-     * 定时任务
+     * 系统设置
      */
     @Data
-    public static class Job {
+    public static class Config {
+        /**
+         * 系统启动时执行数据库初始化脚本
+         */
+        private Boolean startDbInitOnBoot;
         /**
          * 系统启动时扫描任务class并启动
          */
-        private Boolean startOnBoot;
+        private Boolean startJobsOnBoot;
     }
 
     /**
