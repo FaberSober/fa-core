@@ -20,8 +20,8 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 -- Table structure for base_area
 -- ----------------------------
-DROP TABLE IF EXISTS `base_area`;
-CREATE TABLE `base_area`  (
+
+CREATE TABLE IF NOT EXISTS `base_area`  (
   `id` mediumint(7) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `level` tinyint(1) UNSIGNED NOT NULL COMMENT '层级',
   `parent_code` bigint(14) UNSIGNED NOT NULL DEFAULT 0 COMMENT '父级行政代码',
@@ -47,8 +47,8 @@ CREATE TABLE `base_area`  (
 -- ----------------------------
 -- Table structure for base_config
 -- ----------------------------
-DROP TABLE IF EXISTS `base_config`;
-CREATE TABLE `base_config`  (
+
+CREATE TABLE IF NOT EXISTS `base_config`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `biz` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '业务模块',
   `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '配置类型',
@@ -68,8 +68,8 @@ CREATE TABLE `base_config`  (
 -- ----------------------------
 -- Table structure for base_config_scene
 -- ----------------------------
-DROP TABLE IF EXISTS `base_config_scene`;
-CREATE TABLE `base_config_scene`  (
+
+CREATE TABLE IF NOT EXISTS `base_config_scene`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `biz` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '业务模块',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '场景名称',
@@ -93,8 +93,8 @@ CREATE TABLE `base_config_scene`  (
 -- ----------------------------
 -- Table structure for base_config_sys
 -- ----------------------------
-DROP TABLE IF EXISTS `base_config_sys`;
-CREATE TABLE `base_config_sys`  (
+
+CREATE TABLE IF NOT EXISTS `base_config_sys`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `data` json NOT NULL COMMENT '配置JSON',
   `crt_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '创建时间',
@@ -117,8 +117,8 @@ INSERT INTO `base_config_sys` VALUES (2, '{\"cop\": \"faberxu@gmail.com\", \"log
 -- ----------------------------
 -- Table structure for base_department
 -- ----------------------------
-DROP TABLE IF EXISTS `base_department`;
-CREATE TABLE `base_department`  (
+
+CREATE TABLE IF NOT EXISTS `base_department`  (
   `id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'ID',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '部门名称',
   `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
@@ -147,8 +147,8 @@ INSERT INTO `base_department` VALUES ('c1eafdca1d4bd02b90c4cd15e3528e66', '部�
 -- ----------------------------
 -- Table structure for base_dict
 -- ----------------------------
-DROP TABLE IF EXISTS `base_dict`;
-CREATE TABLE `base_dict`  (
+
+CREATE TABLE IF NOT EXISTS `base_dict`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '编码',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
@@ -189,8 +189,8 @@ INSERT INTO `base_dict` VALUES (55, 'test', 'test', 0, 6, 'cccc', '[{\"id\": 1, 
 -- ----------------------------
 -- Table structure for base_entity_log
 -- ----------------------------
-DROP TABLE IF EXISTS `base_entity_log`;
-CREATE TABLE `base_entity_log`  (
+
+CREATE TABLE IF NOT EXISTS `base_entity_log`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `biz_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '业务类型',
   `biz_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '业务ID',
@@ -206,8 +206,8 @@ CREATE TABLE `base_entity_log`  (
 -- ----------------------------
 -- Table structure for base_file_save
 -- ----------------------------
-DROP TABLE IF EXISTS `base_file_save`;
-CREATE TABLE `base_file_save`  (
+
+CREATE TABLE IF NOT EXISTS `base_file_save`  (
   `id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'ID',
   `url` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '文件访问地址',
   `size` bigint(20) NOT NULL COMMENT '文件大小，单位字节',
@@ -240,8 +240,8 @@ CREATE TABLE `base_file_save`  (
 -- ----------------------------
 -- Table structure for base_job
 -- ----------------------------
-DROP TABLE IF EXISTS `base_job`;
-CREATE TABLE `base_job`  (
+
+CREATE TABLE IF NOT EXISTS `base_job`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `job_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '任务名称',
   `cron` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'cron表达式',
@@ -269,8 +269,8 @@ INSERT INTO `base_job` VALUES (2, '[网盘][文件库]同步文件库信息', '0
 -- ----------------------------
 -- Table structure for base_job_log
 -- ----------------------------
-DROP TABLE IF EXISTS `base_job_log`;
-CREATE TABLE `base_job_log`  (
+
+CREATE TABLE IF NOT EXISTS `base_job_log`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `job_id` int(11) NOT NULL COMMENT '任务ID',
   `begin_time` datetime(0) NOT NULL COMMENT '创建时间',
@@ -289,8 +289,8 @@ INSERT INTO `base_job_log` VALUES (1, 2, '2023-01-13 22:57:00', '2023-01-13 22:5
 -- ----------------------------
 -- Table structure for base_log_api
 -- ----------------------------
-DROP TABLE IF EXISTS `base_log_api`;
-CREATE TABLE `base_log_api`  (
+
+CREATE TABLE IF NOT EXISTS `base_log_api`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `biz` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '模块',
   `opr` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作',
@@ -321,8 +321,8 @@ CREATE TABLE `base_log_api`  (
 -- ----------------------------
 -- Table structure for base_log_login
 -- ----------------------------
-DROP TABLE IF EXISTS `base_log_login`;
-CREATE TABLE `base_log_login`  (
+
+CREATE TABLE IF NOT EXISTS `base_log_login`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `agent` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '访问客户端',
   `os` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作系统',
@@ -347,8 +347,8 @@ CREATE TABLE `base_log_login`  (
 -- ----------------------------
 -- Table structure for base_msg
 -- ----------------------------
-DROP TABLE IF EXISTS `base_msg`;
-CREATE TABLE `base_msg`  (
+
+CREATE TABLE IF NOT EXISTS `base_msg`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `from_user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '来源用户',
   `from_user_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '来源用户ID',
@@ -374,8 +374,8 @@ CREATE TABLE `base_msg`  (
 -- ----------------------------
 -- Table structure for base_notice
 -- ----------------------------
-DROP TABLE IF EXISTS `base_notice`;
-CREATE TABLE `base_notice`  (
+
+CREATE TABLE IF NOT EXISTS `base_notice`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '标题',
   `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '内容',
@@ -401,8 +401,8 @@ INSERT INTO `base_notice` VALUES (1, 'test', 'testtesttesttesttest', 1, 1, '2022
 -- ----------------------------
 -- Table structure for base_rbac_menu
 -- ----------------------------
-DROP TABLE IF EXISTS `base_rbac_menu`;
-CREATE TABLE `base_rbac_menu`  (
+
+CREATE TABLE IF NOT EXISTS `base_rbac_menu`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `parent_id` int(11) NOT NULL COMMENT '父级ID',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
@@ -478,8 +478,8 @@ INSERT INTO `base_rbac_menu` VALUES (53, 23, '网格布局', 11, 1, NULL, 1, 1, 
 -- ----------------------------
 -- Table structure for base_rbac_role
 -- ----------------------------
-DROP TABLE IF EXISTS `base_rbac_role`;
-CREATE TABLE `base_rbac_role`  (
+
+CREATE TABLE IF NOT EXISTS `base_rbac_role`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色名称',
   `remarks` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '角色描述',
@@ -505,8 +505,8 @@ INSERT INTO `base_rbac_role` VALUES (2, '业务管理员', '业务管理员', 1,
 -- ----------------------------
 -- Table structure for base_rbac_role_menu
 -- ----------------------------
-DROP TABLE IF EXISTS `base_rbac_role_menu`;
-CREATE TABLE `base_rbac_role_menu`  (
+
+CREATE TABLE IF NOT EXISTS `base_rbac_role_menu`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `role_id` int(11) NOT NULL COMMENT '角色ID',
   `menu_id` int(11) NOT NULL COMMENT '权限ID',
@@ -598,8 +598,8 @@ INSERT INTO `base_rbac_role_menu` VALUES (795, 1, 22, 0, '2023-01-08 15:27:42', 
 -- ----------------------------
 -- Table structure for base_rbac_user_role
 -- ----------------------------
-DROP TABLE IF EXISTS `base_rbac_user_role`;
-CREATE TABLE `base_rbac_user_role`  (
+
+CREATE TABLE IF NOT EXISTS `base_rbac_user_role`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `user_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '用户ID',
   `role_id` int(11) NOT NULL COMMENT '角色ID',
@@ -624,8 +624,8 @@ INSERT INTO `base_rbac_user_role` VALUES (45, '1', 1, '2022-12-08 21:48:47', '1'
 -- ----------------------------
 -- Table structure for base_sms_code
 -- ----------------------------
-DROP TABLE IF EXISTS `base_sms_code`;
-CREATE TABLE `base_sms_code`  (
+
+CREATE TABLE IF NOT EXISTS `base_sms_code`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `phone` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '手机号',
   `code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '短信验证码',
@@ -636,8 +636,8 @@ CREATE TABLE `base_sms_code`  (
 -- ----------------------------
 -- Table structure for base_system_update_log
 -- ----------------------------
-DROP TABLE IF EXISTS `base_system_update_log`;
-CREATE TABLE `base_system_update_log`  (
+
+CREATE TABLE IF NOT EXISTS `base_system_update_log`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `ver` int(11) NOT NULL COMMENT '版本号',
   `ver_no` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '版本编码',
@@ -654,8 +654,8 @@ INSERT INTO `base_system_update_log` VALUES (1, 1, 'V1.0.0', '初始化V1.0.0版
 -- ----------------------------
 -- Table structure for base_user
 -- ----------------------------
-DROP TABLE IF EXISTS `base_user`;
-CREATE TABLE `base_user`  (
+
+CREATE TABLE IF NOT EXISTS `base_user`  (
   `id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'ID',
   `department_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '部门ID',
   `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '账户',
@@ -692,8 +692,8 @@ INSERT INTO `base_user` VALUES ('8129d223a0da896c3cad2001f796c7f4', 'c1eafdca1d4
 -- ----------------------------
 -- Table structure for demo_student
 -- ----------------------------
-DROP TABLE IF EXISTS `demo_student`;
-CREATE TABLE `demo_student`  (
+
+CREATE TABLE IF NOT EXISTS `demo_student`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '学生名',
   `age` int(3) NULL DEFAULT NULL COMMENT '年龄',
@@ -721,8 +721,8 @@ CREATE TABLE `demo_student`  (
 -- ----------------------------
 -- Table structure for demo_student_info
 -- ----------------------------
-DROP TABLE IF EXISTS `demo_student_info`;
-CREATE TABLE `demo_student_info`  (
+
+CREATE TABLE IF NOT EXISTS `demo_student_info`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `info1` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '补充信息1',
   `info2` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '补充信息2',
@@ -732,8 +732,8 @@ CREATE TABLE `demo_student_info`  (
 -- ----------------------------
 -- Table structure for demo_tree
 -- ----------------------------
-DROP TABLE IF EXISTS `demo_tree`;
-CREATE TABLE `demo_tree`  (
+
+CREATE TABLE IF NOT EXISTS `demo_tree`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `parent_id` int(11) NOT NULL COMMENT '上级节点',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
@@ -753,8 +753,8 @@ CREATE TABLE `demo_tree`  (
 -- ----------------------------
 -- Table structure for disk_store_bucket
 -- ----------------------------
-DROP TABLE IF EXISTS `disk_store_bucket`;
-CREATE TABLE `disk_store_bucket`  (
+
+CREATE TABLE IF NOT EXISTS `disk_store_bucket`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '库名称',
   `size` bigint(20) NULL DEFAULT NULL COMMENT '总文件大小',
@@ -775,8 +775,8 @@ CREATE TABLE `disk_store_bucket`  (
 -- ----------------------------
 -- Table structure for disk_store_bucket_user
 -- ----------------------------
-DROP TABLE IF EXISTS `disk_store_bucket_user`;
-CREATE TABLE `disk_store_bucket_user`  (
+
+CREATE TABLE IF NOT EXISTS `disk_store_bucket_user`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `bucket_id` int(11) NOT NULL COMMENT '库ID',
   `user_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '用户ID',
@@ -796,8 +796,8 @@ CREATE TABLE `disk_store_bucket_user`  (
 -- ----------------------------
 -- Table structure for disk_store_file
 -- ----------------------------
-DROP TABLE IF EXISTS `disk_store_file`;
-CREATE TABLE `disk_store_file`  (
+
+CREATE TABLE IF NOT EXISTS `disk_store_file`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `bucket_id` int(11) NOT NULL COMMENT '库ID',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '文件夹名称',
@@ -825,8 +825,8 @@ CREATE TABLE `disk_store_file`  (
 -- ----------------------------
 -- Table structure for disk_store_file_tag
 -- ----------------------------
-DROP TABLE IF EXISTS `disk_store_file_tag`;
-CREATE TABLE `disk_store_file_tag`  (
+
+CREATE TABLE IF NOT EXISTS `disk_store_file_tag`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `file_id` int(11) NOT NULL COMMENT '文件ID',
   `tag_id` int(11) NOT NULL COMMENT '标签ID',
@@ -845,8 +845,8 @@ CREATE TABLE `disk_store_file_tag`  (
 -- ----------------------------
 -- Table structure for disk_store_tag
 -- ----------------------------
-DROP TABLE IF EXISTS `disk_store_tag`;
-CREATE TABLE `disk_store_tag`  (
+
+CREATE TABLE IF NOT EXISTS `disk_store_tag`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `bucket_id` int(11) NOT NULL COMMENT '库ID',
   `parent_id` int(11) NOT NULL COMMENT '父ID',

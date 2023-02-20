@@ -20,8 +20,8 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 -- Table structure for article_book
 -- ----------------------------
-DROP TABLE IF EXISTS `article_book`;
-CREATE TABLE `article_book` (
+
+CREATE TABLE IF NOT EXISTS `article_book` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `no` varchar(50) DEFAULT NULL COMMENT '编号',
   `name` varchar(50) NOT NULL COMMENT '书名',
@@ -52,8 +52,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for article_detail
 -- ----------------------------
-DROP TABLE IF EXISTS `article_detail`;
-CREATE TABLE `article_detail` (
+
+CREATE TABLE IF NOT EXISTS `article_detail` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `outline_id` int(11) DEFAULT NULL COMMENT '大纲ID',
   `detail` longtext COMMENT 'html文本',
@@ -78,8 +78,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for article_outline
 -- ----------------------------
-DROP TABLE IF EXISTS `article_outline`;
-CREATE TABLE `article_outline` (
+
+CREATE TABLE IF NOT EXISTS `article_outline` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `book_id` int(11) NOT NULL COMMENT '书本ID',
   `detail_id` int(11) DEFAULT NULL COMMENT '详情ID',
@@ -109,8 +109,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for base_area
 -- ----------------------------
-DROP TABLE IF EXISTS `base_area`;
-CREATE TABLE `base_area` (
+
+CREATE TABLE IF NOT EXISTS `base_area` (
   `id` mediumint(7) unsigned NOT NULL AUTO_INCREMENT,
   `level` tinyint(1) unsigned NOT NULL COMMENT '层级',
   `parent_code` bigint(14) unsigned NOT NULL DEFAULT '0' COMMENT '父级行政代码',
@@ -142,8 +142,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for base_biz_file
 -- ----------------------------
-DROP TABLE IF EXISTS `base_biz_file`;
-CREATE TABLE `base_biz_file` (
+
+CREATE TABLE IF NOT EXISTS `base_biz_file` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `url` varchar(255) DEFAULT NULL COMMENT '附件URL',
   `biz_id` varchar(255) DEFAULT NULL COMMENT '业务ID',
@@ -169,8 +169,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for base_config
 -- ----------------------------
-DROP TABLE IF EXISTS `base_config`;
-CREATE TABLE `base_config` (
+
+CREATE TABLE IF NOT EXISTS `base_config` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `buzz_modal` varchar(255) DEFAULT NULL COMMENT '业务模块',
   `type` varchar(255) DEFAULT NULL COMMENT '配置类型',
@@ -203,8 +203,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for base_department
 -- ----------------------------
-DROP TABLE IF EXISTS `base_department`;
-CREATE TABLE `base_department` (
+
+CREATE TABLE IF NOT EXISTS `base_department` (
   `id` varchar(50) NOT NULL COMMENT 'ID',
   `name` varchar(255) NOT NULL COMMENT '部门名称',
   `description` varchar(255) DEFAULT NULL COMMENT '备注',
@@ -234,8 +234,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for base_dict
 -- ----------------------------
-DROP TABLE IF EXISTS `base_dict`;
-CREATE TABLE `base_dict` (
+
+CREATE TABLE IF NOT EXISTS `base_dict` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `type` int(11) DEFAULT NULL COMMENT '字典分组',
   `category` tinyint(1) DEFAULT '0' COMMENT '字典类型：0-文本/1-文件',
@@ -294,8 +294,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for base_dict_type
 -- ----------------------------
-DROP TABLE IF EXISTS `base_dict_type`;
-CREATE TABLE `base_dict_type` (
+
+CREATE TABLE IF NOT EXISTS `base_dict_type` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `code` varchar(255) DEFAULT NULL COMMENT '编码',
   `name` varchar(255) DEFAULT NULL COMMENT '名称',
@@ -337,8 +337,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for base_file_save
 -- ----------------------------
-DROP TABLE IF EXISTS `base_file_save`;
-CREATE TABLE `base_file_save` (
+
+CREATE TABLE IF NOT EXISTS `base_file_save` (
   `id` varchar(50) NOT NULL,
   `name` varchar(255) DEFAULT NULL COMMENT '文件名',
   `url` varchar(255) DEFAULT NULL COMMENT 'url',
@@ -363,8 +363,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for base_job
 -- ----------------------------
-DROP TABLE IF EXISTS `base_job`;
-CREATE TABLE `base_job` (
+
+CREATE TABLE IF NOT EXISTS `base_job` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `job_name` varchar(255) DEFAULT NULL COMMENT '任务名称',
   `cron` varchar(255) DEFAULT NULL COMMENT 'cron表达式',
@@ -393,8 +393,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for base_job_log
 -- ----------------------------
-DROP TABLE IF EXISTS `base_job_log`;
-CREATE TABLE `base_job_log` (
+
+CREATE TABLE IF NOT EXISTS `base_job_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `job_id` int(11) NOT NULL COMMENT '任务ID',
   `begin_time` datetime NOT NULL COMMENT '创建时间',
@@ -414,8 +414,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for base_log_api
 -- ----------------------------
-DROP TABLE IF EXISTS `base_log_api`;
-CREATE TABLE `base_log_api` (
+
+CREATE TABLE IF NOT EXISTS `base_log_api` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '序号',
   `url` text NOT NULL COMMENT '请求URL',
   `method` varchar(10) NOT NULL COMMENT '请求类型',
@@ -445,8 +445,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for base_msg
 -- ----------------------------
-DROP TABLE IF EXISTS `base_msg`;
-CREATE TABLE `base_msg` (
+
+CREATE TABLE IF NOT EXISTS `base_msg` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `from_user_name` varchar(255) NOT NULL COMMENT '来源用户',
   `from_user_id` varchar(50) NOT NULL COMMENT '来源用户ID',
@@ -478,8 +478,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for base_notice
 -- ----------------------------
-DROP TABLE IF EXISTS `base_notice`;
-CREATE TABLE `base_notice` (
+
+CREATE TABLE IF NOT EXISTS `base_notice` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `title` varchar(50) DEFAULT NULL COMMENT '标题',
   `content` varchar(255) DEFAULT NULL COMMENT '内容',
@@ -507,8 +507,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for base_rbac_menu
 -- ----------------------------
-DROP TABLE IF EXISTS `base_rbac_menu`;
-CREATE TABLE `base_rbac_menu` (
+
+CREATE TABLE IF NOT EXISTS `base_rbac_menu` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `parent_id` int(11) NOT NULL COMMENT '父级ID',
   `name` varchar(255) NOT NULL COMMENT '名称',
@@ -559,8 +559,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for base_rbac_role
 -- ----------------------------
-DROP TABLE IF EXISTS `base_rbac_role`;
-CREATE TABLE `base_rbac_role` (
+
+CREATE TABLE IF NOT EXISTS `base_rbac_role` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `name` varchar(255) NOT NULL COMMENT '角色名称',
   `remarks` varchar(255) DEFAULT NULL COMMENT '角色描述',
@@ -587,8 +587,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for base_rbac_role_menu
 -- ----------------------------
-DROP TABLE IF EXISTS `base_rbac_role_menu`;
-CREATE TABLE `base_rbac_role_menu` (
+
+CREATE TABLE IF NOT EXISTS `base_rbac_role_menu` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `role_id` int(11) NOT NULL COMMENT '角色ID',
   `menu_id` int(11) NOT NULL COMMENT '权限ID',
@@ -633,8 +633,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for base_rbac_user_role
 -- ----------------------------
-DROP TABLE IF EXISTS `base_rbac_user_role`;
-CREATE TABLE `base_rbac_user_role` (
+
+CREATE TABLE IF NOT EXISTS `base_rbac_user_role` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `user_id` varchar(64) NOT NULL COMMENT '用户ID',
   `role_id` int(11) NOT NULL COMMENT '角色ID',
@@ -660,8 +660,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for base_sms_code
 -- ----------------------------
-DROP TABLE IF EXISTS `base_sms_code`;
-CREATE TABLE `base_sms_code` (
+
+CREATE TABLE IF NOT EXISTS `base_sms_code` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `phone` varchar(15) NOT NULL COMMENT '手机号',
   `code` varchar(6) NOT NULL COMMENT '短信验证码',
@@ -678,8 +678,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for base_system_update_log
 -- ----------------------------
-DROP TABLE IF EXISTS `base_system_update_log`;
-CREATE TABLE `base_system_update_log` (
+
+CREATE TABLE IF NOT EXISTS `base_system_update_log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `ver` int(11) NOT NULL COMMENT '版本号',
   `ver_no` varchar(255) CHARACTER SET utf8 NOT NULL COMMENT '版本编码',
@@ -698,8 +698,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for base_user
 -- ----------------------------
-DROP TABLE IF EXISTS `base_user`;
-CREATE TABLE `base_user` (
+
+CREATE TABLE IF NOT EXISTS `base_user` (
   `id` varchar(50) NOT NULL COMMENT 'ID',
   `department_id` varchar(50) NOT NULL COMMENT '部门ID',
   `username` varchar(255) NOT NULL COMMENT '账户',
@@ -736,8 +736,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for demo_student
 -- ----------------------------
-DROP TABLE IF EXISTS `demo_student`;
-CREATE TABLE `demo_student` (
+
+CREATE TABLE IF NOT EXISTS `demo_student` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `name` varchar(255) DEFAULT NULL COMMENT '学生名',
   `age` int(3) DEFAULT NULL COMMENT '年龄',
@@ -783,8 +783,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for demo_student_info
 -- ----------------------------
-DROP TABLE IF EXISTS `demo_student_info`;
-CREATE TABLE `demo_student_info` (
+
+CREATE TABLE IF NOT EXISTS `demo_student_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `info1` varchar(255) DEFAULT NULL COMMENT '补充信息1',
   `info2` varchar(255) DEFAULT NULL COMMENT '补充信息2',
@@ -812,8 +812,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for disk_dir
 -- ----------------------------
-DROP TABLE IF EXISTS `disk_dir`;
-CREATE TABLE `disk_dir` (
+
+CREATE TABLE IF NOT EXISTS `disk_dir` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `name` varchar(255) DEFAULT NULL COMMENT '文件夹名称',
   `parent_id` int(11) NOT NULL COMMENT '父级节点',
@@ -838,8 +838,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for disk_file
 -- ----------------------------
-DROP TABLE IF EXISTS `disk_file`;
-CREATE TABLE `disk_file` (
+
+CREATE TABLE IF NOT EXISTS `disk_file` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `dir_id` int(11) NOT NULL COMMENT '文件夹ID',
   `name` varchar(255) DEFAULT NULL COMMENT '文件名称',
