@@ -17,6 +17,8 @@ public class FaDdl {
     private String verNo;
     private String remark;
     private List<FaDdlTableCreate> tableCreateList;
+    private List<FaDdlAddColumn> addColumnList;
+    private List<FaDdlSql> sqlList;
 
     public FaDdl(long ver, String verNo, String remark) {
         this.ver = ver;
@@ -29,6 +31,22 @@ public class FaDdl {
             tableCreateList = new ArrayList<>();
         }
         tableCreateList.add(tableCreate);
+        return this;
+    }
+
+    public FaDdl addAddColumn(FaDdlAddColumn addColumn) {
+        if (addColumnList == null) {
+            addColumnList = new ArrayList<>();
+        }
+        addColumnList.add(addColumn);
+        return this;
+    }
+
+    public FaDdl addSql(FaDdlSql sql) {
+        if (sqlList == null) {
+            sqlList = new ArrayList<>();
+        }
+        sqlList.add(sql);
         return this;
     }
 

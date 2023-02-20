@@ -5,17 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * SQL-建表语句
- * @author Farando
- * @date 2023/2/18 20:26
- * @description
+ * SQL-通用DDL语句
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FaDdlTableCreate {
+public class FaDdlSql {
 
-    private String tableName;
     private String comment;
     private String sqlPath;
 
