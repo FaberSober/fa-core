@@ -16,9 +16,9 @@ public class FaDdl {
     private Long ver;
     private String verNo;
     private String remark;
-    private List<FaDdlTableCreate> tableCreateList;
-    private List<FaDdlAddColumn> addColumnList;
-    private List<FaDdlSql> sqlList;
+    private List<FaDdlTableCreate> tableCreateList = new ArrayList<>();
+    private List<FaDdlAddColumn> addColumnList = new ArrayList<>();
+    private List<FaDdlSql> sqlList = new ArrayList<>();
 
     public FaDdl(long ver, String verNo, String remark) {
         this.ver = ver;
