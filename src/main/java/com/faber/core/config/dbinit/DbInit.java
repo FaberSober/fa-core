@@ -14,6 +14,14 @@ import java.util.List;
 public interface DbInit {
 
     /**
+     * 返回模块的执行顺序，越小越早执行。(base模块需要设置的小，先执行)
+     * @return
+     */
+    default Integer getOrder() {
+        return 10;
+    };
+
+    /**
      * 返回模块编码，如：fa-base
      * @return
      */
