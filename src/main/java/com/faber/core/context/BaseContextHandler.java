@@ -104,4 +104,14 @@ public class BaseContextHandler {
         threadLocal.remove();
     }
 
+    /**
+     * 代码确认使用admin作为当前线程的用户
+     */
+    public static void useAdmin() {
+        BaseContextHandler.setUserId("1");
+        BaseContextHandler.setName("Admin");
+        BaseContextHandler.setUsername("超级管理员");
+        BaseContextHandler.setLogin(true);
+    }
+
 }
