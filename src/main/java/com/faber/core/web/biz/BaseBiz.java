@@ -35,10 +35,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 业务Service父类
@@ -63,6 +60,14 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
     public boolean save(T entity) {
         saveBefore(entity);
         return super.save(entity);
+    }
+
+    @Override
+    public boolean saveBatch(Collection<T> entityList) {
+        for (T entity : entityList) {
+            saveBefore(entity);
+        }
+        return super.saveBatch(entityList);
     }
 
     @Override
