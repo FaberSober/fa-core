@@ -15,3 +15,4 @@
 | fa-disk   | 网盘模块   | 22.00.00.00 |
 | fa-kgcesi | kgcesi | 23.00.00.00 |
 | fa-prj    | prj    | 24.00.00.00 |
+| fa-prjx   | prjx   | 25.00.00.00 |
