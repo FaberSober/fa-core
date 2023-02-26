@@ -52,6 +52,25 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     private ConfigSceneService configSceneService;
 
+    /**
+     * 在save、updateById之前对bean做一些操作
+     * @param entity
+     */
+    protected void saveBefore(T entity) {
+    }
+
+    @Override
+    public boolean save(T entity) {
+        saveBefore(entity);
+        return super.save(entity);
+    }
+
+    @Override
+    public boolean updateById(T entity) {
+        saveBefore(entity);
+        return super.updateById(entity);
+    }
+
     public List<T> getByIds(List<Serializable> ids) {
         if (ids == null || ids.isEmpty()) {
             return new ArrayList<>();
@@ -72,7 +91,8 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
      *
      * @param query
      */
-    protected void preProcessQuery(QueryParams query) {}
+    protected void preProcessQuery(QueryParams query) {
+    }
 
     public QueryWrapper<T> parseQuery(QueryParams query) {
         this.preProcessQuery(query);
@@ -84,6 +104,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     /**
      * sceneId 场景ID查询-追加到条件组中
+     *
      * @param query
      */
     protected void processSceneId(QueryParams query) {
@@ -111,7 +132,8 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         return item;
     }
 
-    public void decorateOne(T i) {}
+    public void decorateOne(T i) {
+    }
 
     public void decorateList(List<T> list) {
         list.forEach(this::decorateOne);
@@ -125,7 +147,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
         // page query
         Page<T> page = new Page<>(query.getCurrent(), query.getPageSize());
-        Page<T> result =  super.page(page, wrapper);
+        Page<T> result = super.page(page, wrapper);
         TableRet<T> table = new TableRet<T>(result);
 
         // add dict options
