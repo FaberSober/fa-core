@@ -6,15 +6,16 @@ services:
   easy-es7:
     # 指定镜像
     # image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
-    image: faber/easy-es:7.17.8
+    image: faber/easy-es:7.17.7
     build: .
     container_name: easy-es7
+    restart: always
     ports:
       # 端口映射
       - 9200:9200
       # - 9300:9300
-    volumes:
-      - $PWD/es/data:/usr/share/elasticsearch/data # 索引数据
+    # volumes:
+      # - $PWD/es/data:/usr/share/elasticsearch/data # 索引数据
       # - $PWD/es/analysis:/usr/share/elasticsearch/config/analysis # 同义词外部定义
       # - ./IKAnalyzer.cfg.xml:/usr/share/elasticsearch/config/analysis-ik/IKAnalyzer.cfg.xml # IKAnalyzer分词器
     environment:
