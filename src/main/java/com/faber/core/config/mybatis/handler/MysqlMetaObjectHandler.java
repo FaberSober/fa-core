@@ -1,7 +1,11 @@
 package com.faber.core.config.mybatis.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.faber.core.bean.BaseCrtEntity;
+import com.faber.core.bean.BaseUpdEntity;
 import com.faber.core.context.BaseContextHandler;
+import com.faber.core.context.TnTenantContextHandler;
+import com.faber.core.tenant.bean.TnBaseCrtEntity;
 import org.apache.ibatis.reflection.MetaObject;
 
 import java.time.LocalDateTime;
@@ -17,24 +21,63 @@ public class MysqlMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
 //        Object crtTime = this.getFieldValByName("crtTime", metaObject);
-        if (BaseContextHandler.getLogin()) {
-            this.strictInsertFill(metaObject, "crtUser", String.class, BaseContextHandler.getUserId());
-            this.strictInsertFill(metaObject, "crtName", String.class, BaseContextHandler.getName());
-        }
-        this.strictInsertFill(metaObject, "crtTime", LocalDateTime.class, LocalDateTime.now());
-        this.strictInsertFill(metaObject, "crtHost", String.class, BaseContextHandler.getIp());
+        // tenant
+        if (metaObject.getOriginalObject() instanceof TnBaseCrtEntity) {
+            if (TnTenantContextHandler.getLogin()) {
+                this.strictInsertFill(metaObject, "crtUser", String.class, TnTenantContextHandler.getUserId() + "");
+                this.strictInsertFill(metaObject, "crtName", String.class, TnTenantContextHandler.getName());
 
-        this.strictInsertFill(metaObject, "deleted", Boolean.class, true);
+                this.strictInsertFill(metaObject, "tenantId", Integer.class, TnTenantContextHandler.getTenantId());
+                this.strictInsertFill(metaObject, "corpId", Integer.class, TnTenantContextHandler.getCorpId());
+            }
+            fillCrtNormal(metaObject);
+
+            return;
+        }
+
+        // admin
+        if (metaObject.getOriginalObject() instanceof BaseCrtEntity) {
+            if (BaseContextHandler.getLogin()) {
+                this.strictInsertFill(metaObject, "crtUser", String.class, BaseContextHandler.getUserId());
+                this.strictInsertFill(metaObject, "crtName", String.class, BaseContextHandler.getName());
+            }
+            fillCrtNormal(metaObject);
+        }
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        if (BaseContextHandler.getLogin()) {
-            this.strictUpdateFill(metaObject, "updUser", String.class, BaseContextHandler.getUserId());
-            this.strictUpdateFill(metaObject, "updName", String.class, BaseContextHandler.getName());
+        // tenant
+        if (metaObject.getOriginalObject() instanceof TnBaseCrtEntity) {
+            if (TnTenantContextHandler.getLogin()) {
+                this.strictInsertFill(metaObject, "updUser", String.class, TnTenantContextHandler.getUserId() + "");
+                this.strictInsertFill(metaObject, "updName", String.class, TnTenantContextHandler.getName());
+
+                this.strictInsertFill(metaObject, "tenantId", Integer.class, TnTenantContextHandler.getTenantId());
+                this.strictInsertFill(metaObject, "corpId", Integer.class, TnTenantContextHandler.getCorpId());
+            }
+            this.strictUpdateFill(metaObject, "updTime", LocalDateTime.class, LocalDateTime.now());
+            this.strictUpdateFill(metaObject, "updHost", String.class, BaseContextHandler.getIp());
+
+            return;
         }
-        this.strictUpdateFill(metaObject, "updTime", LocalDateTime.class, LocalDateTime.now());
-        this.strictUpdateFill(metaObject, "updHost", String.class, BaseContextHandler.getIp());
+
+        // admin
+        if (metaObject.getOriginalObject() instanceof BaseUpdEntity) {
+            if (BaseContextHandler.getLogin()) {
+                this.strictUpdateFill(metaObject, "updUser", String.class, BaseContextHandler.getUserId());
+                this.strictUpdateFill(metaObject, "updName", String.class, BaseContextHandler.getName());
+            }
+            this.strictUpdateFill(metaObject, "updTime", LocalDateTime.class, LocalDateTime.now());
+            this.strictUpdateFill(metaObject, "updHost", String.class, BaseContextHandler.getIp());
+        }
+    }
+
+    private void fillCrtNormal(MetaObject metaObject) {
+        this.strictInsertFill(metaObject, "crtTime", LocalDateTime.class, LocalDateTime.now());
+        this.strictInsertFill(metaObject, "crtHost", String.class, BaseContextHandler.getIp());
+
+        this.strictInsertFill(metaObject, "deleted", Boolean.class, false);
     }
 
 }
