@@ -4,6 +4,7 @@ import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.faber.core.annotation.SqlEquals;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,6 +23,7 @@ public abstract class BaseCrtEntity implements Serializable {
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime crtTime;
 
+    @SqlEquals
     @ExcelIgnore
     @TableField(fill = FieldFill.INSERT)
     private String crtUser;

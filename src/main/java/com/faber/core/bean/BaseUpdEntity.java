@@ -4,6 +4,7 @@ import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.faber.core.annotation.SqlEquals;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,6 +22,7 @@ public abstract class BaseUpdEntity extends BaseCrtEntity {
     @TableField(fill = FieldFill.UPDATE)
     private LocalDateTime updTime;
 
+    @SqlEquals
     @ExcelIgnore
     @TableField(fill = FieldFill.UPDATE)
     private String updUser;
