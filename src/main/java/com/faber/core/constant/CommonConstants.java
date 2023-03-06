@@ -20,6 +20,7 @@ public class CommonConstants {
 
     // ---------------- 上下文信息 ----------------
     public static final String CONTEXT_KEY_LOGIN = "currentLogin";
+    public static final String CONTEXT_KEY_USER = "currentUser";
     public static final String CONTEXT_KEY_USER_ID = "currentUserId";
     public static final String CONTEXT_KEY_USERNAME = "currentUserName";
     public static final String CONTEXT_KEY_PHONE = "currentPhone";
