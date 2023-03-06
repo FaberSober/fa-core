@@ -73,4 +73,6 @@ value：12kd-dsj5ce-d4445-h4sd472
 ## 参考资料
 1. Spring系列14：SpEL详解: https://blog.csdn.net/Joe192/article/details/125744579
 
-
+# Redis
+## jetcache
+参考：`com.faber.api.base.demo.biz.RedisTestBiz`
