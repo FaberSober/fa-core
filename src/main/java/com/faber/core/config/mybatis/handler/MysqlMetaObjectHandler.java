@@ -1,11 +1,13 @@
 package com.faber.core.config.mybatis.handler;
 
+import cn.hutool.core.util.ClassUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.faber.core.bean.BaseCrtEntity;
 import com.faber.core.bean.BaseUpdEntity;
 import com.faber.core.context.BaseContextHandler;
 import com.faber.core.context.TnTenantContextHandler;
 import com.faber.core.tenant.bean.TnBaseCrtEntity;
+import com.faber.core.tenant.bean.TnBaseUpdEntity;
 import org.apache.ibatis.reflection.MetaObject;
 
 import java.time.LocalDateTime;
@@ -22,7 +24,7 @@ public class MysqlMetaObjectHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
 //        Object crtTime = this.getFieldValByName("crtTime", metaObject);
         // tenant
-        if (metaObject.getOriginalObject() instanceof TnBaseCrtEntity) {
+        if (ClassUtil.isAbstract(TnBaseCrtEntity.class)) {
             if (TnTenantContextHandler.getLogin()) {
                 this.strictInsertFill(metaObject, "crtUser", String.class, TnTenantContextHandler.getUserId() + "");
                 this.strictInsertFill(metaObject, "crtName", String.class, TnTenantContextHandler.getName());
@@ -36,7 +38,7 @@ public class MysqlMetaObjectHandler implements MetaObjectHandler {
         }
 
         // admin
-        if (metaObject.getOriginalObject() instanceof BaseCrtEntity) {
+        if (ClassUtil.isAbstract(BaseCrtEntity.class)) {
             if (BaseContextHandler.getLogin()) {
                 this.strictInsertFill(metaObject, "crtUser", String.class, BaseContextHandler.getUserId());
                 this.strictInsertFill(metaObject, "crtName", String.class, BaseContextHandler.getName());
@@ -48,7 +50,7 @@ public class MysqlMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void updateFill(MetaObject metaObject) {
         // tenant
-        if (metaObject.getOriginalObject() instanceof TnBaseCrtEntity) {
+        if (ClassUtil.isAbstract(TnBaseUpdEntity.class)) {
             if (TnTenantContextHandler.getLogin()) {
                 this.strictInsertFill(metaObject, "updUser", String.class, TnTenantContextHandler.getUserId() + "");
                 this.strictInsertFill(metaObject, "updName", String.class, TnTenantContextHandler.getName());
@@ -63,7 +65,7 @@ public class MysqlMetaObjectHandler implements MetaObjectHandler {
         }
 
         // admin
-        if (metaObject.getOriginalObject() instanceof BaseUpdEntity) {
+        if (ClassUtil.isAbstract(BaseUpdEntity.class)) {
             if (BaseContextHandler.getLogin()) {
                 this.strictUpdateFill(metaObject, "updUser", String.class, BaseContextHandler.getUserId());
                 this.strictUpdateFill(metaObject, "updName", String.class, BaseContextHandler.getName());

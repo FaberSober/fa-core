@@ -15,7 +15,7 @@ import lombok.ToString;
 @Data
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public class TnBaseDelEntity extends BaseDelEntity {
+public abstract class TnBaseDelEntity extends BaseDelEntity {
 
     @SqlEquals
     @ExcelProperty("企业ID")

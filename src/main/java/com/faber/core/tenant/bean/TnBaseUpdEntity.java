@@ -15,7 +15,7 @@ import lombok.ToString;
 @Data
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public class TnBaseUpdEntity extends BaseUpdEntity {
+public abstract class TnBaseUpdEntity extends BaseUpdEntity {
 
     @SqlEquals
     @ExcelProperty("企业ID")
