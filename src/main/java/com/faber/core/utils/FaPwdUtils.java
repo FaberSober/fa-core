@@ -14,12 +14,23 @@ public class FaPwdUtils {
 
     /**
      * 验证明文密码与加密密码是否相同
+     *
      * @param rawPassword
      * @param encodedPassword
      * @return
      */
     public static boolean checkPwd(CharSequence rawPassword, String encodedPassword) {
         return encoder.matches(rawPassword, encodedPassword);
+    }
+
+    /**
+     * 加密密码
+     *
+     * @param pwd
+     * @return
+     */
+    public static String encryptPwd(String pwd) {
+        return encoder.encode(pwd);
     }
 
 }
