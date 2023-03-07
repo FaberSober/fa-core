@@ -24,7 +24,7 @@ public class MysqlMetaObjectHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
 //        Object crtTime = this.getFieldValByName("crtTime", metaObject);
         // tenant
-        if (ClassUtil.isAbstract(TnBaseCrtEntity.class)) {
+        if (TnBaseCrtEntity.class.isAssignableFrom(metaObject.getOriginalObject().getClass())) {
             if (TnTenantContextHandler.getLogin()) {
                 this.strictInsertFill(metaObject, "crtUser", String.class, TnTenantContextHandler.getUserId() + "");
                 this.strictInsertFill(metaObject, "crtName", String.class, TnTenantContextHandler.getName());
@@ -38,7 +38,7 @@ public class MysqlMetaObjectHandler implements MetaObjectHandler {
         }
 
         // admin
-        if (ClassUtil.isAbstract(BaseCrtEntity.class)) {
+        if (BaseCrtEntity.class.isAssignableFrom(metaObject.getOriginalObject().getClass())) {
             if (BaseContextHandler.getLogin()) {
                 this.strictInsertFill(metaObject, "crtUser", String.class, BaseContextHandler.getUserId());
                 this.strictInsertFill(metaObject, "crtName", String.class, BaseContextHandler.getName());
@@ -50,7 +50,7 @@ public class MysqlMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void updateFill(MetaObject metaObject) {
         // tenant
-        if (ClassUtil.isAbstract(TnBaseUpdEntity.class)) {
+        if (TnBaseUpdEntity.class.isAssignableFrom(metaObject.getOriginalObject().getClass())) {
             if (TnTenantContextHandler.getLogin()) {
                 this.strictInsertFill(metaObject, "updUser", String.class, TnTenantContextHandler.getUserId() + "");
                 this.strictInsertFill(metaObject, "updName", String.class, TnTenantContextHandler.getName());
@@ -65,7 +65,7 @@ public class MysqlMetaObjectHandler implements MetaObjectHandler {
         }
 
         // admin
-        if (ClassUtil.isAbstract(BaseUpdEntity.class)) {
+        if (BaseUpdEntity.class.isAssignableFrom(metaObject.getOriginalObject().getClass())) {
             if (BaseContextHandler.getLogin()) {
                 this.strictUpdateFill(metaObject, "updUser", String.class, BaseContextHandler.getUserId());
                 this.strictUpdateFill(metaObject, "updName", String.class, BaseContextHandler.getName());
