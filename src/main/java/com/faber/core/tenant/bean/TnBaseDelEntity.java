@@ -1,8 +1,9 @@
 package com.faber.core.tenant.bean;
 
-import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.faber.core.annotation.SqlEquals;
-import com.faber.core.bean.BaseDelEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -15,14 +16,12 @@ import lombok.ToString;
 @Data
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public abstract class TnBaseDelEntity extends BaseDelEntity {
+public abstract class TnBaseDelEntity extends TnBaseUpdEntity {
 
     @SqlEquals
-    @ExcelProperty("企业ID")
-    private Integer corpId;
-
-    @SqlEquals
-    @ExcelProperty("租户ID")
-    private Integer tenantId;
+    @ExcelIgnore
+    @TableLogic(value = "false", delval = "true")
+    @TableField(select = false)
+    private Boolean deleted;
 
 }
