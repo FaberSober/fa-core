@@ -1,6 +1,7 @@
 package com.faber.core.utils;
 
 import com.faber.core.context.BaseContextHandler;
+import com.faber.core.context.TnTenantContextHandler;
 import com.faber.core.vo.msg.Ret;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.Map;
 
 /**
  * 通用返回共有接口
+ *
  * @author xu.pengfei
  * @date 2022/11/28 14:28
  */
@@ -19,8 +21,20 @@ public class BaseResHandler {
         return BaseContextHandler.getUsername();
     }
 
+    /**
+     * 获取当前登录的admin账户
+     * @return
+     */
     public String getCurrentUserId() {
         return BaseContextHandler.getUserId();
+    }
+
+    /**
+     * 获取当前登录的tenant账户
+     * @return
+     */
+    public Integer getCurrTenantUserId() {
+        return TnTenantContextHandler.getUserId();
     }
 
     protected <T> Ret<T> ok() {
