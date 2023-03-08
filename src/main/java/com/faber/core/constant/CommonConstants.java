@@ -30,7 +30,9 @@ public class CommonConstants {
 
     // ---------------- 上下文信息-租户特有字段 ----------------
     public static final String CONTEXT_KEY_TENANT_ID = "currentTenantIp"; // 当前租户所属的租户ID
+    public static final String CONTEXT_KEY_TENANT_NAME = "currentTenantName"; // 当前租户所属的租户名称
     public static final String CONTEXT_KEY_CORP_ID = "currentCorpIp"; // 当前租户所属的企业ID
+    public static final String CONTEXT_KEY_CORP_NAME = "currentCorpName"; // 当前租户所属的企业名称
 
     public static final String JWT_KEY_USER_ID = "userId";
     public static final String JWT_KEY_NAME = "name";

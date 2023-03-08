@@ -73,12 +73,28 @@ public class TnTenantContextHandler {
         return (Integer) get(CommonConstants.CONTEXT_KEY_TENANT_ID);
     }
 
+    public static void setTenantName(String tenantName) {
+        set(CommonConstants.CONTEXT_KEY_TENANT_NAME, tenantName);
+    }
+
+    public static String getTenantName() {
+        return (String) get(CommonConstants.CONTEXT_KEY_TENANT_NAME);
+    }
+
     public static void setCorpId(Integer corpId) {
         set(CommonConstants.CONTEXT_KEY_CORP_ID, corpId);
     }
 
     public static Integer getCorpId() {
         return (Integer) get(CommonConstants.CONTEXT_KEY_CORP_ID);
+    }
+
+    public static void setCorpName(String corpName) {
+        set(CommonConstants.CONTEXT_KEY_CORP_NAME, corpName);
+    }
+
+    public static String getCorpName() {
+        return (String) get(CommonConstants.CONTEXT_KEY_CORP_NAME);
     }
 
     private static String returnObjectValue(Object value) {
