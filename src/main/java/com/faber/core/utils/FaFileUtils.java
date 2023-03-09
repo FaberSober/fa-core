@@ -28,6 +28,10 @@ public class FaFileUtils {
 
     public static final List<String> IMG_EXTS = Arrays.asList("png", "jpg", "jpeg", "gif");
 
+    public static String getProjectRootDir() throws IOException {
+        File path = new File(ResourceUtils.getURL("classpath:").getPath());
+        return path.getParentFile().getParentFile().getAbsolutePath();
+    }
 
     public static String getAbsolutePath() throws IOException {
         // 开发环境获取编译class路径
