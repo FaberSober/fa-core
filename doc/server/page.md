@@ -9,3 +9,10 @@ public TableRet<RbacUserRoleRetVo> pageVo(BasePageQuery<RbacUserRoleQueryVo> que
     return new TableRet<>(info);
 }
 ```
+
+```typescript jsx
+
+  /** 获取实体 分页 */
+  pageVo = (params: Fa.BasePageQuery<Rbac.RbacUserRoleQueryVo>): Promise<Fa.Ret<Fa.Page<Rbac.RbacUserRoleRetVo>>> => this.post('pageVo', params);
+  
+```
