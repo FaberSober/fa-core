@@ -30,7 +30,7 @@ public class FaFileUtils {
 
     public static String getProjectRootDir() throws IOException {
         File path = new File(ResourceUtils.getURL("classpath:").getPath());
-        return path.getParentFile().getParentFile().getAbsolutePath();
+        return path.getParentFile().getParentFile().getParentFile().getAbsolutePath();
     }
 
     public static String getAbsolutePath() throws IOException {
