@@ -23,11 +23,11 @@ public abstract class TnBaseEntity implements Serializable {
     @SqlEquals
     @ExcelProperty("企业ID")
     @TableField(fill = FieldFill.INSERT)
-    private Integer corpId;
+    private Long corpId;
 
     @SqlEquals
     @ExcelProperty("租户ID")
     @TableField(fill = FieldFill.INSERT)
-    private Integer tenantId;
+    private Long tenantId;
 
 }

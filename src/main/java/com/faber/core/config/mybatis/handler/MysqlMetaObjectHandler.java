@@ -27,8 +27,8 @@ public class MysqlMetaObjectHandler implements MetaObjectHandler {
             this.strictInsertFill(metaObject, "crtUser", String.class, TnTenantContextHandler.getUserId() + "");
             this.strictInsertFill(metaObject, "crtName", String.class, TnTenantContextHandler.getName());
 
-            this.strictInsertFill(metaObject, "tenantId", Integer.class, TnTenantContextHandler.getTenantId());
-            this.strictInsertFill(metaObject, "corpId", Integer.class, TnTenantContextHandler.getCorpId());
+            this.strictInsertFill(metaObject, "tenantId", Long.class, TnTenantContextHandler.getTenantId());
+            this.strictInsertFill(metaObject, "corpId", Long.class, TnTenantContextHandler.getCorpId());
 
             // 冗余记录租户、企业名称
             this.strictInsertFill(metaObject, "tenantName", String.class, TnTenantContextHandler.getTenantName());

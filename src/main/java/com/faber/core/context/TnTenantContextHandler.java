@@ -41,12 +41,12 @@ public class TnTenantContextHandler {
         return value != null && (Boolean) value;
     }
 
-    public static void setUserId(Integer userId) {
+    public static void setUserId(Long userId) {
         set(CommonConstants.CONTEXT_KEY_USER_ID, userId);
     }
 
-    public static Integer getUserId() {
-        return (Integer) get(CommonConstants.CONTEXT_KEY_USER_ID);
+    public static Long getUserId() {
+        return (Long) get(CommonConstants.CONTEXT_KEY_USER_ID);
     }
 
     public static void setName(String name) {
@@ -65,12 +65,12 @@ public class TnTenantContextHandler {
         return (String) get(CommonConstants.CONTEXT_KEY_USER_IP);
     }
 
-    public static void setTenantId(Integer tenantId) {
+    public static void setTenantId(Long tenantId) {
         set(CommonConstants.CONTEXT_KEY_TENANT_ID, tenantId);
     }
 
-    public static Integer getTenantId() {
-        return (Integer) get(CommonConstants.CONTEXT_KEY_TENANT_ID);
+    public static Long getTenantId() {
+        return (Long) get(CommonConstants.CONTEXT_KEY_TENANT_ID);
     }
 
     public static void setTenantName(String tenantName) {
@@ -81,12 +81,12 @@ public class TnTenantContextHandler {
         return (String) get(CommonConstants.CONTEXT_KEY_TENANT_NAME);
     }
 
-    public static void setCorpId(Integer corpId) {
+    public static void setCorpId(Long corpId) {
         set(CommonConstants.CONTEXT_KEY_CORP_ID, corpId);
     }
 
-    public static Integer getCorpId() {
-        return (Integer) get(CommonConstants.CONTEXT_KEY_CORP_ID);
+    public static Long getCorpId() {
+        return (Long) get(CommonConstants.CONTEXT_KEY_CORP_ID);
     }
 
     public static void setCorpName(String corpName) {

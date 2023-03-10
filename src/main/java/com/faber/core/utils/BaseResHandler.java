@@ -33,7 +33,7 @@ public class BaseResHandler {
      * 获取当前登录的tenant账户
      * @return
      */
-    public Integer getCurrTenantUserId() {
+    public Long getCurrTenantUserId() {
         return TnTenantContextHandler.getUserId();
     }
 
