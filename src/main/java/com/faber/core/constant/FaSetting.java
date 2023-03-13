@@ -16,6 +16,7 @@ public class FaSetting {
     private Amap amap;
     private Url url;
     private Config config;
+    private Onlyoffice onlyoffice;
 
     /**
      * JWT配置
@@ -103,5 +104,28 @@ public class FaSetting {
          * socketUrl
          */
         private String socketUrl;
+    }
+
+    /**
+     * Onlyoffice
+     */
+    @Data
+    public static class Onlyoffice {
+        /**
+         * 本服务提供给onlyoffice回调的服务器地址
+         */
+        private String callbackServer;
+        /**
+         * docservice中配置jwt secret
+         */
+        private String docserviceSecret;
+        /**
+         * docservice中配置token的Header Key
+         */
+        private String docserviceHeader;
+        private String fileFillformsDocs;
+        private String fileViewedDocs;
+        private String fileEditedDocs;
+        private String fileConvertDocs;
     }
 }
