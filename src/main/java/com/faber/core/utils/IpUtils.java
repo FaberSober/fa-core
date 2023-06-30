@@ -70,13 +70,13 @@ public class IpUtils {
      * @return
      */
     public static IpAddr getIpAddrByApi(String ip) {
-        try {
-            IpService ipService = SpringUtil.getBean(IpService.class);
-            return ipService.ipJson(ip);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-        return null;
+        // 2023-04-04 离线模式，不可访问接口，直接返回null
+//        try {
+//            IpService ipService = SpringUtil.getBean(IpService.class);
+//            return ipService.ipJson(ip);
+//        } catch (Exception e) {
+//            log.error(e.getMessage(), e);
+//        }
     }
 
 }
