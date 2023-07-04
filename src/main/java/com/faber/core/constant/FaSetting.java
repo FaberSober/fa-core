@@ -1,8 +1,14 @@
 package com.faber.core.constant;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Data
 @Component
@@ -53,6 +59,25 @@ public class FaSetting {
          * 增加一层最前置路径，可以用于区分不同环境
          */
         private String prefix;
+        /**
+         * 增加一层最前置路径，可以用于区分不同环境
+         */
+        private String allowFiles;
+
+        private List<String> allowFileList;
+
+        public boolean isFileAllowed(String fileName) {
+            if (StrUtil.isEmpty(this.allowFiles)) {
+                return true;
+            }
+
+            if (this.allowFileList == null) {
+                this.allowFileList = Arrays.asList(this.allowFiles.split(","));
+            }
+
+            String ext = FileUtil.extName(fileName);
+            return this.allowFileList.contains(ext);
+        }
     }
 
     /**
