@@ -144,8 +144,8 @@ public class BaseContextHandler {
         return threadLocal.get();
     }
 
-    public static void setHoleMap(Map<String, Object> holeMap) {
-        threadLocal.set(holeMap);
+    public static void setHoldMap(Map<String, Object> holdMap) {
+        threadLocal.set(holdMap);
     }
 
 }
