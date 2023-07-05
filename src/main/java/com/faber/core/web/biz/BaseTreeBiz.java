@@ -39,6 +39,12 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
      */
     protected void enhanceTreeQuery(QueryWrapper<T> wrapper) {}
 
+    /**
+     * 增强Tree数据查询，有的表可能会有一些自定义字段限制Tree结构的获取，子类可以覆盖重写此方法，来增加自定义字段的查询条件。
+     * 为了查询maxSort，某些entity可能需要做额外的查询条件限定
+     */
+    protected void enhanceTreeQueryForMaxSort(QueryWrapper<T> wrapper, T entity) {}
+
     @Override
     public boolean save(T entity) {
         this.setNextSort(entity); // 设置entity的排序
@@ -348,7 +354,7 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
         if (!anno.autoSort()) {
             return;
         }
-        ReflectUtil.setFieldValue(entity, getSortedFieldName(), getMaxSort(getEntityParentId(entity)) + 1);
+        ReflectUtil.setFieldValue(entity, getSortedFieldName(), getMaxSort(getEntityParentId(entity), entity) + 1);
     }
 
     /**
@@ -362,12 +368,13 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
     /**
      * 获取最大的排序
      * @param parentId 父节点ID
+     * @param entity 实体
      * @return
      */
-    protected Integer getMaxSort(Object parentId) {
+    protected Integer getMaxSort(Object parentId, T entity) {
         QueryWrapper<T> wrapper = new QueryWrapper<>();
         wrapper.eq(getTreeParentIdFieldColumnName(), parentId);
-        this.enhanceTreeQuery(wrapper);
+        this.enhanceTreeQueryForMaxSort(wrapper, entity);
         wrapper.orderByDesc(this.getSortedFieldColumnName());
         wrapper.select(String.format("IFNULL(max(%s), -1) as value", getSortedFieldColumnName()));
         List<Map<String, Object>> result = baseMapper.selectMaps(wrapper);
