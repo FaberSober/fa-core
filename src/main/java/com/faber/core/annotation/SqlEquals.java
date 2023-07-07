@@ -8,7 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * {@link BaseBiz#selectByQuery}方法查询中，string属性指定为equals查询
+ * {@link BaseBiz#parseQuery}方法查询中，string属性指定为equals查询
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value={ElementType.FIELD,ElementType.TYPE})

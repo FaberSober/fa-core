@@ -1,8 +1,10 @@
 package com.faber.core.config.mybatis.utils;
 
+import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.annotation.IEnum;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.faber.core.annotation.SqlEquals;
 import com.faber.core.annotation.SqlSearch;
@@ -79,7 +81,17 @@ public class WrapperUtils {
 
                 // TO-DO: 增加注解方式，有的string属性需要强制指定为equals查询
                 Field field = ReflectUtil.getField(clazz, entry.getKey());
-                boolean forceEqual = field != null && field.getAnnotation(SqlEquals.class) != null;
+                boolean forceEqual = false;
+                if (field != null) {
+                    // SqlEquals注解
+                    if (field.getAnnotation(SqlEquals.class) != null) {
+                        forceEqual = true;
+                    }
+                    // Enum枚举类型
+                    if (ClassUtil.isEnum(field.getType())) {
+                        forceEqual = true;
+                    }
+                }
 
 //                if (field == null) {
 //                    log.warn("No field {} Found", entry.getKey());
