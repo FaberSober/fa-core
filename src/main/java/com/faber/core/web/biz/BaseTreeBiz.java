@@ -51,6 +51,13 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
         return super.save(entity);
     }
 
+    @Override
+    public boolean removeById(Serializable id) {
+        // 删除节点，同步删除该节点向下所有的字节点
+        List<T> list = this.getAllChildrenFromNode(id);
+        return super.removeByIds(list.stream().map(i -> this.getEntityId(i)).collect(Collectors.toList()));
+    }
+
     /**
      * 给定选中的value，返回value向上查找的节点路径[1, 1-1, 1-1-1]
      *
