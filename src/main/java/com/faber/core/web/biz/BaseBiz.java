@@ -210,8 +210,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
      * @throws IOException
      */
     public void exportTplExcel() throws IOException {
-        List<T> list = Collections.emptyList();
-        FaExcelUtils.sendFileExcel(this.entityClass, list);
+        FaExcelUtils.sendFileExcel(this.entityClass, Collections.emptyList());
     }
 
     /**
@@ -236,10 +235,13 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         }
     }
 
-    public void importExcel(CommonImportExcelReqVo reqVo) {
+    public File getFileById(String fileId) {
         StorageService storageService = SpringUtil.getBean(StorageService.class);
-        File file = storageService.getByFileId(reqVo.getFileId());
+        return storageService.getByFileId(fileId);
+    }
 
+    public void importExcel(CommonImportExcelReqVo reqVo) {
+        File file = getFileById(reqVo.getFileId());
         FaExcelUtils.simpleRead(file, this.entityClass, i -> {
             this.saveExcelEntity(i);
         });
