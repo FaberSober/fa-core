@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -40,7 +41,7 @@ public class FaExcelUtils {
 
         FaModalName anno = clazz.getAnnotation(FaModalName.class);
 
-        String fileName = DateUtil.now() + "";
+        String fileName = DateUtil.format(new Date(), "yyyy_MM_dd_HH_mm_ss");
         if (anno != null) {
             fileName = anno.name() + "_" + fileName;
         }
