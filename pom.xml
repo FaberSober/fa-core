@@ -38,6 +38,16 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-logging</artifactId>
                 </exclusion>
+
+                <!-- 使用easy-es注释：https://www.easy-es.cn/pages/4c01d7/#es%E7%89%88%E6%9C%AC%E5%8F%8Aspringboot%E7%89%88%E6%9C%AC -->
+<!--                <exclusion>-->
+<!--                    <groupId>org.elasticsearch.client</groupId>-->
+<!--                    <artifactId>elasticsearch-rest-high-level-client</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.elasticsearch</groupId>-->
+<!--                    <artifactId>elasticsearch</artifactId>-->
+<!--                </exclusion>-->
             </exclusions>
         </dependency>
 
