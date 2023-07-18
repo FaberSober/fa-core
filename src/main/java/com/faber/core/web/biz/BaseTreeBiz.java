@@ -336,6 +336,7 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
             treeNode.setParentId(this.getEntityParentId(entity));
             treeNode.setName(ObjectUtil.toString(this.getEntityName(entity)));
             treeNode.setSort(this.getEntitySortId(entity));
+            treeNode.setLevel(1);
             // 判断节点是否还有子节点
             treeNode.setHasChildren(this.countChildren(beanList, this.getEntityId(entity)) > 0);
             treeNode.setSourceData(entity);

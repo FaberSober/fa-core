@@ -23,12 +23,15 @@ public class TreeUtil {
         List<T> trees = new ArrayList<T>();
 
         for (T treeNode : treeNodes) {
+            // 摘取列表中的root节点，放到tree中
             if (ObjectUtil.equal(ObjectUtil.toString(root), ObjectUtil.toString(treeNode.getParentId()))) {
                 trees.add(treeNode);
             }
 
+            // 将每个节点放到对于的父节点里
             for (T it : treeNodes) {
                 if (ObjectUtil.equal(it.getParentId(), treeNode.getId())) {
+                    it.setLevel(treeNode.getLevel() + 1); // 层级+1
                     treeNode.add(it);
                 }
             }
