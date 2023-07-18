@@ -10,6 +10,7 @@ import com.faber.core.annotation.SqlTreeName;
 import com.faber.core.annotation.SqlTreeParentId;
 import com.faber.core.config.mybatis.base.FaBaseMapper;
 import com.faber.core.constant.CommonConstants;
+import com.faber.core.context.BaseContextHandler;
 import com.faber.core.exception.BuzzException;
 import com.faber.core.utils.TreeUtil;
 import com.faber.core.vo.query.QueryParams;
@@ -83,6 +84,16 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
 
         list.add(entity);
         return list;
+    }
+
+    public List<T> treePathLineWithCache(Serializable id) {
+        Map<Serializable, List<T>> cache = BaseContextHandler.getCacheMap(getEntityClass().getName() + ".treePathLineWithCache");
+        if (cache.containsKey(id)) {
+            return cache.get(id);
+        }
+        List<T> data = this.treePathLine(id);
+        cache.put(id, data);
+        return data;
     }
 
     /**

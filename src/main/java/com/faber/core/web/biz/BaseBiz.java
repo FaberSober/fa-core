@@ -252,9 +252,9 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         if (cache.containsKey(id)) {
             return cache.get(id);
         }
-        T user = super.getById(id);
-        cache.put(id, user);
-        return user;
+        T entity = super.getById(id);
+        cache.put(id, entity);
+        return entity;
     }
 
     public String getCurrentUserId() {
