@@ -247,12 +247,33 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         });
     }
 
+    /**
+     * 根据ID查询实体基础信息
+     * @param id ID
+     * @return
+     */
     public T getByIdWithCache(Serializable id) {
         Map<Serializable, T> cache = BaseContextHandler.getCacheMap(getEntityClass());
         if (cache.containsKey(id)) {
             return cache.get(id);
         }
         T entity = super.getById(id);
+        cache.put(id, entity);
+        return entity;
+    }
+
+    /**
+     * 根据ID查询实体详情
+     * @param id ID
+     * @return
+     */
+    public T getDetailByIdWithCache(Serializable id) {
+        Map<Serializable, T> cache = BaseContextHandler.getCacheMap(getEntityClass());
+        if (cache.containsKey(id)) {
+            return cache.get(id);
+        }
+        T entity = super.getById(id);
+        decorateOne(entity);
         cache.put(id, entity);
         return entity;
     }
