@@ -52,6 +52,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     /**
      * 在save、updateById之前对bean做一些操作
+     *
      * @param entity
      */
     protected void saveBefore(T entity) {
@@ -215,6 +216,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     /**
      * 在导入Excel的时候，做一些bean属性的校验、补全
+     *
      * @param entity
      */
     protected void saveExcelEntity(T entity) {
@@ -249,6 +251,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     /**
      * 根据ID查询实体基础信息
+     *
      * @param id ID
      * @return
      */
@@ -264,6 +267,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     /**
      * 根据ID查询实体详情
+     *
      * @param id ID
      * @return
      */
@@ -296,6 +300,11 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         }
     }
 
+    public void removeByQuery(QueryParams query) {
+        QueryWrapper<T> wrapper = parseQuery(query);
+        super.remove(wrapper);
+    }
+
     public String updateValueToStr(Field field, Object value) {
         if (value == null) return "";
         if (IEnum.class.isAssignableFrom(field.getType())) {
@@ -307,6 +316,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     /**
      * 获取最大的排序
+     *
      * @param colName 取最大排序的
      * @return 最大的排序
      */
@@ -319,6 +329,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     /**
      * 返回最上层一条数据，使用limit 1
+     *
      * @param wrapper mybatis-plus wrapper
      * @return 最上层一条数据
      */
