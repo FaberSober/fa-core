@@ -77,7 +77,7 @@ public class BaseController<Biz extends BaseBiz, Entity, Key extends Serializabl
         return ok(entityList);
     }
 
-    @FaLogOpr(value = "查询", crud = LogCrudEnum.R)
+    @FaLogOpr(value = "id查询", crud = LogCrudEnum.R)
     @RequestMapping(value = "/getById/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Ret<Entity> getById(@PathVariable Key id) {
