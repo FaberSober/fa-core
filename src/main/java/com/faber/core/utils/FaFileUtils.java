@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -71,12 +72,11 @@ public class FaFileUtils {
 
     /**
      * 下载文件
-     * @param file
+     * @param in
      * @throws IOException
      */
-    public static void downloadFile(File file, String filename) throws IOException {
+    public static void download(InputStream in, String filename) throws IOException {
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
-        InputStream in = new FileInputStream(file);
 
         response.setCharacterEncoding("utf-8");
         String fileName = URLEncoder.encode(filename, "UTF-8");
@@ -96,6 +96,25 @@ public class FaFileUtils {
         in.close();
     }
 
+    /**
+     * 下载str
+     * @param str
+     * @throws IOException
+     */
+    public static void download(String str, String filename) throws IOException {
+        InputStream in = new ByteArrayInputStream(str.getBytes(Charset.forName("UTF-8")));
+        download(in, filename);
+    }
+
+    /**
+     * 下载文件
+     * @param file
+     * @throws IOException
+     */
+    public static void downloadFile(File file, String filename) throws IOException {
+        InputStream in = new FileInputStream(file);
+        download(in, filename);
+    }
 
     public static void downloadFileShard(File file, String filename) throws IOException {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
