@@ -66,6 +66,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     @Override
     public boolean saveBatch(Collection<T> entityList) {
+        if (entityList == null || entityList.isEmpty()) return true;
         for (T entity : entityList) {
             saveBefore(entity);
         }
