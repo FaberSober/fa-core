@@ -1,6 +1,5 @@
 package com.faber.core.vo.utils;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,8 +8,12 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class FaOption<T> {
     private T id;
     private String name;
+
+    public FaOption(String name, T id) {
+        this.id = id;
+        this.name = name;
+    }
 }
