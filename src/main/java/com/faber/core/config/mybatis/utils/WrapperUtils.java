@@ -89,7 +89,11 @@ public class WrapperUtils {
                 if (forceEqual) {
                     ew.eq(fieldColumn, entry.getValue());
                 } else {
-                    ew.like(fieldColumn, SqlUtils.filterLikeValue(StrUtil.toString(entry.getValue())));
+                    if (entry.getValue() instanceof Boolean) {
+                        ew.eq(fieldColumn, entry.getValue());
+                    } else {
+                        ew.like(fieldColumn, SqlUtils.filterLikeValue(StrUtil.toString(entry.getValue())));
+                    }
                 }
             }
         });
