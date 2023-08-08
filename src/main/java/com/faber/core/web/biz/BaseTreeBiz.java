@@ -10,6 +10,7 @@ import com.faber.core.annotation.SqlTreeName;
 import com.faber.core.annotation.SqlTreeParentId;
 import com.faber.core.config.mybatis.base.FaBaseMapper;
 import com.faber.core.constant.CommonConstants;
+import com.faber.core.context.BaseContextHandler;
 import com.faber.core.exception.BuzzException;
 import com.faber.core.utils.TreeUtil;
 import com.faber.core.vo.query.QueryParams;
@@ -51,6 +52,13 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
         return super.save(entity);
     }
 
+    @Override
+    public boolean removeById(Serializable id) {
+        // 删除节点，同步删除该节点向下所有的字节点
+        List<T> list = this.getAllChildrenFromNode(id);
+        return super.removeByIds(list.stream().map(i -> this.getEntityId(i)).collect(Collectors.toList()));
+    }
+
     /**
      * 给定选中的value，返回value向上查找的节点路径[1, 1-1, 1-1-1]
      *
@@ -76,6 +84,16 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
 
         list.add(entity);
         return list;
+    }
+
+    public List<T> treePathLineWithCache(Serializable id) {
+        Map<Serializable, List<T>> cache = BaseContextHandler.getCacheMap(getEntityClass().getName() + ".treePathLineWithCache");
+        if (cache.containsKey(id)) {
+            return cache.get(id);
+        }
+        List<T> data = this.treePathLine(id);
+        cache.put(id, data);
+        return data;
     }
 
     /**
@@ -318,6 +336,7 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
             treeNode.setParentId(this.getEntityParentId(entity));
             treeNode.setName(ObjectUtil.toString(this.getEntityName(entity)));
             treeNode.setSort(this.getEntitySortId(entity));
+            treeNode.setLevel(1);
             // 判断节点是否还有子节点
             treeNode.setHasChildren(this.countChildren(beanList, this.getEntityId(entity)) > 0);
             treeNode.setSourceData(entity);

@@ -38,6 +38,7 @@ import java.util.List;
  *         <tr><td>{@link BaseController#removeBatchByIds}</td>     <td>ids批量删除</td></tr>
  *         <tr><td>{@link BaseController#removePer}</td>            <td>id永久删除</td></tr>
  *         <tr><td>{@link BaseController#removePerBatchByIds}</td>  <td>ids批量永久删除</td></tr>
+ *         <tr><td>{@link BaseController#removeByQuery}</td>        <td>通过查询条件删除</td></tr>
  *         <tr><td>{@link BaseController#all}</td>                  <td>获取所有List</td></tr>
  *         <tr><td>{@link BaseController#list}</td>                 <td>获取List，带过滤查询条件</td></tr>
  *         <tr><td>{@link BaseController#mineList}</td>             <td>获取List(限定登录用户创建)，带过滤查询条件</td></tr>
@@ -76,7 +77,7 @@ public class BaseController<Biz extends BaseBiz, Entity, Key extends Serializabl
         return ok(entityList);
     }
 
-    @FaLogOpr(value = "查询", crud = LogCrudEnum.R)
+    @FaLogOpr(value = "id查询", crud = LogCrudEnum.R)
     @RequestMapping(value = "/getById/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Ret<Entity> getById(@PathVariable Key id) {
@@ -161,6 +162,15 @@ public class BaseController<Biz extends BaseBiz, Entity, Key extends Serializabl
     @ResponseBody
     public Ret<Boolean> removePerBatchByIds(@RequestBody List<Key> ids) {
         baseBiz.removePerBatchByIds(ids);
+        return ok();
+    }
+
+    @FaLogOpr(value = "通过查询条件删除", crud = LogCrudEnum.R)
+    @LogNoRet
+    @RequestMapping(value = "/removeByQuery", method = RequestMethod.POST)
+    @ResponseBody
+    public Ret<Boolean> removeByQuery(@RequestBody QueryParams query) {
+        baseBiz.removeByQuery(query);
         return ok();
     }
 

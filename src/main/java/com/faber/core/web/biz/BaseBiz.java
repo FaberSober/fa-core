@@ -52,6 +52,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     /**
      * 在save、updateById之前对bean做一些操作
+     *
      * @param entity
      */
     protected void saveBefore(T entity) {
@@ -65,6 +66,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     @Override
     public boolean saveBatch(Collection<T> entityList) {
+        if (entityList == null || entityList.isEmpty()) return true;
         for (T entity : entityList) {
             saveBefore(entity);
         }
@@ -210,12 +212,12 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
      * @throws IOException
      */
     public void exportTplExcel() throws IOException {
-        List<T> list = Collections.emptyList();
-        FaExcelUtils.sendFileExcel(this.entityClass, list);
+        FaExcelUtils.sendFileExcel(this.entityClass, Collections.emptyList());
     }
 
     /**
      * 在导入Excel的时候，做一些bean属性的校验、补全
+     *
      * @param entity
      */
     protected void saveExcelEntity(T entity) {
@@ -236,23 +238,49 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         }
     }
 
-    public void importExcel(CommonImportExcelReqVo reqVo) {
+    public File getFileById(String fileId) {
         StorageService storageService = SpringUtil.getBean(StorageService.class);
-        File file = storageService.getByFileId(reqVo.getFileId());
+        return storageService.getByFileId(fileId);
+    }
 
+    public void importExcel(CommonImportExcelReqVo reqVo) {
+        File file = getFileById(reqVo.getFileId());
         FaExcelUtils.simpleRead(file, this.entityClass, i -> {
             this.saveExcelEntity(i);
         });
     }
 
+    /**
+     * 根据ID查询实体基础信息
+     *
+     * @param id ID
+     * @return
+     */
     public T getByIdWithCache(Serializable id) {
         Map<Serializable, T> cache = BaseContextHandler.getCacheMap(getEntityClass());
         if (cache.containsKey(id)) {
             return cache.get(id);
         }
-        T user = super.getById(id);
-        cache.put(id, user);
-        return user;
+        T entity = super.getById(id);
+        cache.put(id, entity);
+        return entity;
+    }
+
+    /**
+     * 根据ID查询实体详情
+     *
+     * @param id ID
+     * @return
+     */
+    public T getDetailByIdWithCache(Serializable id) {
+        Map<Serializable, T> cache = BaseContextHandler.getCacheMap(getEntityClass());
+        if (cache.containsKey(id)) {
+            return cache.get(id);
+        }
+        T entity = super.getById(id);
+        decorateOne(entity);
+        cache.put(id, entity);
+        return entity;
     }
 
     public String getCurrentUserId() {
@@ -273,6 +301,11 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         }
     }
 
+    public void removeByQuery(QueryParams query) {
+        QueryWrapper<T> wrapper = parseQuery(query);
+        super.remove(wrapper);
+    }
+
     public String updateValueToStr(Field field, Object value) {
         if (value == null) return "";
         if (IEnum.class.isAssignableFrom(field.getType())) {
@@ -284,6 +317,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     /**
      * 获取最大的排序
+     *
      * @param colName 取最大排序的
      * @return 最大的排序
      */
@@ -296,6 +330,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     /**
      * 返回最上层一条数据，使用limit 1
+     *
      * @param wrapper mybatis-plus wrapper
      * @return 最上层一条数据
      */

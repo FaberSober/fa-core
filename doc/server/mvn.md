@@ -6,7 +6,7 @@
 3. `mvn versions:display-property-updates` scans a project and produces a report of those properties which are used to control artifact versions and which properies have newer versions available.
 
 ## 检查maven是否有新的依赖版本
-```agsl
+```shell
 mvn versions:display-dependency-updates
 ```
 

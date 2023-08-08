@@ -10,3 +10,10 @@ response
 ```java
 HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
 ```
+
+## 获取当前启动环境
+```java
+import cn.hutool.extra.spring.SpringUtil;
+
+SpringUtil.getActiveProfile()
+```

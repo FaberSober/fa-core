@@ -12,6 +12,7 @@ public class TreeNode<T> implements Serializable {
     protected Serializable parentId;
     private String name;
     private Integer sort;
+    private Integer level;
     private boolean hasChildren;
     List<TreeNode<T>> children;
 

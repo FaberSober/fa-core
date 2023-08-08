@@ -1,8 +1,10 @@
 package com.faber.core.config.mybatis.utils;
 
+import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.annotation.IEnum;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.faber.core.annotation.SqlEquals;
 import com.faber.core.annotation.SqlSearch;
@@ -17,10 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 基于MybatisPlus的高级组合查询帮助类
@@ -79,7 +78,7 @@ public class WrapperUtils {
 
                 // TO-DO: 增加注解方式，有的string属性需要强制指定为equals查询
                 Field field = ReflectUtil.getField(clazz, entry.getKey());
-                boolean forceEqual = field != null && field.getAnnotation(SqlEquals.class) != null;
+                boolean forceEqual = judgeFieldEqual(field);
 
 //                if (field == null) {
 //                    log.warn("No field {} Found", entry.getKey());
@@ -90,7 +89,11 @@ public class WrapperUtils {
                 if (forceEqual) {
                     ew.eq(fieldColumn, entry.getValue());
                 } else {
-                    ew.like(fieldColumn, SqlUtils.filterLikeValue(StrUtil.toString(entry.getValue())));
+                    if (entry.getValue() instanceof Boolean) {
+                        ew.eq(fieldColumn, entry.getValue());
+                    } else {
+                        ew.like(fieldColumn, SqlUtils.filterLikeValue(StrUtil.toString(entry.getValue())));
+                    }
                 }
             }
         });
@@ -121,6 +124,25 @@ public class WrapperUtils {
         }
 
         return wrapper;
+    }
+
+    /**
+     * 判断field是否是等于=查询
+     * @param field
+     * @return
+     */
+    private static boolean judgeFieldEqual(Field field) {
+        if (field == null) return false;
+
+        // SqlEquals注解
+        if (field.getAnnotation(SqlEquals.class) != null) return true;
+
+        // Enum枚举类型
+        if (ClassUtil.isEnum(field.getType())) return true;
+
+        if (field.getType() == Date.class) return true;
+
+        return false;
     }
 
     private static List<String> valueToList(Object value) {

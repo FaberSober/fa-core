@@ -129,6 +129,7 @@
             <appender-ref ref="logFileForAdmin"/>
         </logger>
         <logger name="tk.mybatis" level="INFO" />
+        <logger name="cn.easyes" level="INFO" />
 
         <root level="INFO">
             <appender-ref ref="logFile"/>
@@ -145,6 +146,7 @@
             <appender-ref ref="logFileForAdmin"/>
         </logger>
         <logger name="tk.mybatis" level="INFO" />
+        <logger name="cn.easyes" level="INFO" />
 
         <root level="INFO">
             <appender-ref ref="logFile"/>
@@ -161,6 +163,7 @@
             <appender-ref ref="logFileForAdmin"/>
         </logger>
         <logger name="tk.mybatis" level="INFO" />
+        <logger name="cn.easyes" level="DEBUG" />
         <logger name="com.alicp.jetcache" level="INFO" />
 
         <root level="ERROR">

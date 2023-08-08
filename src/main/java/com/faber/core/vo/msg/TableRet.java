@@ -1,8 +1,6 @@
 package com.faber.core.vo.msg;
 
-import com.baomidou.mybatisplus.annotation.IEnum;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.faber.core.utils.FaEnumUtils;
 import com.faber.core.vo.utils.DictOption;
 import com.github.pagehelper.PageInfo;
 

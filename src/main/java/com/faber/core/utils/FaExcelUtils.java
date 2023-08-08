@@ -5,6 +5,7 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.alibaba.excel.write.metadata.WriteSheet;
@@ -19,7 +20,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -38,7 +41,7 @@ public class FaExcelUtils {
 
         FaModalName anno = clazz.getAnnotation(FaModalName.class);
 
-        String fileName = DateUtil.now() + "";
+        String fileName = DateUtil.format(new Date(), "yyyy_MM_dd_HH_mm_ss");
         if (anno != null) {
             fileName = anno.name() + "_" + fileName;
         }
@@ -112,6 +115,20 @@ public class FaExcelUtils {
 
             @Override
             public void invoke(T data, AnalysisContext context) {
+                consumer.accept(data);
+            }
+
+            @Override
+            public void doAfterAllAnalysed(AnalysisContext context) {
+
+            }
+        }).sheet().doRead();
+    }
+
+    public static void simpleRead(File file, Consumer<Map<Integer, Object>> consumer) {
+        EasyExcel.read(file, new ReadListener<Map<Integer, Object>>() {
+            @Override
+            public void invoke(Map<Integer, Object> data, AnalysisContext context) {
                 consumer.accept(data);
             }
 
