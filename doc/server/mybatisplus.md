@@ -1,4 +1,35 @@
 # MyBatis-Plus
+
+## MyBatisPlus批量写入方法saveBatch速度很慢的解决方案
+解决方案很简单，在数据库配置的uri后面加上下面这个属性即可：
+```yaml
+rewriteBatchedStatements=true
+```
+加上之后发现，1w条数据入库也就在几百毫秒左右。
+那么这个参数究竟是干什么用的呢，查阅了一下资料，得到下面这个描述：
+
+> rewriteBatchedStatements 是 MySQL JDBC 驱动程序的一个参数，用于启用或禁用批量更新语句的优化。当该参数设置为 true 时，JDBC 驱动程序会将多个 SQL 语句封装成一条批量更新语句，从而提高更新操作的效率；而当该参数设置为 false 时，JDBC 驱动程序则会将多个 SQL 语句单独发送到数据库服务器，并逐一执行，这种方式比较耗费时间和资源。
+
+相当于这个参数设置为true的时候，执行的sql是类似下面这种形式：
+
+```sql
+insert into t (…) values (…) , (…), (…)
+```
+
+所以，如果自己在xml中写批量插入语句也是可以解决这个问题，例如下面这个写法：
+
+```sql
+<insert id="insertUsers">
+  INSERT INTO user (user_id, user_name)
+  VALUES
+  <foreach collection ="userList" item="user" separator =",">
+    (#{user.userId}, #{user.userName})
+  </foreach>
+</insert>
+```
+
+这样的话，每个xml中都需要写这一段，不用代码生成工具的话，不太友好，所以MyBatisPlus中有一个InsertBatchSomeColumn方法
+
 ## JSON格式数据映射
 参考文件：
 1. `faber-admin/src/main/java/com/faber/api/demo/entity/Student.java`

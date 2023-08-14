@@ -1,0 +1,49 @@
+# DB常见数据库操作
+
+## 从列表里过滤出批量插入、批量更新列表
+
+```java
+// 读取Excel中的内容
+List<WeatherWeatherPointExcelInVo> voList = new ArrayList<>();
+FaExcelUtils.simpleRead(nwpFile, WeatherWeatherPointExcelInVo.class, o -> {
+    if (o.getTime() == null) return;
+    voList.add(o);
+});
+
+// 获取更新时间范围
+WeatherWeatherPointExcelInVo maxTimeVo = voList.stream().max((o1, o2) -> o1.getTime().compareTo(o2.getTime())).get();
+WeatherWeatherPointExcelInVo minTimeVo = voList.stream().min((o1, o2) -> o1.getTime().compareTo(o2.getTime())).get();
+List<WeatherWeatherPoint> dbPointList = lambdaQuery()
+        .ge(WeatherWeatherPoint::getTime, minTimeVo.getTime())
+        .le(WeatherWeatherPoint::getTime, maxTimeVo.getTime())
+        .orderByAsc(WeatherWeatherPoint::getTime)
+        .list();
+
+// 已经存在数据库的键值对
+List<String> existKeyIdList = dbPointList.stream().map(i -> {
+    return DateUtil.formatDateTime(i.getTime());
+}).collect(Collectors.toList());
+
+// 批量导入、更新
+List<WeatherWeatherPoint> saveList = voList.stream()
+        .filter(i -> !existKeyIdList.contains(DateUtil.formatDateTime(i.getTime())))
+        .map(i -> {
+            WeatherWeatherPoint entity = new WeatherWeatherPoint();
+            BeanUtil.copyProperties(i, entity);
+            entity.setFactoryId(factoryId);
+            entity.setPointId(weatherPointId);
+            return entity;
+        }).collect(Collectors.toList());
+
+List<WeatherWeatherPoint> updateList = voList.stream()
+        .filter(i -> existKeyIdList.contains(DateUtil.formatDateTime(i.getTime())))
+        .map(i -> {
+            // 查找存在数据库的数据
+            WeatherWeatherPoint entityDB = CollUtil.findOne(dbPointList, f -> ObjUtil.equals(f.getTime(), i.getTime()));
+            BeanUtil.copyProperties(i, entityDB, "id");
+            return entityDB;
+        }).collect(Collectors.toList());
+
+this.saveBatch(saveList);
+this.updateBatchById(updateList);
+```
