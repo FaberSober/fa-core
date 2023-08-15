@@ -200,7 +200,7 @@
         <dependency>
             <groupId>com.dtflys.forest</groupId>
             <artifactId>forest-spring-boot-starter</artifactId>
-            <version>1.5.28</version>
+            <version>1.5.32</version>
         </dependency>
 
         <dependency>
