@@ -10,11 +10,18 @@ import lombok.NoArgsConstructor;
  * @date 2022/11/28 14:43
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class BaseRet {
 
     private int status = 200;
+    private int code = 200;
     private String message = "";
 
+    public BaseRet() {
+    }
+
+    public BaseRet(int status, String message) {
+        this.status = status;
+        this.code = status;
+        this.message = message;
+    }
 }
