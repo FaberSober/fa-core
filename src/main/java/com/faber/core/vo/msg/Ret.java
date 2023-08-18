@@ -11,16 +11,13 @@ import lombok.Data;
 public class Ret<T> extends BaseRet {
 
     T data;
-    boolean rel;
 
-    public Ret<T> rel(boolean rel) {
-        this.setRel(rel);
+    public Ret<T> rel() {
         return this;
     }
 
 
     public Ret<T> data(T data) {
-        this.setRel(true);
         this.setData(data);
         return this;
     }

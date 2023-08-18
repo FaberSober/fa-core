@@ -15,6 +15,6 @@ import lombok.NoArgsConstructor;
 public class BaseRet {
 
     private int status = 200;
-    private String message;
+    private String message = "";
 
 }

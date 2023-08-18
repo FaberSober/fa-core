@@ -38,7 +38,7 @@ public class BaseResHandler {
     }
 
     protected <T> Ret<T> ok() {
-        return new Ret<T>().rel(true);
+        return new Ret<T>().rel();
     }
 
     protected <T> Ret<T> ok(T data) {
