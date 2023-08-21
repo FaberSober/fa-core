@@ -36,13 +36,23 @@ public class QueryParams implements Serializable {
      */
     private List<ConditionGroup> conditionList;
 
-    public Sorter getSorterInfo() {
-        if (StrUtil.isEmpty(this.sorter)) return null;
-        String[] ss = this.sorter.split(" ");
-        Sorter sorter1 = new Sorter();
-        sorter1.setField(StrUtil.toUnderlineCase(ss[0]));
-        sorter1.setAsc(ss.length > 1 && "asc".equalsIgnoreCase(ss[1]));
-        return sorter1;
+    public List<Sorter> getSorterInfo() {
+        List<Sorter> sorterList = new ArrayList<>();
+
+        if (StrUtil.isEmpty(this.sorter)) return sorterList;
+
+
+        String[] ss0 = this.sorter.split(",");
+        for (String oneSorter : ss0) {
+            String[] ss = oneSorter.split(" ");
+            Sorter sorter1 = new Sorter();
+            sorter1.setField(StrUtil.toUnderlineCase(ss[0]));
+            sorter1.setAsc(ss.length > 1 && "asc".equalsIgnoreCase(ss[1]));
+
+            sorterList.add(sorter1);
+        }
+
+        return sorterList;
     }
 
     public void addConditionGroup(ConditionGroup item) {

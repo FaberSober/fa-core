@@ -118,9 +118,11 @@ public class WrapperUtils {
             }
         }
 
-        Sorter sorter = queryParams.getSorterInfo();
-        if (sorter != null) {
-            wrapper.orderBy(true, sorter.isAsc(), sorter.getField());
+        List<Sorter> sorterList = queryParams.getSorterInfo();
+        if (sorterList != null && !sorterList.isEmpty()) {
+            for (Sorter sorter : sorterList) {
+                wrapper.orderBy(true, sorter.isAsc(), sorter.getField());
+            }
         }
 
         return wrapper;
