@@ -115,6 +115,10 @@ public class FaSetting {
          * 系统启动时扫描任务class并启动
          */
         private Boolean startJobsOnBoot;
+        /**
+         * 系统是否在离线内网环境下运行
+         */
+        private Boolean offline;
     }
 
     /**

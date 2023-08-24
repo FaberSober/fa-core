@@ -2,6 +2,7 @@ package com.faber.core.utils;
 
 
 import cn.hutool.extra.spring.SpringUtil;
+import com.faber.core.constant.FaSetting;
 import com.faber.core.service.IpService;
 import com.faber.core.vo.utils.IpAddr;
 import lombok.extern.java.Log;
@@ -18,6 +19,16 @@ import java.net.UnknownHostException;
  */
 @Slf4j
 public class IpUtils {
+
+    /**
+     * 是否初始化
+     */
+    private static boolean init = false;
+
+    /**
+     * 是否离线。若是，则无法获取IP地址。
+     */
+    private static boolean offline = false;
 
     /**
      * 获取HttpServletRequest访问ip
@@ -71,8 +82,16 @@ public class IpUtils {
      */
     public static IpAddr getIpAddrByApi(String ip) {
         try {
-            IpService ipService = SpringUtil.getBean(IpService.class);
-            return ipService.ipJson(ip);
+            if (!init) {
+                FaSetting faSetting = SpringUtil.getBean(FaSetting.class);
+                offline = faSetting.getConfig().getOffline();
+                init = true;
+            }
+
+            if (!offline) {
+                IpService ipService = SpringUtil.getBean(IpService.class);
+                return ipService.ipJson(ip);
+            }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
