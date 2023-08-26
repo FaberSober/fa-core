@@ -110,15 +110,15 @@ public class FaSetting {
         /**
          * 系统启动时执行数据库初始化脚本
          */
-        private Boolean startDbInitOnBoot;
+        private Boolean startDbInitOnBoot = true;
         /**
          * 系统启动时扫描任务class并启动
          */
-        private Boolean startJobsOnBoot;
+        private Boolean startJobsOnBoot = true;
         /**
          * 系统是否在离线内网环境下运行
          */
-        private Boolean offline;
+        private Boolean offline = false;
     }
 
     /**
