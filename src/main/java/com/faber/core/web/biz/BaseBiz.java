@@ -59,18 +59,18 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
     }
 
     /**
-     * 在save、updateById之后对bean做一些操作
+     * 在save之后对bean做一些操作
      *
      * @param entity
      */
-    protected void saveAfter(T entity) {
+    protected void afterSave(T entity) {
     }
 
     @Override
     public boolean save(T entity) {
         saveBefore(entity);
         boolean flag = super.save(entity);
-        saveAfter(entity);
+        afterSave(entity);
         return flag;
     }
 
@@ -83,11 +83,34 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         return super.saveBatch(entityList);
     }
 
+    /**
+     * 在updateById之后对bean做一些操作
+     *
+     * @param entity
+     */
+    protected void afterUpdate(T entity) {
+    }
+
     @Override
     public boolean updateById(T entity) {
         saveBefore(entity);
         boolean flag = super.updateById(entity);
-        saveAfter(entity);
+        afterUpdate(entity);
+        return flag;
+    }
+
+    /**
+     * 在removeById之后对bean做一些操作
+     *
+     * @param id
+     */
+    protected void afterRemove(Serializable id) {
+    }
+
+    @Override
+    public boolean removeById(Serializable id) {
+        boolean flag = super.removeById(id);
+        afterRemove(id);
         return flag;
     }
 
