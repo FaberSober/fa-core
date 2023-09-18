@@ -120,11 +120,12 @@ public class TnTenantContextHandler {
     /**
      * 代码确认使用admin作为当前线程的用户
      */
-//    public static void useAdmin() {
-//        TenantContextHandler.setUserId("1");
-//        TenantContextHandler.setName("Admin");
-//        TenantContextHandler.setUsername("超级管理员");
-//        TenantContextHandler.setLogin(true);
-//    }
+    public static void useAdmin() {
+        TnTenantContextHandler.setUserId(1L);
+        TnTenantContextHandler.setName("Admin");
+        TnTenantContextHandler.setTenantName("默认厂商");
+        TnTenantContextHandler.setTenantId(1L);
+        TnTenantContextHandler.setLogin(true);
+    }
 
 }
