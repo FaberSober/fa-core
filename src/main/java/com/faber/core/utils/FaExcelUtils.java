@@ -125,6 +125,29 @@ public class FaExcelUtils {
         }).sheet().doRead();
     }
 
+    /**
+     * 简单读取Excel内容
+     * @param file
+     * @param clazz
+     * @param consumer
+     * @param headRowNumber
+     * @param <T>
+     */
+    public static <T> void simpleRead(File file, Class<T> clazz, Consumer<T> consumer, Integer headRowNumber) {
+        EasyExcel.read(file, clazz, new AnalysisEventListener<T>() {
+
+            @Override
+            public void invoke(T data, AnalysisContext context) {
+                consumer.accept(data);
+            }
+
+            @Override
+            public void doAfterAllAnalysed(AnalysisContext context) {
+
+            }
+        }).sheet().headRowNumber(headRowNumber).doRead();
+    }
+
     public static void simpleRead(File file, Consumer<Map<Integer, Object>> consumer) {
         EasyExcel.read(file, new ReadListener<Map<Integer, Object>>() {
             @Override
