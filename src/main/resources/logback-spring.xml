@@ -175,13 +175,14 @@
     </springProfile>
 
     <springProfile name="docker">
-        <logger name="com.faber" level="DEBUG" additivity="false">
+        <logger name="com.faber" level="INFO" additivity="false">
             <appender-ref ref="AsyncConsole"/>
             <appender-ref ref="logFile"/>
             <appender-ref ref="AsyncLogFile"/>
             <appender-ref ref="logFileForAdmin"/>
         </logger>
         <logger name="tk.mybatis" level="INFO" />
+        <logger name="cn.easyes" level="INFO" />
         <logger name="com.alicp.jetcache" level="INFO" />
 
         <root level="ERROR">
