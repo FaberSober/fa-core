@@ -115,6 +115,9 @@ public class FaExcelUtils {
 
             @Override
             public void invoke(T data, AnalysisContext context) {
+                if (data == null) {
+                    return;
+                }
                 consumer.accept(data);
             }
 
