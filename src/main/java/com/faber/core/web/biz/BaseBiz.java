@@ -356,6 +356,21 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
      * @param colName 取最大排序的
      * @return 最大的排序
      */
+    protected Integer getMaxSort(String colName) {
+        QueryWrapper<T> wrapper = new QueryWrapper<>();
+        wrapper.orderByDesc(colName);
+        wrapper.select(String.format("IFNULL(max(%s), -1) as value", colName));
+        List<Map<String, Object>> result = baseMapper.selectMaps(wrapper);
+        return Integer.parseInt(result.get(0).get("value") + "");
+    }
+
+
+    /**
+     * 获取最大的排序
+     *
+     * @param colName 取最大排序的
+     * @return 最大的排序
+     */
     protected Integer getMaxSort(QueryWrapper<T> wrapper, String colName) {
         wrapper.orderByDesc(colName);
         wrapper.select(String.format("IFNULL(max(%s), -1) as value", colName));
