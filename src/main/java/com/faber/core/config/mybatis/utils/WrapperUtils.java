@@ -105,7 +105,7 @@ public class WrapperUtils {
                     SqlSearch annotation = field.getAnnotation(SqlSearch.class);
                     if (annotation != null) {
                         String fieldColumn = StrUtil.toUnderlineCase(field.getName());
-                        ew.like(fieldColumn, SqlUtils.filterLikeValue(queryParams.getSearch()));
+                        ew.or().like(fieldColumn, SqlUtils.filterLikeValue(queryParams.getSearch()));
                     }
                 }
             });
