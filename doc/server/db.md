@@ -47,3 +47,9 @@ List<WeatherWeatherPoint> updateList = voList.stream()
 this.saveBatch(saveList);
 this.updateBatchById(updateList);
 ```
+
+## bean属性设置为null，mybatis-plus也会强制更新设置
+```java
+@TableField(updateStrategy = FieldStrategy.IGNORED) // 设置字段策略为：忽略判断
+private Date planProdDate;
+```
