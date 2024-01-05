@@ -23,6 +23,14 @@ public class JsonUtilsTest {
         System.out.println(array.toString());
     }
 
+    @Test
+    public void testJsonArrayToList() {
+        JSONArray array = JSONUtil.parseArray("[{\"name\":\"bar1\"},{\"name\":\"bar2\"},{\"name\":\"bar3\"}]");
+
+        List<Foo> list = JSONUtil.toList(array, Foo.class);
+        System.out.println(list.toString());
+    }
+
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
