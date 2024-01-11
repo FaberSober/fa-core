@@ -7,6 +7,7 @@ public class CommonConstants {
 
     // ---------------- 用户token异常 ----------------
     public static final Integer EX_USER_INVALID_CODE = 40101;
+    public static final Integer EX_USER_INVALID_DEVICE_CODE = 40102;
     public static final Integer EX_USER_PASS_INVALID_CODE = 40001;
 
     // ---------------- 用户无权访问 ----------------
@@ -42,9 +43,15 @@ public class CommonConstants {
 
     // ---------------- Header自定义头 ----------------
     /**
-     * 添加到请求的Header中，标识请求来源
+     * 添加到请求的Header中，标识请求来源：FaWeb/FaApp。{@link FaFrom}
      */
     public static final String FA_FROM = "FaFrom";
+
+
+    public static final class FaFrom {
+        public static final String FaWeb = "FaWeb";
+        public static final String FaApp = "FaApp";
+    }
 
     /**
      * 添加到请求的Header中，标识客户端版本号
@@ -55,6 +62,11 @@ public class CommonConstants {
      * 添加到请求的Header中，标识客户端版本名
      */
     public static final String FA_VERSION_NAME = "FaVersionName";
+
+    /**
+     * 添加到请求的Header中，标识客户端APP的设备ID
+     */
+    public static final String FA_APP_DEVICE_ID = "FaAppDeviceId";
 
     /**
      * 租户-选中的企业ID
