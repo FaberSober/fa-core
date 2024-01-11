@@ -5,10 +5,7 @@ import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
 import com.alibaba.excel.converters.DefaultConverterLoader;
 import com.baomidou.mybatisplus.annotation.IEnum;
-import com.faber.core.config.easyexcel.converter.BaseEnumConverter;
-import com.faber.core.config.easyexcel.converter.FaJsonObjConverter;
-import com.faber.core.config.easyexcel.converter.ListConverter;
-import com.faber.core.config.easyexcel.converter.LocalDateTimeConverter;
+import com.faber.core.config.easyexcel.converter.*;
 import com.faber.core.config.easyexcel.type.FaJsonObj;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,16 +28,19 @@ public class MyEasyExcelConverterLoader {
 
         LocalDateTimeConverter localDateConverter = new LocalDateTimeConverter();
         BaseEnumConverter baseEnumConverter = new BaseEnumConverter();
+        FaBooleanStringConverter faBooleanStringConverter = new FaBooleanStringConverter();
         FaJsonObjConverter faJsonObjConverter = new FaJsonObjConverter();
         ListConverter listConverter = new ListConverter();
 
         Map<ConverterKeyBuild.ConverterKey, Converter<?>> defaultWriteConverter = DefaultConverterLoader.loadDefaultWriteConverter();
         defaultWriteConverter.put(ConverterKeyBuild.buildKey(localDateConverter.supportJavaTypeKey()), localDateConverter);
         defaultWriteConverter.put(ConverterKeyBuild.buildKey(listConverter.supportJavaTypeKey()), listConverter);
+        defaultWriteConverter.put(ConverterKeyBuild.buildKey(faBooleanStringConverter.supportJavaTypeKey()), faBooleanStringConverter);
 
         Map<ConverterKeyBuild.ConverterKey, Converter<?>> allConverter = DefaultConverterLoader.loadAllConverter();
         allConverter.put(ConverterKeyBuild.buildKey(localDateConverter.supportJavaTypeKey(), localDateConverter.supportExcelTypeKey()), localDateConverter);
         allConverter.put(ConverterKeyBuild.buildKey(listConverter.supportJavaTypeKey(), listConverter.supportExcelTypeKey()), listConverter);
+        allConverter.put(ConverterKeyBuild.buildKey(faBooleanStringConverter.supportJavaTypeKey(), faBooleanStringConverter.supportExcelTypeKey()), faBooleanStringConverter);
 
         // 扫描com.faber包下的枚举类
         ClassUtil.scanPackageBySuper("com.faber", IEnum.class).forEach((clazz -> {
