@@ -17,6 +17,7 @@ public class FaSetting {
 
     private Jwt jwt;
     private Api api;
+    private App app;
     private File file;
     private Qiniu qiniu;
     private Amap amap;
@@ -44,6 +45,17 @@ public class FaSetting {
     @Data
     public static class Api {
         private String tokenApiHeader;
+    }
+
+    /**
+     * APP配置
+     */
+    @Data
+    public static class App {
+        /**
+         * 设备首次注册后是否允许访问
+         */
+        private boolean deviceDefaultAllow = true;
     }
 
     /**
