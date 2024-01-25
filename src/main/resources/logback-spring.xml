@@ -130,6 +130,7 @@
         </logger>
         <logger name="tk.mybatis" level="INFO" />
         <logger name="cn.easyes" level="INFO" />
+        <logger name="com.alicp.jetcache" level="WARN" />
 
         <root level="INFO">
             <appender-ref ref="logFile"/>
