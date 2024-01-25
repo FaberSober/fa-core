@@ -209,6 +209,33 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
         return this.listToTree(beanList, CommonConstants.ROOT + "");
     }
 
+    /**
+     * 所有树到指定层级。TODO：修改为
+     *
+     * @param level 水平
+     * @return {@link List}<{@link TreeNode}<{@link T}>>
+     */
+    public List<TreeNode<T>> allTreeToLevel(int level) {
+        List<TreeNode<T>> allTree = this.allTree();
+        dropLevel(allTree, level);
+        return allTree;
+    }
+    
+    private void dropLevel(List<TreeNode<T>> tree, int level) {
+        if (tree == null || tree.isEmpty()) {
+            return;
+        }
+        for (TreeNode<T> node : tree) {
+            if (node.getLevel() < level) {
+                dropLevel(node.getChildren(), level);
+            }
+            if (node.getLevel() == level && node.getChildren() != null) {
+                node.setHasChildren(false);
+                node.setChildren(null);
+            }
+        }
+    }
+
     public List<TreeNode<T>> getTree(QueryParams query) {
         QueryWrapper<T> wrapper = parseQuery(query);
         this.enhanceTreeQuery(wrapper);

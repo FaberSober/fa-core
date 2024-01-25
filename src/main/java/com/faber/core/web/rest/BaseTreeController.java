@@ -1,33 +1,35 @@
 package com.faber.core.web.rest;
 
+import cn.hutool.core.map.MapUtil;
 import com.faber.core.annotation.FaLogOpr;
 import com.faber.core.annotation.LogNoRet;
 import com.faber.core.enums.LogCrudEnum;
-import com.faber.core.web.biz.BaseTreeBiz;
 import com.faber.core.vo.msg.Ret;
+import com.faber.core.vo.query.QueryParams;
 import com.faber.core.vo.tree.TreeNode;
 import com.faber.core.vo.tree.TreePathVo;
 import com.faber.core.vo.tree.TreePosChangeVo;
-import com.faber.core.vo.query.QueryParams;
+import com.faber.core.web.biz.BaseTreeBiz;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <h2>通用Tree形结构数据的Controller接口父类，包含基本的方法：</h2>
  * <h3>1. 一次性返回所有的节点，适用于节点总数较少的情况，如：节点查询</h3>
  * 1. {@link BaseTreeController#allTree} - 获取所有节点Tree<br/>
- * 1. {@link BaseTreeController#getTree} - 获取指定节点Tree<br/>
- * 2. {@link BaseTreeController#allTreeFromNode} - 从指定节点，返回向下获取所有节点Tree<br/>
+ * 2. {@link BaseTreeController#getTree} - 获取指定节点Tree<br/>
+ * 3. {@link BaseTreeController#allTreeFromNode} - 从指定节点，返回向下获取所有节点Tree<br/>
  * <br/>
  *
  * <h3>2. 一次只返回当前层级的节点List，适用于节点总数很多的情况，如：地区查询</h3>
  * 1. {@link BaseTreeController#treePathLine} - 给定选中的value，返回value向上查找的节点路径xxx<br/>
  * 2. {@link BaseTreeController#treeListLayer} - 给定parentId，返回当前层级的节点List<br/>
- * 2. {@link BaseTreeController#treeFindPath} - 给定选中的value，返回value向上查找的节点路径xxx，并返回路径xxx的层级的Tree<br/>
+ * 3. {@link BaseTreeController#treeFindPath} - 给定选中的value，返回value向上查找的节点路径xxx，并返回路径xxx的层级的Tree<br/>
  * <br/>
  *
  * <h3>3. 其他帮助方法</h3>
@@ -91,7 +93,12 @@ public abstract class BaseTreeController<Biz extends BaseTreeBiz, Entity, Key ex
     @LogNoRet
     @RequestMapping(value = "/allTree", method = RequestMethod.GET)
     @ResponseBody
-    public Ret<List<TreeNode<Entity>>> allTree() {
+    public Ret<List<TreeNode<Entity>>> allTree(@RequestParam Map<String, Object> params) {
+        if (params.containsKey("level")) {
+            int level = MapUtil.getInt(params, "level");
+            List<TreeNode<Entity>> treeList = baseBiz.allTreeToLevel(level);
+            return ok(treeList);
+        }
         List<TreeNode<Entity>> treeList = baseBiz.allTree();
         return ok(treeList);
     }

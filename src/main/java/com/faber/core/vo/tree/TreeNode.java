@@ -11,8 +11,14 @@ public class TreeNode<T> implements Serializable {
     protected Serializable id;
     protected Serializable parentId;
     private String name;
+
     private Integer sort;
+
+    /**
+     * 层级：从1开始
+     */
     private Integer level;
+
     private boolean hasChildren;
     List<TreeNode<T>> children;
 
