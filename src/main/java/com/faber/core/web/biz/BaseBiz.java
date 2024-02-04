@@ -50,6 +50,15 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     private ConfigSceneService configSceneService;
 
+
+    /**
+     * 在save、update之后做一些同步数据操作
+     *
+     * @param entity
+     */
+    protected void afterChange(T entity) {
+    }
+
     /**
      * 在save、updateById之前对bean做一些操作
      *
@@ -71,6 +80,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         saveBefore(entity);
         boolean flag = super.save(entity);
         afterSave(entity);
+        afterChange(entity);
         return flag;
     }
 
@@ -96,6 +106,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         saveBefore(entity);
         boolean flag = super.updateById(entity);
         afterUpdate(entity);
+        afterChange(entity);
         return flag;
     }
 
