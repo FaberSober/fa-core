@@ -16,10 +16,15 @@ public class Ret<T> extends BaseRet {
         return this;
     }
 
+    public static Ret ok() {
+        Ret ret = new Ret();
+        return ret;
+    }
 
-    public Ret<T> data(T data) {
-        this.setData(data);
-        return this;
+    public static Ret data(Object data) {
+        Ret ret = new Ret();
+        ret.setData(data);
+        return ret;
     }
 
 }

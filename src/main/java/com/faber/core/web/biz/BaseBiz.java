@@ -1,5 +1,6 @@
 package com.faber.core.web.biz;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ReflectUtil;
@@ -330,7 +331,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
     }
 
     public String getCurrentUserId() {
-        return BaseContextHandler.getUserId();
+        return StpUtil.getLoginIdAsString();
     }
 
     public void removePerById(Serializable id) {

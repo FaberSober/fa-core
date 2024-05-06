@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.faber</groupId>
         <artifactId>fa-admin-web</artifactId>
-        <version>3.0-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -16,6 +16,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -61,6 +62,20 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
+        <!-- Sa-Token 权限认证，在线文档：https://sa-token.cc -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-spring-boot-starter</artifactId>
+            <version>${sa-token.version}</version>
+        </dependency>
+
+        <!-- Sa-Token整合 Redis (使用jackson序列化方式) -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-redis-jackson</artifactId>
+            <version>${sa-token.version}</version>
+        </dependency>
+
         <!-- 集成Validator校验框架 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -82,26 +97,26 @@
         <dependency>
             <groupId>com.alicp.jetcache</groupId>
             <artifactId>jetcache-starter-redisson</artifactId>
-            <version>2.7.2</version>
+            <version>2.7.5</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.esotericsoftware.kryo/kryo5 -->
         <dependency>
             <groupId>com.esotericsoftware.kryo</groupId>
             <artifactId>kryo5</artifactId>
-            <version>5.4.0</version>
+            <version>5.5.0</version>
         </dependency>
 
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.5.3.1</version>
+            <version>3.5.6</version>
         </dependency>
 
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>
-            <version>1.4.6</version>
+            <version>2.1.0</version>
         </dependency>
 
         <!-- 目前jsqlparser 4.5版本和mybatisplus同时使用有bug，需要使用4.4 -->
@@ -116,7 +131,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
-            <version>1.2.15</version>
+            <version>1.2.22</version>
         </dependency>
 
         <dependency>
@@ -132,7 +147,7 @@
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
-            <version>2.3.2</version>
+            <version>2.5.0-rc1</version>
         </dependency>
 
         <!-- netty-socketio -->
@@ -147,14 +162,14 @@
         <dependency>
             <groupId>com.qiniu</groupId>
             <artifactId>qiniu-java-sdk</artifactId>
-            <version>7.12.1</version>
+            <version>7.15.0</version>
         </dependency>
 
         <!-- 阿里云OSS sdk -->
         <dependency>
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>
-            <version>3.16.0</version>
+            <version>3.17.4</version>
         </dependency>
 
         <!--fastjson数据配置start-->
@@ -167,13 +182,13 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
-            <version>3.3.2</version>
+            <version>3.3.4</version>
         </dependency>
 
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.8.11</version>
+            <version>5.8.27</version>
         </dependency>
 
         <dependency>
@@ -186,21 +201,21 @@
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15to18</artifactId>
-            <version>1.72</version>
+            <version>1.78</version>
         </dependency>
 
         <!-- Oshi是Java的免费基于JNA的操作系统和硬件信息库，Github地址是：https://github.com/oshi/oshi -->
         <dependency>
             <groupId>com.github.oshi</groupId>
             <artifactId>oshi-core</artifactId>
-            <version>6.4.0</version>
+            <version>6.5.0</version>
         </dependency>
 
         <!-- 声明式HTTP客户端框架: https://forest.dtflyx.com/ -->
         <dependency>
             <groupId>com.dtflys.forest</groupId>
             <artifactId>forest-spring-boot-starter</artifactId>
-            <version>1.5.32</version>
+            <version>1.5.36</version>
         </dependency>
 
         <dependency>
@@ -212,26 +227,26 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.12.0</version>
+            <version>3.14.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
-            <version>4.4</version>
+            <version>4.5.0-M1</version>
         </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
+            <version>2.16.1</version>
         </dependency>
 
         <!-- hutool ftp 下载文件所需包 -->
         <dependency>
             <groupId>commons-net</groupId>
             <artifactId>commons-net</artifactId>
-            <version>3.6</version>
+            <version>3.10.0</version>
         </dependency>
 
         <!-- spring-file-storage: https://spring-file-storage.xuyanwu.cn/ -->
@@ -245,7 +260,7 @@
         <dependency>
             <groupId>com.yomahub</groupId>
             <artifactId>tlog-all-spring-boot-starter</artifactId>
-            <version>1.5.0</version>
+            <version>1.5.2</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/cn.smallbun.screw/screw-core -->

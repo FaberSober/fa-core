@@ -48,7 +48,7 @@ public class FaResourceUtils {
 
         return getResourceString(resource);
         // 以下的方法，在打包后，取jar内部jar会报错
-        // class path resource [sql/1.0.0_base_data.sql] cannot be resolved to absolute file path because it does not reside in the file system: jar:file:/opt/kgcesi-v3/fa-admin.jar!/BOOT-INF/lib/fa-base-3.0-SNAPSHOT.jar!/sql/1.0.0_base_data.sql
+        // class path resource [sql/1.0.0_base_data.sql] cannot be resolved to absolute file path because it does not reside in the file system: jar:file:/opt/kgcesi-v3/fa-admin.jar!/BOOT-INF/lib/fa-base-1.0.0-SNAPSHOT.jar!/sql/1.0.0_base_data.sql
 //        File file = ResourceUtils.getFile(resourceLocation);
 //        return FileUtil.readString(file, StandardCharsets.UTF_8);
     }

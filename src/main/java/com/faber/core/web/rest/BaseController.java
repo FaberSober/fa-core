@@ -222,7 +222,7 @@ public class BaseController<Biz extends BaseBiz, Entity, Key extends Serializabl
     @RequestMapping(value = "/minePage", method = RequestMethod.POST)
     @ResponseBody
     public TableRet<Entity> minePage(@RequestBody QueryParams query) {
-        query.getQuery().put("crtUser", getCurrentUserId());
+        query.getQuery().put("crtUser", getLoginUserId());
         return baseBiz.selectPageByQuery(query);
     }
 

@@ -13,6 +13,10 @@ public class FaKeyUtils {
         return "login:token:" + token;
     }
 
+    public static String getRefreshTokenKey(String token) {
+        return "login:refresh:token:" + token;
+    }
+
     public static String genUUID() {
         return UUID.fastUUID().toString(true);
     }

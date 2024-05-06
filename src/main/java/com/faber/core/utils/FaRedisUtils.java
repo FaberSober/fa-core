@@ -23,11 +23,11 @@ public class FaRedisUtils {
     @Autowired
     private RedissonClient redisson;
 
-    @Value("${spring.redis.sysName}")
-    private String redisKeySysName;
+    @Value("${spring.redis.prefix}")
+    private String redisPrefix;
 
     public String buildKey(String key) {
-        return redisKeySysName + ":" + key;
+        return redisPrefix + ":" + key;
     }
 
     public void set(String key, String value) {
