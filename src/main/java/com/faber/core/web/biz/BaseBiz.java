@@ -331,7 +331,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
     }
 
     public String getCurrentUserId() {
-        return StpUtil.getLoginIdAsString();
+        return BaseContextHandler.getUserId();
     }
 
     public void removePerById(Serializable id) {
