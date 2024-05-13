@@ -276,6 +276,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         String keyProperty = tableInfo.getKeyProperty();
         Assert.notEmpty(keyProperty, "error: can not execute. because can not find column for id from entity!");
 
+
         Object idVal = tableInfo.getPropertyValue(entity, tableInfo.getKeyProperty());
         T dbEntity = this.getById((Serializable) idVal);
         if (dbEntity == null) {
@@ -292,9 +293,11 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     public void importExcel(CommonImportExcelReqVo reqVo) {
         File file = getFileById(reqVo.getFileId());
+        List<T> saveList = new ArrayList<>();
         FaExcelUtils.simpleRead(file, this.entityClass, i -> {
-            this.saveExcelEntity(i);
+            saveList.add(i);
         });
+        this.saveOrUpdateBatch(saveList);
     }
 
     /**
