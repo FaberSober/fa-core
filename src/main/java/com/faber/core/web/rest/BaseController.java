@@ -56,7 +56,7 @@ import java.util.List;
  * @param <Entity>
  */
 @Slf4j
-public class BaseController<Biz extends BaseBiz, Entity, Key extends Serializable> extends BaseResHandler {
+public abstract class BaseController<Biz extends BaseBiz, Entity, Key extends Serializable> extends BaseResHandler {
 
     @Autowired
     protected Biz baseBiz;
