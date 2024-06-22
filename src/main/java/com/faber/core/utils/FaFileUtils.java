@@ -1,6 +1,7 @@
 package com.faber.core.utils;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.system.ApplicationHome;
@@ -386,6 +387,18 @@ public class FaFileUtils {
      */
     public static boolean isImg(String fileExt) {
         return IMG_EXTS.contains(fileExt.toLowerCase());
+    }
+
+    public static void removeFileUtf8bom(String file) {
+        String content = FileUtil.readUtf8String(file);
+        FileUtil.writeUtf8String(removeUTF8BOM(content), file);
+    }
+
+    private static String removeUTF8BOM(String s) {
+        if (s.startsWith("\uFEFF")) {
+            s = s.substring(1);
+        }
+        return s;
     }
 
 }
