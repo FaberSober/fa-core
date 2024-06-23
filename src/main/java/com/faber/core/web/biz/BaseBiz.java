@@ -6,6 +6,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import cn.xuyanwu.spring.file.storage.FileInfo;
 import com.baomidou.mybatisplus.annotation.IEnum;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
@@ -289,6 +290,11 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
     public File getFileById(String fileId) {
         StorageService storageService = SpringUtil.getBean(StorageService.class);
         return storageService.getByFileId(fileId);
+    }
+
+    public FileInfo getFileInfoById(String fileId) {
+        StorageService storageService = SpringUtil.getBean(StorageService.class);
+        return storageService.getFileInfoById(fileId);
     }
 
     public void importExcel(CommonImportExcelReqVo reqVo) {

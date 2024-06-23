@@ -1,5 +1,7 @@
 package com.faber.core.service;
 
+import cn.xuyanwu.spring.file.storage.FileInfo;
+
 import java.io.File;
 
 /**
@@ -21,5 +23,7 @@ public interface StorageService {
      * @return 文件对象File
      */
     File getByFileId(String fileId);
+
+    FileInfo getFileInfoById(String fileId);
 
 }
