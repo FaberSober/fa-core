@@ -109,10 +109,17 @@
 
         <!-- JetCache is a Java cache framework: https://github.com/alibaba/jetcache -->
         <!-- https://mvnrepository.com/artifact/com.alicp.jetcache/jetcache-starter-redisson -->
+<!--        <dependency>-->
+<!--            <groupId>com.alicp.jetcache</groupId>-->
+<!--            <artifactId>jetcache-starter-redisson</artifactId>-->
+<!--            <version>2.7.5</version>-->
+<!--        </dependency>-->
+
         <dependency>
-            <groupId>com.alicp.jetcache</groupId>
-            <artifactId>jetcache-starter-redisson</artifactId>
-            <version>2.7.5</version>
+            <groupId>org.redisson</groupId>
+            <!-- for Spring Data Redis v.3.3.x -->
+            <artifactId>redisson-spring-data-33</artifactId>
+            <version>3.35.0</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.esotericsoftware.kryo/kryo5 -->
