@@ -250,7 +250,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
      */
     public void exportExcel(QueryParams query) throws IOException {
         List<T> list = this.list(query);
-        FaExcelUtils.sendFileExcel(this.entityClass, list);
+        FaExcelUtils.sendFileExcel(this.getEntityClass(), list);
     }
 
     /**
@@ -259,7 +259,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
      * @throws IOException
      */
     public void exportTplExcel() throws IOException {
-        FaExcelUtils.sendFileExcel(this.entityClass, Collections.emptyList());
+        FaExcelUtils.sendFileExcel(this.getEntityClass(), Collections.emptyList());
     }
 
     /**
@@ -270,7 +270,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
     protected void saveExcelEntity(T entity) {
         if (entity == null) return;
 
-        TableInfo tableInfo = TableInfoHelper.getTableInfo(this.entityClass);
+        TableInfo tableInfo = TableInfoHelper.getTableInfo(this.getEntityClass());
         Assert.notNull(tableInfo, "error: can not execute. because can not find cache of TableInfo for entity!");
 
         String keyProperty = tableInfo.getKeyProperty();
@@ -299,7 +299,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
     public void importExcel(CommonImportExcelReqVo reqVo) {
         File file = getFileById(reqVo.getFileId());
         List<T> saveList = new ArrayList<>();
-        FaExcelUtils.simpleRead(file, this.entityClass, i -> {
+        FaExcelUtils.simpleRead(file, this.getEntityClass(), i -> {
             saveList.add(i);
         });
         this.saveOrUpdateBatch(saveList);

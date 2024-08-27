@@ -31,14 +31,14 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
+<!--                <exclusion>-->
+<!--                    <groupId>org.springframework.boot</groupId>-->
+<!--                    <artifactId>spring-boot-starter-tomcat</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.springframework.boot</groupId>-->
+<!--                    <artifactId>spring-boot-starter-logging</artifactId>-->
+<!--                </exclusion>-->
 
                 <!-- 使用easy-es注释：https://www.easy-es.cn/pages/4c01d7/#es%E7%89%88%E6%9C%AC%E5%8F%8Aspringboot%E7%89%88%E6%9C%AC -->
 <!--                <exclusion>-->
@@ -52,10 +52,10 @@
             </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-undertow</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-undertow</artifactId>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -91,10 +91,17 @@
         </dependency>
 
         <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
 
+        <!-- JetCache is a Java cache framework: https://github.com/alibaba/jetcache -->
         <!-- https://mvnrepository.com/artifact/com.alicp.jetcache/jetcache-starter-redisson -->
         <dependency>
             <groupId>com.alicp.jetcache</groupId>
@@ -112,7 +119,15 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.5.6</version>
+            <version>3.5.7</version>
+        </dependency>
+
+        <!-- 注意： SpringBoot 3.0 需要 mybatis-spring 3.0.X 版本，否则会报如下错误：Invalid value type for attribute 'factoryBeanObjectType'‘': java.lang.String -->
+        <!-- https://mvnrepository.com/artifact/org.mybatis/mybatis-spring -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+            <version>3.0.4</version>
         </dependency>
 
         <dependency>
@@ -133,7 +148,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
-            <version>1.2.22</version>
+            <version>1.2.23</version>
         </dependency>
 
         <dependency>
@@ -193,6 +208,7 @@
             <version>5.8.27</version>
         </dependency>
 
+        <!-- java ssh tools: http://www.jcraft.com/jsch/ -->
         <dependency>
             <groupId>com.jcraft</groupId>
             <artifactId>jsch</artifactId>
@@ -210,13 +226,13 @@
         <dependency>
             <groupId>com.github.oshi</groupId>
             <artifactId>oshi-core</artifactId>
-            <version>6.5.0</version>
+            <version>6.6.3</version>
         </dependency>
 
         <!-- 声明式HTTP客户端框架: https://forest.dtflyx.com/ -->
         <dependency>
             <groupId>com.dtflys.forest</groupId>
-            <artifactId>forest-spring-boot-starter</artifactId>
+            <artifactId>forest-spring-boot3-starter</artifactId>
             <version>1.5.36</version>
         </dependency>
 
@@ -265,6 +281,7 @@
             <version>1.5.2</version>
         </dependency>
 
+        <!-- 数据库表结构文档生成器: https://github.com/pingfangushi/screw -->
         <!-- https://mvnrepository.com/artifact/cn.smallbun.screw/screw-core -->
         <dependency>
             <groupId>cn.smallbun.screw</groupId>
