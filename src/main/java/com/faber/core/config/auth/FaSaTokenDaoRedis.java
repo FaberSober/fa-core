@@ -19,7 +19,7 @@ import java.util.List;
 @Component
 public class FaSaTokenDaoRedis extends SaTokenDaoRedisJackson {
 
-    @Value("${spring.redis.prefix}")
+    @Value("${spring.data.redis.prefix}")
     private String redisPrefix;
 
     private String getKey(String key) {
