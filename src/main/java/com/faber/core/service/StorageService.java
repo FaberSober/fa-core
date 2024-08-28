@@ -1,6 +1,6 @@
 package com.faber.core.service;
 
-import cn.xuyanwu.spring.file.storage.FileInfo;
+import org.dromara.x.file.storage.core.FileInfo;
 
 import java.io.File;
 

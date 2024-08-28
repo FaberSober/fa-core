@@ -187,14 +187,6 @@
             <version>1.7.22</version>
         </dependency>
 
-        <!-- 七牛云sdk -->
-        <!-- 这里的version指定了一个版本范围，每次更新pom.xml的时候会尝试去下载7.2.x版本中的最新版本，你可以手动指定一个固定的版本。 -->
-        <dependency>
-            <groupId>com.qiniu</groupId>
-            <artifactId>qiniu-java-sdk</artifactId>
-            <version>7.15.0</version>
-        </dependency>
-
         <!-- 阿里云OSS sdk -->
         <dependency>
             <groupId>com.aliyun.oss</groupId>
@@ -282,9 +274,17 @@
 
         <!-- spring-file-storage: https://spring-file-storage.xuyanwu.cn/ -->
         <dependency>
-            <groupId>cn.xuyanwu</groupId>
-            <artifactId>spring-file-storage</artifactId>
-            <version>1.0.3</version>
+            <groupId>org.dromara.x-file-storage</groupId>
+            <artifactId>x-file-storage-spring</artifactId>
+            <version>2.2.1</version>
+        </dependency>
+
+        <!-- 七牛云sdk -->
+        <!-- 这里的version指定了一个版本范围，每次更新pom.xml的时候会尝试去下载7.2.x版本中的最新版本，你可以手动指定一个固定的版本。 -->
+        <dependency>
+            <groupId>com.qiniu</groupId>
+            <artifactId>qiniu-java-sdk</artifactId>
+            <version>7.15.1</version>
         </dependency>
 
         <!-- 日志插件: https://tlog.yomahub.com/ -->
