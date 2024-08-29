@@ -41,6 +41,7 @@ import java.util.List;
  *         <tr><td>{@link BaseController#removeByQuery}</td>        <td>通过查询条件删除</td></tr>
  *         <tr><td>{@link BaseController#all}</td>                  <td>获取所有List</td></tr>
  *         <tr><td>{@link BaseController#list}</td>                 <td>获取List，带过滤查询条件</td></tr>
+ *         <tr><td>{@link BaseController#listN}</td>                <td>获取第N个，带过滤查询条件</td></tr>
  *         <tr><td>{@link BaseController#mineList}</td>             <td>获取List(限定登录用户创建)，带过滤查询条件</td></tr>
  *         <tr><td>{@link BaseController#count}</td>                <td>过滤条件统计数量</td></tr>
  *         <tr><td>{@link BaseController#page}</td>                 <td>分页获取</td></tr>
@@ -189,6 +190,15 @@ public abstract class BaseController<Biz extends BaseBiz, Entity, Key extends Se
     @ResponseBody
     public Ret<List<Entity>> list(@RequestBody QueryParams query) {
         List<Entity> list = baseBiz.list(query);
+        return ok(list);
+    }
+
+    @FaLogOpr(value = "列表获取", crud = LogCrudEnum.R)
+    @LogNoRet
+    @RequestMapping(value = "/listN", method = RequestMethod.POST)
+    @ResponseBody
+    public Ret<List<Entity>> listN(@RequestParam("topN") Integer topN, @RequestBody QueryParams query) {
+        List<Entity> list = baseBiz.listN(query, topN);
         return ok(list);
     }
 

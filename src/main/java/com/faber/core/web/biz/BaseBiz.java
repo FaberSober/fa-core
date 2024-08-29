@@ -233,13 +233,20 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         List<T> allList = new ArrayList<>();
 
         for (int i = 1; i <= page; i++) {
-            PageInfo<T> info = PageHelper.startPage(i, DEFAULT_PAGE_SIZE)
-                    .doSelectPageInfo(() -> super.list(wrapper));
+            PageInfo<T> info = PageHelper.startPage(i, DEFAULT_PAGE_SIZE).doSelectPageInfo(() -> super.list(wrapper));
             allList.addAll(info.getList());
         }
 
         this.decorateList(allList);
         return allList;
+    }
+
+    public List<T> listN(QueryParams query, Integer topN) {
+        QueryWrapper<T> wrapper = parseQuery(query);
+        wrapper.last("limit " + topN);
+        List<T> list = super.list(wrapper);
+        this.decorateList(list);
+        return list;
     }
 
     /**
@@ -408,8 +415,12 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
      * @param wrapper mybatis-plus wrapper
      * @return 最上层一条数据
      */
-    protected T getTop(LambdaQueryChainWrapper<T> wrapper) {
+    public T getTop(LambdaQueryChainWrapper<T> wrapper) {
         return wrapper.last("limit 1").one();
+    }
+
+    public T getTopN(LambdaQueryChainWrapper<T> wrapper, Integer n) {
+        return wrapper.last("limit " + n).one();
     }
 
 }

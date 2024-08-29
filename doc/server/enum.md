@@ -27,5 +27,21 @@ public enum BoolEnum implements IEnum<Integer> {
         this.desc = desc;
     }
 
+    public static BoolEnum fromValue(Integer value) {
+        BoolEnum result = ArrayUtil.firstMatch(i -> ObjUtil.equals(i.value, value), values());
+        if (result == null) {
+            throw new IllegalArgumentException("Invalid BoolEnum value: " + value);
+        }
+        return result;
+    }
+
+    public static BoolEnum fromDesc(String value) {
+        BoolEnum result = ArrayUtil.firstMatch(i -> ObjUtil.equals(i.desc, value), values());
+        if (result == null) {
+            throw new IllegalArgumentException("Invalid BoolEnum desc: " + value);
+        }
+        return result;
+    }
+
 }
 ```
