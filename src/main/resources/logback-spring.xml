@@ -166,6 +166,8 @@
         <logger name="tk.mybatis" level="INFO" />
         <logger name="cn.easyes" level="DEBUG" />
         <logger name="com.alicp.jetcache" level="INFO" />
+        <logger name="org.springframework.ai.chat.client.advisor" level="DEBUG" />
+        <logger name="org.springframework.ai.vectorstore" level="DEBUG" />
 
         <root level="ERROR">
             <appender-ref ref="AsyncConsole"/>
