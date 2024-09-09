@@ -6,6 +6,7 @@ import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.baomidou.mybatisplus.annotation.IEnum;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
@@ -13,6 +14,10 @@ import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.faber.core.annotation.SqlSorter;
+import com.faber.core.annotation.SqlTreeId;
+import com.faber.core.annotation.SqlTreeName;
+import com.faber.core.annotation.SqlTreeParentId;
 import com.faber.core.config.mybatis.base.FaBaseMapper;
 import com.faber.core.config.mybatis.utils.WrapperUtils;
 import com.faber.core.context.BaseContextHandler;
@@ -35,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -117,6 +123,12 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
      * @param id
      */
     protected void afterRemove(Serializable id) {
+    }
+
+    protected void afterRemove(List<Serializable> ids) {
+        for (Serializable id : ids) {
+            afterRemove(id);
+        }
     }
 
     @Override
@@ -351,11 +363,13 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     public void removeBatchByIds(List<Serializable> ids) {
         super.removeBatchByIds(ids);
+        afterRemove(ids);
     }
 
     public void removePerById(Serializable id) {
         // 用SQL进行物理删除
         baseMapper.deletePermanentById(id);
+        afterRemove(id);
     }
 
     @Transactional(
@@ -369,7 +383,10 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     public void removeByQuery(QueryParams query) {
         QueryWrapper<T> wrapper = parseQuery(query);
+        List<T> list = super.list(wrapper);
         super.remove(wrapper);
+        List<Serializable> ids = list.stream().map(i -> getEntityId(i)).toList();
+        afterRemove(ids);
     }
 
     public String updateValueToStr(Field field, Object value) {
@@ -379,6 +396,17 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         }
         if (value instanceof Date) return DateUtil.formatDateTime((Date) value);
         return StrUtil.toString(value);
+    }
+
+    /**
+     * 返回实体的父节点，可以子类覆盖重写
+     *
+     * @param entity
+     * @return
+     */
+    protected Serializable getEntityId(T entity) {
+        String idField = this.getAnnotationFieldName(TableId.class);
+        return (Serializable) ReflectUtil.getFieldValue(entity, idField);
     }
 
     /**
@@ -421,6 +449,40 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     public T getTopN(LambdaQueryChainWrapper<T> wrapper, Integer n) {
         return wrapper.last("limit " + n).one();
+    }
+
+    /**
+     * 获取注解对应的实体字段
+     *
+     * @param annotationClass {@link SqlSorter}\{@link SqlTreeId}\{@link SqlTreeParentId}\{@link SqlTreeName}
+     * @param <AT>
+     * @return
+     */
+    protected <AT extends Annotation> Field getAnnotationField(Class<AT> annotationClass) {
+        for (Field field : getEntityClass().getDeclaredFields()) {
+            AT annotation = field.getAnnotation(annotationClass);
+            if (annotation != null) {
+                return field;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取注解对应的实体字段名称
+     *
+     * @param annotationClass {@link SqlSorter}\{@link SqlTreeId}\{@link SqlTreeParentId}\{@link SqlTreeName}
+     * @param <AT>
+     * @return
+     */
+    protected <AT extends Annotation> String getAnnotationFieldName(Class<AT> annotationClass) {
+        Field field = getAnnotationField(annotationClass);
+        if (field == null) {
+            String msg = String.format("%1$s类未设置@%2$s注解，未能查找到排序字段，请确认代码。", getEntityClass().getName(), annotationClass.getName());
+            _logger.error(msg);
+            throw new BuzzException(msg);
+        }
+        return field.getName();
     }
 
 }
