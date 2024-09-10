@@ -1,8 +1,6 @@
 package com.faber.core.vo.msg;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 基础返回Response父类

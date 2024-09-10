@@ -196,15 +196,15 @@
 
         <!--fastjson数据配置start-->
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
         </dependency>
 
         <!-- easyexcel -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
-            <version>4.0.1</version>
+            <version>4.0.2</version>
         </dependency>
 
         <dependency>
