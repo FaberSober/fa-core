@@ -146,6 +146,10 @@ public class FaSetting {
          * socketUrl
          */
         private String socketUrl;
+        /**
+         * kkFileView
+         */
+        private String kkFileView;
     }
 
     /**
