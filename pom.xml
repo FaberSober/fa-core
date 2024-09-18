@@ -31,10 +31,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                </exclusion>
+<!--                <exclusion>-->
+<!--                    <groupId>org.springframework.boot</groupId>-->
+<!--                    <artifactId>spring-boot-starter-tomcat</artifactId>-->
+<!--                </exclusion>-->
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-logging</artifactId>
@@ -52,10 +52,10 @@
             </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-undertow</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-undertow</artifactId>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -76,6 +76,12 @@
             <version>${sa-token.version}</version>
         </dependency>
 
+        <!-- 提供Redis连接池 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+        </dependency>
+
         <!-- 集成Validator校验框架 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -93,12 +99,13 @@
             <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
 
+        <!-- JetCache is a Java cache framework: https://github.com/alibaba/jetcache -->
         <!-- https://mvnrepository.com/artifact/com.alicp.jetcache/jetcache-starter-redisson -->
-        <dependency>
-            <groupId>com.alicp.jetcache</groupId>
-            <artifactId>jetcache-starter-redisson</artifactId>
-            <version>2.7.5</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.alicp.jetcache</groupId>-->
+<!--            <artifactId>jetcache-starter-redisson</artifactId>-->
+<!--            <version>2.7.5</version>-->
+<!--        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/com.esotericsoftware.kryo/kryo5 -->
         <dependency>
@@ -110,7 +117,7 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.5.6</version>
+            <version>3.5.7</version>
         </dependency>
 
         <dependency>
@@ -131,7 +138,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
-            <version>1.2.22</version>
+            <version>1.2.23</version>
         </dependency>
 
         <dependency>
@@ -157,14 +164,6 @@
             <version>1.7.22</version>
         </dependency>
 
-        <!-- 七牛云sdk -->
-        <!-- 这里的version指定了一个版本范围，每次更新pom.xml的时候会尝试去下载7.2.x版本中的最新版本，你可以手动指定一个固定的版本。 -->
-        <dependency>
-            <groupId>com.qiniu</groupId>
-            <artifactId>qiniu-java-sdk</artifactId>
-            <version>7.15.0</version>
-        </dependency>
-
         <!-- 阿里云OSS sdk -->
         <dependency>
             <groupId>com.aliyun.oss</groupId>
@@ -174,15 +173,15 @@
 
         <!--fastjson数据配置start-->
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
         </dependency>
 
         <!-- easyexcel -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
-            <version>4.0.1</version>
+            <version>4.0.2</version>
         </dependency>
 
         <dependency>
@@ -191,6 +190,7 @@
             <version>5.8.27</version>
         </dependency>
 
+        <!-- java ssh tools: http://www.jcraft.com/jsch/ -->
         <dependency>
             <groupId>com.jcraft</groupId>
             <artifactId>jsch</artifactId>
@@ -208,7 +208,7 @@
         <dependency>
             <groupId>com.github.oshi</groupId>
             <artifactId>oshi-core</artifactId>
-            <version>6.5.0</version>
+            <version>6.6.3</version>
         </dependency>
 
         <!-- 声明式HTTP客户端框架: https://forest.dtflyx.com/ -->
@@ -251,9 +251,17 @@
 
         <!-- spring-file-storage: https://spring-file-storage.xuyanwu.cn/ -->
         <dependency>
-            <groupId>cn.xuyanwu</groupId>
-            <artifactId>spring-file-storage</artifactId>
-            <version>1.0.3</version>
+            <groupId>org.dromara.x-file-storage</groupId>
+            <artifactId>x-file-storage-spring</artifactId>
+            <version>2.2.1</version>
+        </dependency>
+
+        <!-- 七牛云sdk -->
+        <!-- 这里的version指定了一个版本范围，每次更新pom.xml的时候会尝试去下载7.2.x版本中的最新版本，你可以手动指定一个固定的版本。 -->
+        <dependency>
+            <groupId>com.qiniu</groupId>
+            <artifactId>qiniu-java-sdk</artifactId>
+            <version>7.15.1</version>
         </dependency>
 
         <!-- 日志插件: https://tlog.yomahub.com/ -->
@@ -263,12 +271,20 @@
             <version>1.5.2</version>
         </dependency>
 
+        <!-- 数据库表结构文档生成器: https://github.com/pingfangushi/screw -->
         <!-- https://mvnrepository.com/artifact/cn.smallbun.screw/screw-core -->
         <dependency>
             <groupId>cn.smallbun.screw</groupId>
             <artifactId>screw-core</artifactId>
             <version>1.0.5</version>
             <scope>test</scope>
+
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 </project>
