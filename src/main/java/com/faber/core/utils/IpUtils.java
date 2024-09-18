@@ -1,6 +1,8 @@
 package com.faber.core.utils;
 
 
+import cn.hutool.cache.CacheUtil;
+import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.extra.spring.SpringUtil;
 import com.faber.core.constant.FaSetting;
 import com.faber.core.service.IpService;
@@ -29,6 +31,8 @@ public class IpUtils {
      * 是否离线。若是，则无法获取IP地址。
      */
     private static boolean offline = false;
+
+    private static TimedCache<String, IpAddr> ipAddrTimedCache = CacheUtil.newTimedCache(24 * 60 * 60 * 1000);
 
     /**
      * 获取HttpServletRequest访问ip
@@ -89,8 +93,13 @@ public class IpUtils {
             }
 
             if (!offline) {
+                if (ipAddrTimedCache.containsKey(ip)) {
+                    return ipAddrTimedCache.get(ip);
+                }
                 IpService ipService = SpringUtil.getBean(IpService.class);
-                return ipService.ipJson(ip);
+                IpAddr ipAddr = ipService.ipJson(ip);
+                ipAddrTimedCache.put(ip, ipAddr);
+                return ipAddr;
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);

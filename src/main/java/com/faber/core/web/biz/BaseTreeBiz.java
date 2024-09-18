@@ -583,38 +583,4 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
         return StrUtil.toUnderlineCase(this.getAnnotationFieldName(SqlTreeName.class));
     }
 
-    /**
-     * 获取注解对应的实体字段
-     *
-     * @param annotationClass {@link SqlSorter}\{@link SqlTreeId}\{@link SqlTreeParentId}\{@link SqlTreeName}
-     * @param <AT>
-     * @return
-     */
-    protected <AT extends Annotation> Field getAnnotationField(Class<AT> annotationClass) {
-        for (Field field : getEntityClass().getDeclaredFields()) {
-            AT annotation = field.getAnnotation(annotationClass);
-            if (annotation != null) {
-                return field;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 获取注解对应的实体字段名称
-     *
-     * @param annotationClass {@link SqlSorter}\{@link SqlTreeId}\{@link SqlTreeParentId}\{@link SqlTreeName}
-     * @param <AT>
-     * @return
-     */
-    protected <AT extends Annotation> String getAnnotationFieldName(Class<AT> annotationClass) {
-        Field field = getAnnotationField(annotationClass);
-        if (field == null) {
-            String msg = String.format("%1$s类未设置@%2$s注解，未能查找到排序字段，请确认代码。", getEntityClass().getName(), annotationClass.getName());
-            _logger.error(msg);
-            throw new BuzzException(msg);
-        }
-        return field.getName();
-    }
-
 }

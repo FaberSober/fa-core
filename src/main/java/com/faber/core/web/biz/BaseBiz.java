@@ -5,8 +5,8 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import cn.xuyanwu.spring.file.storage.FileInfo;
 import com.baomidou.mybatisplus.annotation.IEnum;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
@@ -14,6 +14,10 @@ import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.faber.core.annotation.SqlSorter;
+import com.faber.core.annotation.SqlTreeId;
+import com.faber.core.annotation.SqlTreeName;
+import com.faber.core.annotation.SqlTreeParentId;
 import com.faber.core.config.mybatis.base.FaBaseMapper;
 import com.faber.core.config.mybatis.utils.WrapperUtils;
 import com.faber.core.context.BaseContextHandler;
@@ -28,6 +32,7 @@ import com.faber.core.vo.query.ConditionGroup;
 import com.faber.core.vo.query.QueryParams;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.dromara.x.file.storage.core.FileInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,8 +40,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 业务Service父类
@@ -117,6 +124,12 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
      * @param id
      */
     protected void afterRemove(Serializable id) {
+    }
+
+    protected void afterRemove(List<Serializable> ids) {
+        for (Serializable id : ids) {
+            afterRemove(id);
+        }
     }
 
     @Override
@@ -233,13 +246,20 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         List<T> allList = new ArrayList<>();
 
         for (int i = 1; i <= page; i++) {
-            PageInfo<T> info = PageHelper.startPage(i, DEFAULT_PAGE_SIZE)
-                    .doSelectPageInfo(() -> super.list(wrapper));
+            PageInfo<T> info = PageHelper.startPage(i, DEFAULT_PAGE_SIZE).doSelectPageInfo(() -> super.list(wrapper));
             allList.addAll(info.getList());
         }
 
         this.decorateList(allList);
         return allList;
+    }
+
+    public List<T> listN(QueryParams query, Integer topN) {
+        QueryWrapper<T> wrapper = parseQuery(query);
+        wrapper.last("limit " + topN);
+        List<T> list = super.list(wrapper);
+        this.decorateList(list);
+        return list;
     }
 
     /**
@@ -250,7 +270,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
      */
     public void exportExcel(QueryParams query) throws IOException {
         List<T> list = this.list(query);
-        FaExcelUtils.sendFileExcel(this.entityClass, list);
+        FaExcelUtils.sendFileExcel(this.getEntityClass(), list);
     }
 
     /**
@@ -259,7 +279,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
      * @throws IOException
      */
     public void exportTplExcel() throws IOException {
-        FaExcelUtils.sendFileExcel(this.entityClass, Collections.emptyList());
+        FaExcelUtils.sendFileExcel(this.getEntityClass(), Collections.emptyList());
     }
 
     /**
@@ -270,7 +290,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
     protected void saveExcelEntity(T entity) {
         if (entity == null) return;
 
-        TableInfo tableInfo = TableInfoHelper.getTableInfo(this.entityClass);
+        TableInfo tableInfo = TableInfoHelper.getTableInfo(this.getEntityClass());
         Assert.notNull(tableInfo, "error: can not execute. because can not find cache of TableInfo for entity!");
 
         String keyProperty = tableInfo.getKeyProperty();
@@ -299,7 +319,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
     public void importExcel(CommonImportExcelReqVo reqVo) {
         File file = getFileById(reqVo.getFileId());
         List<T> saveList = new ArrayList<>();
-        FaExcelUtils.simpleRead(file, this.entityClass, i -> {
+        FaExcelUtils.simpleRead(file, this.getEntityClass(), i -> {
             saveList.add(i);
         });
         this.saveOrUpdateBatch(saveList);
@@ -344,11 +364,13 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     public void removeBatchByIds(List<Serializable> ids) {
         super.removeBatchByIds(ids);
+        afterRemove(ids);
     }
 
     public void removePerById(Serializable id) {
         // 用SQL进行物理删除
         baseMapper.deletePermanentById(id);
+        afterRemove(id);
     }
 
     @Transactional(
@@ -362,7 +384,10 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     public void removeByQuery(QueryParams query) {
         QueryWrapper<T> wrapper = parseQuery(query);
+        List<T> list = super.list(wrapper);
         super.remove(wrapper);
+        List<Serializable> ids = list.stream().map(i -> getEntityId(i)).collect(Collectors.toList());
+        afterRemove(ids);
     }
 
     public String updateValueToStr(Field field, Object value) {
@@ -372,6 +397,17 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         }
         if (value instanceof Date) return DateUtil.formatDateTime((Date) value);
         return StrUtil.toString(value);
+    }
+
+    /**
+     * 返回实体的父节点，可以子类覆盖重写
+     *
+     * @param entity
+     * @return
+     */
+    protected Serializable getEntityId(T entity) {
+        String idField = this.getAnnotationFieldName(TableId.class);
+        return (Serializable) ReflectUtil.getFieldValue(entity, idField);
     }
 
     /**
@@ -408,8 +444,46 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
      * @param wrapper mybatis-plus wrapper
      * @return 最上层一条数据
      */
-    protected T getTop(LambdaQueryChainWrapper<T> wrapper) {
+    public T getTop(LambdaQueryChainWrapper<T> wrapper) {
         return wrapper.last("limit 1").one();
+    }
+
+    public T getTopN(LambdaQueryChainWrapper<T> wrapper, Integer n) {
+        return wrapper.last("limit " + n).one();
+    }
+
+    /**
+     * 获取注解对应的实体字段
+     *
+     * @param annotationClass {@link SqlSorter}\{@link SqlTreeId}\{@link SqlTreeParentId}\{@link SqlTreeName}
+     * @param <AT>
+     * @return
+     */
+    protected <AT extends Annotation> Field getAnnotationField(Class<AT> annotationClass) {
+        for (Field field : getEntityClass().getDeclaredFields()) {
+            AT annotation = field.getAnnotation(annotationClass);
+            if (annotation != null) {
+                return field;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取注解对应的实体字段名称
+     *
+     * @param annotationClass {@link SqlSorter}\{@link SqlTreeId}\{@link SqlTreeParentId}\{@link SqlTreeName}
+     * @param <AT>
+     * @return
+     */
+    protected <AT extends Annotation> String getAnnotationFieldName(Class<AT> annotationClass) {
+        Field field = getAnnotationField(annotationClass);
+        if (field == null) {
+            String msg = String.format("%1$s类未设置@%2$s注解，未能查找到排序字段，请确认代码。", getEntityClass().getName(), annotationClass.getName());
+            _logger.error(msg);
+            throw new BuzzException(msg);
+        }
+        return field.getName();
     }
 
 }

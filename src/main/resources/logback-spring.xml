@@ -129,7 +129,7 @@
             <appender-ref ref="logFileForAdmin"/>
         </logger>
         <logger name="tk.mybatis" level="INFO" />
-        <logger name="cn.easyes" level="INFO" />
+        <logger name="org.dromara.easyes" level="INFO" />
         <logger name="com.alicp.jetcache" level="WARN" />
 
         <root level="INFO">
@@ -147,7 +147,7 @@
             <appender-ref ref="logFileForAdmin"/>
         </logger>
         <logger name="tk.mybatis" level="INFO" />
-        <logger name="cn.easyes" level="INFO" />
+        <logger name="org.dromara.easyes" level="INFO" />
 
         <root level="INFO">
             <appender-ref ref="logFile"/>
@@ -164,8 +164,10 @@
             <appender-ref ref="logFileForAdmin"/>
         </logger>
         <logger name="tk.mybatis" level="INFO" />
-        <logger name="cn.easyes" level="DEBUG" />
+        <logger name="org.dromara.easyes" level="DEBUG" />
         <logger name="com.alicp.jetcache" level="INFO" />
+        <logger name="org.springframework.ai.chat.client.advisor" level="DEBUG" />
+        <logger name="org.springframework.ai.vectorstore" level="DEBUG" />
 
         <root level="ERROR">
             <appender-ref ref="AsyncConsole"/>
@@ -183,7 +185,7 @@
             <appender-ref ref="logFileForAdmin"/>
         </logger>
         <logger name="tk.mybatis" level="INFO" />
-        <logger name="cn.easyes" level="INFO" />
+        <logger name="org.dromara.easyes" level="INFO" />
         <logger name="com.alicp.jetcache" level="INFO" />
 
         <root level="ERROR">
