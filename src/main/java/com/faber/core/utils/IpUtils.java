@@ -93,13 +93,13 @@ public class IpUtils {
             }
 
             if (!offline) {
-                if (ipAddrTimedCache.containsKey(ip)) {
-                    return ipAddrTimedCache.get(ip);
-                }
-                IpService ipService = SpringUtil.getBean(IpService.class);
-                IpAddr ipAddr = ipService.ipJson(ip);
-                ipAddrTimedCache.put(ip, ipAddr);
-                return ipAddr;
+//                if (ipAddrTimedCache.containsKey(ip)) {
+//                    return ipAddrTimedCache.get(ip);
+//                }
+//                IpService ipService = SpringUtil.getBean(IpService.class);
+//                IpAddr ipAddr = ipService.ipJson(ip); // TODO 这个接口地址无法访问了
+//                ipAddrTimedCache.put(ip, ipAddr);
+//                return ipAddr;
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
