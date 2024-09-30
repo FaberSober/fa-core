@@ -42,6 +42,16 @@ public class FaDateUtils {
     }
 
     /**
+     * 时间戳(ms) to Date
+     * @param timestamp
+     * @return
+     */
+    public static Date timestampMillToDate(long timestamp) {
+        Timestamp ts  = new Timestamp(timestamp);
+        return new Date(ts.getTime());
+    }
+
+    /**
      * 标准化日期，默认处理以空格区分的日期时间格式，空格前为日期，空格后为时间：<br>
      * 将以下字符替换为"-"
      *
