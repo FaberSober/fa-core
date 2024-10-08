@@ -279,6 +279,13 @@
             <version>2.2.1</version>
         </dependency>
 
+        <!-- spring-file-storage: minio -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>8.5.12</version>
+        </dependency>
+
         <!-- 七牛云sdk -->
         <!-- 这里的version指定了一个版本范围，每次更新pom.xml的时候会尝试去下载7.2.x版本中的最新版本，你可以手动指定一个固定的版本。 -->
         <dependency>
