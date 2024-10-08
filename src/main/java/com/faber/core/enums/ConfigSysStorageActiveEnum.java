@@ -16,7 +16,8 @@ import lombok.Getter;
 @Getter
 public enum ConfigSysStorageActiveEnum implements IEnum<String> {
     LOCAL_PLUS("local-plus", "local-plus-1"),
-    MINIO("minio", "minio-1");
+    MINIO("minio", "minio-1"),
+    QINIU("qiniu", "qiniu-1");
 
     @JsonValue
     @EnumValue

@@ -100,6 +100,11 @@ public class FaConfig implements Serializable {
     private String minioBucketName;
     private String minioDomain;
     private String minioBasePath;
-    // ------------------------- [存储][Minio] -------------------------
+    // ------------------------- [存储][Qiniu] -------------------------
+    private String qiniuAk;
+    private String qiniuSk;
+    private String qiniuBucketName;
+    private String qiniuDomain;
+    private String qiniuBasePath;
 
 }
