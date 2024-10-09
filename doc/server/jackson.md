@@ -48,3 +48,12 @@ public class WebMvcConfigurer extends WebMvcConfigurationSupport {
 
 原文链接：https://blog.csdn.net/u012581020/article/details/105955060
 
+# 常见问题
+
+## 首字母多个连续大写
+如果字段名为`nTenOrder`，返回前端的json key为`ntenOrder`，可以通过指定名称的方式，如下：
+```java
+@JsonProperty("nTenOrder")
+private String nTenOrder;
+```
+
