@@ -48,6 +48,9 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
 
     @Override
     public boolean save(T entity) {
+        if (getEntityParentId(entity) == null) {
+            setEntityParentId(entity);
+        }
         this.setNextSort(entity); // 设置entity的排序
         return super.save(entity);
     }
@@ -104,7 +107,7 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
      */
     public List<T> treeListLayer(Serializable parentId) {
         // 判断根节点
-        if (parentId == null || ObjectUtil.equal(CommonConstants.ROOT + "", parentId.toString())) {
+        if (parentId == null || ObjectUtil.equal(getRootId(), parentId.toString())) {
             return this.treeListLayerRoot(parentId);
         }
         // 其他节点
@@ -122,7 +125,7 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
             return 0;
         }
         // 判断根节点
-        if (ObjectUtil.equal(CommonConstants.ROOT + "", parentId.toString())) {
+        if (ObjectUtil.equal(getRootId(), parentId.toString())) {
             return this.treeCountLayerRoot(parentId);
         }
         // 其他节点
@@ -206,7 +209,7 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
         this.enhanceTreeQuery(wrapper);
         wrapper.orderByAsc(this.getSortedFieldColumnName());
         List<T> beanList = super.list(wrapper);
-        return this.listToTree(beanList, CommonConstants.ROOT + "");
+        return this.listToTree(beanList, getRootId());
     }
 
     /**
@@ -241,7 +244,7 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
         this.enhanceTreeQuery(wrapper);
         wrapper.orderByAsc(this.getSortedFieldColumnName());
         List<T> beanList = super.list(wrapper);
-        return this.listToTree(beanList, CommonConstants.ROOT + "");
+        return this.listToTree(beanList, getRootId());
     }
 
     /**
@@ -377,13 +380,22 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
     }
 
     /**
+     * 获取默认的顶级根节点ID
+     * @return
+     */
+    public Serializable getRootId() {
+        return CommonConstants.ROOT + "";
+    }
+
+
+    /**
      * 判断是否到达根节点
      *
      * @param entity
      * @return
      */
     protected boolean treeReachRootNode(T entity) {
-        return ObjectUtil.equal(ObjectUtil.toString(getEntityParentId(entity)), CommonConstants.ROOT + "");
+        return ObjectUtil.equal(ObjectUtil.toString(getEntityParentId(entity)), getRootId());
     }
 
     /**
@@ -396,7 +408,7 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
             String msg = String.format("%1$s类未设置@SqlSorter注解，未能查找到排序字段，请确认代码。", getEntityClass().getName());
             throw new BuzzException(msg);
         }
-        SqlSorter anno =field.getAnnotation(SqlSorter.class);
+        SqlSorter anno = field.getAnnotation(SqlSorter.class);
         if (!anno.autoSort()) {
             return;
         }
@@ -445,6 +457,14 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
      */
     protected Serializable getEntityParentId(T entity) {
         return (Serializable) ReflectUtil.getFieldValue(entity, this.getTreeParentIdFieldName());
+    }
+
+    /**
+     * 设置父节点ID为默认的顶级根节点ID
+     * @param entity
+     */
+    protected void setEntityParentId(T entity) {
+        ReflectUtil.setFieldValue(entity, this.getTreeParentIdFieldName(), getRootId());
     }
 
     /**

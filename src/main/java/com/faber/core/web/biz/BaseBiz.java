@@ -336,7 +336,9 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
             return cache.get(id);
         }
         T entity = super.getById(id);
-        cache.put(id, entity);
+        if (entity != null) {
+            cache.put(id, entity);
+        }
         return entity;
     }
 
@@ -352,8 +354,10 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
             return cache.get(id);
         }
         T entity = super.getById(id);
-        decorateOne(entity);
-        cache.put(id, entity);
+        if (entity != null) {
+            decorateOne(entity);
+            cache.put(id, entity);
+        }
         return entity;
     }
 
