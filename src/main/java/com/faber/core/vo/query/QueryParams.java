@@ -44,7 +44,7 @@ public class QueryParams implements Serializable {
 
         String[] ss0 = this.sorter.split(",");
         for (String oneSorter : ss0) {
-            String[] ss = oneSorter.split(" ");
+            String[] ss = StrUtil.blankToDefault(oneSorter, "").trim().split(" ");
             Sorter sorter1 = new Sorter();
             sorter1.setField(StrUtil.toUnderlineCase(ss[0]));
             sorter1.setAsc(ss.length > 1 && "asc".equalsIgnoreCase(ss[1]));
