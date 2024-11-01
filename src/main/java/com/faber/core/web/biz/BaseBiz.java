@@ -1,5 +1,6 @@
 package com.faber.core.web.biz;
 
+import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ReflectUtil;
@@ -14,15 +15,13 @@ import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.faber.core.annotation.SqlSorter;
-import com.faber.core.annotation.SqlTreeId;
-import com.faber.core.annotation.SqlTreeName;
-import com.faber.core.annotation.SqlTreeParentId;
+import com.faber.core.annotation.*;
 import com.faber.core.config.mybatis.base.FaBaseMapper;
 import com.faber.core.config.mybatis.utils.WrapperUtils;
 import com.faber.core.context.BaseContextHandler;
 import com.faber.core.exception.BuzzException;
 import com.faber.core.service.ConfigSceneService;
+import com.faber.core.service.DictService;
 import com.faber.core.service.StorageService;
 import com.faber.core.utils.FaEnumUtils;
 import com.faber.core.utils.FaExcelUtils;
@@ -30,6 +29,7 @@ import com.faber.core.vo.excel.CommonImportExcelReqVo;
 import com.faber.core.vo.msg.TableRet;
 import com.faber.core.vo.query.ConditionGroup;
 import com.faber.core.vo.query.QueryParams;
+import com.faber.core.vo.utils.DictOption;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.dromara.x.file.storage.core.FileInfo;
@@ -56,6 +56,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
     protected final int DEFAULT_PAGE_SIZE = 1000;
 
     private ConfigSceneService configSceneService;
+    private DictService dictService;
 
 
     /**
@@ -217,7 +218,8 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         Page<T> result = super.page(page, wrapper);
         TableRet<T> table = new TableRet<T>(result);
 
-        // add dict options
+        // add dict, enum options
+        this.addEnumOptions(table, getEntityClass());
         this.addDictOptions(table, getEntityClass());
 
         // decorate
@@ -226,10 +228,36 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         return table;
     }
 
-    public void addDictOptions(TableRet<?> table, Class<?> clazz) {
+    /**
+     * add enum dict options
+     * @param table
+     * @param clazz
+     */
+    public void addEnumOptions(TableRet<?> table, Class<?> clazz) {
         Field[] fields = ReflectUtil.getFields(clazz, field -> IEnum.class.isAssignableFrom(field.getType()));
         for (Field field : fields) {
             table.getData().addDict(field.getName(), FaEnumUtils.toOptions((Class<? extends IEnum<Serializable>>) field.getType()));
+        }
+    }
+
+    /**
+     * add db dict options
+     * @param table
+     * @param clazz
+     */
+    public void addDictOptions(TableRet<?> table, Class<?> clazz) {
+        if (dictService == null) {
+            dictService = SpringUtil.getBean(DictService.class);
+        }
+        if (dictService == null) {
+            throw new BuzzException("DictService not implemented yet");
+        }
+
+        Field[] fields = ReflectUtil.getFields(clazz, field -> field.getAnnotation(FaColDict.class) != null);
+        for (Field field : fields) {
+            FaColDict anno = field.getAnnotation(FaColDict.class);
+            List<DictOption<Serializable>> options = dictService.getOptionsByCode(anno.value());
+            table.getData().addDict(field.getName(), options);
         }
     }
 

@@ -13,12 +13,14 @@ import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.faber.core.annotation.FaModalName;
 import com.github.pagehelper.PageInfo;
+import org.apache.poi.ss.usermodel.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
@@ -28,6 +30,21 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class FaExcelUtils {
+
+    public static HttpServletResponse getResponseExcel(String filenamePrefix) throws UnsupportedEncodingException {
+        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+
+        String fileName = DateUtil.format(new Date(), "yyyy_MM_dd_HH_mm_ss");
+        fileName = filenamePrefix + "_" + fileName;
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        fileName = URLEncoder.encode(fileName, "UTF-8");
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
+        response.setHeader("fa-filename", fileName + ".xlsx");
+
+        return response;
+    }
 
     /**
      * response写入下载Excel文件流
@@ -163,6 +180,25 @@ public class FaExcelUtils {
 
             }
         }).sheet().doRead();
+    }
+
+    public static void setColor(Cell cell, short color) {
+        // 根据单元格获取workbook
+        Workbook workbook = cell.getSheet().getWorkbook();
+        CellStyle cellStyle = workbook.createCellStyle();
+
+        // 设置背景颜色
+        cellStyle.setFillForegroundColor(color);
+        cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        // 设置垂直居中为居中对齐
+        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        // 设置单元格上下左右边框为细边框
+        cellStyle.setBorderBottom(BorderStyle.THIN);
+        cellStyle.setBorderLeft(BorderStyle.THIN);
+        cellStyle.setBorderRight(BorderStyle.THIN);
+        cellStyle.setBorderTop(BorderStyle.THIN);
+        //设置当前行第i列的样式
+        cell.setCellStyle(cellStyle);
     }
 
 }
