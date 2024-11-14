@@ -22,7 +22,7 @@ public class WebSocketConfig {
      *          通过将其实例化并配置为Spring管理的Bean，可以确保所有WebSocket端点在应用程序启动时被自动初始化和注册。
      */
     @Bean
-    public ServerEndpointExporter serverEndpointExporter(){
+    public ServerEndpointExporter serverEndpointExporter() {
         return new ServerEndpointExporter();
     }
 

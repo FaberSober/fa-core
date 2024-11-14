@@ -54,7 +54,7 @@ public class ChatEndpoint {
         entity.setToken(token);
         entity.setSession(session);
         // 默认连接6个小时
-        entity.setExistTime(LocalDateTime.now().plusSeconds(5));
+        entity.setExistTime(LocalDateTime.now().plusHours(EXIST_TIME_HOUR));
         uavWebSocketInfoMap.put(token, entity);
         // 之所以获取http session 是为了获取获取httpsession中的数据 (用户名 /账号/信息)
         log.info("WebSocket 连接建立成功: {}", token);
@@ -86,7 +86,7 @@ public class ChatEndpoint {
         // 如果是心跳包
         if("heartbeat".equals(message)){
             // 只要接受到客户端的消息就进行续命(时间)
-            entity.setExistTime(LocalDateTime.now().plusSeconds(5));
+            entity.setExistTime(LocalDateTime.now().plusHours(EXIST_TIME_HOUR));
             if (entity.getSession().isOpen()) {
                 entity.getSession().getBasicRemote().sendText("{\"msg\": \"success\", \"code\": 0}");
             }
@@ -95,7 +95,7 @@ public class ChatEndpoint {
         // 业务逻辑
 
         // 只要接受到客户端的消息就进行续命(时间)
-        entity.setExistTime(LocalDateTime.now().plusSeconds(5));
+        entity.setExistTime(LocalDateTime.now().plusHours(EXIST_TIME_HOUR));
         if (entity.getSession().isOpen()) {
             entity.getSession().getBasicRemote().sendText("{\"msg\": \"success\", \"code\": 0}");
         }
