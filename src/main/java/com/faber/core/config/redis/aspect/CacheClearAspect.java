@@ -3,6 +3,7 @@ package com.faber.core.config.redis.aspect;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.faber.core.config.redis.annotation.FaCacheClear;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -27,10 +28,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class CacheClearAspect {
 
-    @Autowired
-    RedissonClient redisson;
+    @Resource RedissonClient redisson;
 
-    @Value("${jetcache.remote.default.keyPrefix}")
+    @Value("${spring.data.redis.prefix}")
     String keyPrefix;
 
     @Pointcut("@annotation(com.faber.core.config.redis.annotation.FaCacheClear)")
