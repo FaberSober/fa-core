@@ -1,11 +1,13 @@
 package com.faber.core.config.exception;
 
+import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
 import com.faber.core.constant.CommonConstants;
 import com.faber.core.exception.BaseException;
 import com.faber.core.exception.auth.UserInvalidException;
 import com.faber.core.exception.auth.UserNoPermissionException;
 import com.faber.core.exception.auth.UserTokenException;
 import com.faber.core.vo.msg.BaseRet;
+import org.mybatis.spring.MyBatisSystemException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -64,6 +66,17 @@ public class GlobalExceptionHandler {
     public BaseRet otherExceptionHandler(HttpServletResponse response, Exception ex) {
         logger.error(ex.getMessage(), ex);
         String errMsg = ex.getMessage();
+        return new BaseRet(CommonConstants.EX_OTHER_CODE, errMsg);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(value = {MybatisPlusException.class, MyBatisSystemException.class})
+    public BaseRet mybatisExceptionHandler(HttpServletResponse response, Exception ex) {
+        logger.error(ex.getMessage(), ex);
+        String errMsg = ex.getMessage();
+        if (errMsg.contains("Prohibition of full table deletion")) {
+            errMsg = "为了系统安全，不允许删除全表数据";
+        }
         return new BaseRet(CommonConstants.EX_OTHER_CODE, errMsg);
     }
 
