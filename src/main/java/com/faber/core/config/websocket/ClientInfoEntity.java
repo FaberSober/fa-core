@@ -1,5 +1,6 @@
 package com.faber.core.config.websocket;
 
+import cn.hutool.json.JSONUtil;
 import jakarta.websocket.Session;
 import lombok.Data;
 
@@ -25,5 +26,18 @@ public class ClientInfoEntity {
      * 连接存活时间
      */
     private LocalDateTime existTime;
+
+    /**
+     * send message async remote
+     * @param wsRet
+     */
+    public void sendMessage(WsRet wsRet) {
+        String msgStr = JSONUtil.toJsonStr(wsRet);
+        this.session.getAsyncRemote().sendText(msgStr);
+    }
+
+    public void sendSuccess() {
+        this.sendMessage(WsRet.success());
+    }
 
 }

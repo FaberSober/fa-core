@@ -1,5 +1,31 @@
 # WebSocket
 
+## 本项目websocket数据格式说明
+> 统一使用JSON格式
+### 请求参数
+```json
+{
+  "type": "request", // 请求类型，对应分发到不同的业务
+  "data": {
+    "id": "123456",
+    "content": "Hello, World!"
+  }
+}
+```
+
+### 返回参数
+```json
+{
+  "code": 0, // 错误码
+  "type": "request", // 返回类型，对应分发到不同的业务
+  "msg": "success", // 错误信息
+  "data": {
+    "id": "123456",
+    "content": "Hello, World!"
+  }
+}
+```
+
 ## websocket中Session的 getBasicRemote() 和 getAsyncRemote() 方法的区别
 websocket中Session的 getBasicRemote() 和 getAsyncRemote() 方法有以下主要区别
 
