@@ -27,6 +27,10 @@ public class ClientInfoEntity {
      */
     private LocalDateTime existTime;
 
+    public void sendSuccess() {
+        this.sendMessage(WsRet.success());
+    }
+
     /**
      * send message async remote
      * @param wsRet
@@ -36,8 +40,8 @@ public class ClientInfoEntity {
         this.session.getAsyncRemote().sendText(msgStr);
     }
 
-    public void sendSuccess() {
-        this.sendMessage(WsRet.success());
+    public void sendMessage(String type, String data) {
+        sendMessage(WsRet.success(type, data));
     }
 
 }

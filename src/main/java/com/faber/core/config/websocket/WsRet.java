@@ -11,9 +11,9 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class WsRet implements Serializable {
 
-    private String msg = "success";
     private int code = 0;
     private String type;
+    private String msg = "success";
     private Object data;
 
     public WsRet(int code, String msg) {
@@ -28,6 +28,10 @@ public class WsRet implements Serializable {
 
     public static WsRet success() {
         return new WsRet(0, "success");
+    }
+
+    public static WsRet success(String type, Object data) {
+        return new WsRet(0, type, "success", data);
     }
 
 }
