@@ -40,7 +40,7 @@ public class ClientInfoEntity {
         this.session.getAsyncRemote().sendText(msgStr);
     }
 
-    public void sendMessage(String type, String data) {
+    public void sendMessage(String type, Object data) {
         sendMessage(WsRet.success(type, data));
     }
 
