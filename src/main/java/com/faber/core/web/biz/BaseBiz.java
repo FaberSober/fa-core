@@ -436,7 +436,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
      * @param entity
      * @return
      */
-    protected Serializable getEntityId(T entity) {
+    public Serializable getEntityId(T entity) {
         String idField = this.getAnnotationFieldName(TableId.class);
         return (Serializable) ReflectUtil.getFieldValue(entity, idField);
     }
@@ -447,7 +447,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
      * @param colName 取最大排序的
      * @return 最大的排序
      */
-    protected Integer getMaxSort(String colName) {
+    public Integer getMaxSort(String colName) {
         QueryWrapper<T> wrapper = new QueryWrapper<>();
         wrapper.orderByDesc(colName);
         wrapper.select(String.format("IFNULL(max(%s), -1) as value", colName));
@@ -462,7 +462,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
      * @param colName 取最大排序的
      * @return 最大的排序
      */
-    protected Integer getMaxSort(QueryWrapper<T> wrapper, String colName) {
+    public Integer getMaxSort(QueryWrapper<T> wrapper, String colName) {
         wrapper.orderByDesc(colName);
         wrapper.select(String.format("IFNULL(max(%s), -1) as value", colName));
         List<Map<String, Object>> result = baseMapper.selectMaps(wrapper);
@@ -490,7 +490,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
      * @param <AT>
      * @return
      */
-    protected <AT extends Annotation> Field getAnnotationField(Class<AT> annotationClass) {
+    public <AT extends Annotation> Field getAnnotationField(Class<AT> annotationClass) {
         for (Field field : getEntityClass().getDeclaredFields()) {
             AT annotation = field.getAnnotation(annotationClass);
             if (annotation != null) {
@@ -507,7 +507,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
      * @param <AT>
      * @return
      */
-    protected <AT extends Annotation> String getAnnotationFieldName(Class<AT> annotationClass) {
+    public <AT extends Annotation> String getAnnotationFieldName(Class<AT> annotationClass) {
         Field field = getAnnotationField(annotationClass);
         if (field == null) {
             String msg = String.format("%1$s类未设置@%2$s注解，未能查找到排序字段，请确认代码。", getEntityClass().getName(), annotationClass.getName());
