@@ -445,7 +445,7 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
      * @param entity
      * @return
      */
-    protected Serializable getEntityId(T entity) {
+    public Serializable getEntityId(T entity) {
         return (Serializable) ReflectUtil.getFieldValue(entity, this.getTreeIdFieldName());
     }
 
