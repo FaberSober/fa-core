@@ -1,5 +1,19 @@
 # WebSocket
 
+# 如何使用
+## 接受数据
+```typescript jsx
+import useBus from "use-bus";
+
+useBus(
+    ['@@ws/RECEIVE/WebSocketTaskDemo'],
+    ({ type, payload }) => {
+        console.log(type, payload);
+    },
+    [],
+)
+```
+
 ## 本项目websocket数据格式说明
 > 统一使用JSON格式
 ### 请求参数
