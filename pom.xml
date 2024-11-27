@@ -35,10 +35,10 @@
 <!--                    <groupId>org.springframework.boot</groupId>-->
 <!--                    <artifactId>spring-boot-starter-tomcat</artifactId>-->
 <!--                </exclusion>-->
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
+<!--                <exclusion>-->
+<!--                    <groupId>org.springframework.boot</groupId>-->
+<!--                    <artifactId>spring-boot-starter-logging</artifactId>-->
+<!--                </exclusion>-->
 
                 <!-- 使用easy-es注释：https://www.easy-es.cn/pages/4c01d7/#es%E7%89%88%E6%9C%AC%E5%8F%8Aspringboot%E7%89%88%E6%9C%AC -->
 <!--                <exclusion>-->
@@ -300,11 +300,11 @@
         </dependency>
 
         <!-- 日志插件: https://tlog.yomahub.com/ -->
-        <dependency>
-            <groupId>com.yomahub</groupId>
-            <artifactId>tlog-all-spring-boot-starter</artifactId>
-            <version>1.5.2</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.yomahub</groupId>-->
+<!--            <artifactId>tlog-web-spring-boot-starter</artifactId>-->
+<!--            <version>1.5.2</version>-->
+<!--        </dependency>-->
 
         <!-- 数据库表结构文档生成器: https://github.com/pingfangushi/screw -->
         <!-- https://mvnrepository.com/artifact/cn.smallbun.screw/screw-core -->
