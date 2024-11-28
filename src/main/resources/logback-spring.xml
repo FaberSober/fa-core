@@ -99,11 +99,12 @@
     </appender>
     <!--异步日志：二 使用 AspectLogbackAsyncAppender 配置异步 -->
 <!--    <appender name="AsyncLogFile" class="com.yomahub.tlog.core.enhance.logback.async.AspectLogbackAsyncAppender">-->
-<!--        <discardingThreshold>0</discardingThreshold>-->
-<!--        <queueSize>2048</queueSize>-->
-<!--        <includeCallerData>true</includeCallerData>-->
-<!--        <appender-ref ref="logErrorFile"/>-->
-<!--    </appender>-->
+    <appender name="AsyncLogFile" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>2048</queueSize>
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="logErrorFile"/>
+    </appender>
 
     <!-- 给spring-boot-admin查看用的日志，固定文件路径 -->
     <appender name="logFileForAdmin" class="ch.qos.logback.core.FileAppender">
@@ -127,9 +128,9 @@
 <!--        <logger name="com.faber" level="WARN"/>-->
 
         <logger name="com.faber" level="INFO" additivity="false">
-<!--            <appender-ref ref="AsyncConsole"/>-->
+            <appender-ref ref="console"/>
             <appender-ref ref="logFile"/>
-<!--            <appender-ref ref="AsyncLogFile"/>-->
+            <appender-ref ref="AsyncLogFile"/>
             <appender-ref ref="logFileForAdmin"/>
         </logger>
         <logger name="tk.mybatis" level="INFO" />
@@ -138,16 +139,16 @@
 
         <root level="INFO">
             <appender-ref ref="logFile"/>
-<!--            <appender-ref ref="AsyncLogFile"/>-->
+            <appender-ref ref="AsyncLogFile"/>
             <appender-ref ref="logFileForAdmin"/>
         </root>
     </springProfile>
 
     <springProfile name="test">
         <logger name="com.faber" level="INFO" additivity="false">
-<!--            <appender-ref ref="AsyncConsole"/>-->
+            <appender-ref ref="console"/>
             <appender-ref ref="logFile"/>
-<!--            <appender-ref ref="AsyncLogFile"/>-->
+            <appender-ref ref="AsyncLogFile"/>
             <appender-ref ref="logFileForAdmin"/>
         </logger>
         <logger name="tk.mybatis" level="INFO" />
@@ -165,7 +166,7 @@
             <appender-ref ref="console"/>
 <!--            <appender-ref ref="AsyncConsole"/>-->
             <appender-ref ref="logFile"/>
-<!--            <appender-ref ref="AsyncLogFile"/>-->
+            <appender-ref ref="AsyncLogFile"/>
             <appender-ref ref="logFileForAdmin"/>
         </logger>
         <logger name="tk.mybatis" level="INFO" />
@@ -175,18 +176,18 @@
         <logger name="org.springframework.ai.vectorstore" level="DEBUG" />
 
         <root level="ERROR">
-<!--            <appender-ref ref="AsyncConsole"/>-->
+            <appender-ref ref="console"/>
             <appender-ref ref="logFile"/>
-<!--            <appender-ref ref="AsyncLogFile"/>-->
+            <appender-ref ref="AsyncLogFile"/>
             <appender-ref ref="logFileForAdmin"/>
         </root>
     </springProfile>
 
     <springProfile name="docker">
         <logger name="com.faber" level="INFO" additivity="false">
-<!--            <appender-ref ref="AsyncConsole"/>-->
+            <appender-ref ref="console"/>
             <appender-ref ref="logFile"/>
-<!--            <appender-ref ref="AsyncLogFile"/>-->
+            <appender-ref ref="AsyncLogFile"/>
             <appender-ref ref="logFileForAdmin"/>
         </logger>
         <logger name="tk.mybatis" level="INFO" />
@@ -194,27 +195,27 @@
         <logger name="com.alicp.jetcache" level="INFO" />
 
         <root level="ERROR">
-<!--            <appender-ref ref="AsyncConsole"/>-->
+            <appender-ref ref="console"/>
             <appender-ref ref="logFile"/>
-<!--            <appender-ref ref="AsyncLogFile"/>-->
+            <appender-ref ref="AsyncLogFile"/>
             <appender-ref ref="logFileForAdmin"/>
         </root>
     </springProfile>
 
     <springProfile name="aliyun">
         <logger name="com.faber" level="DEBUG" additivity="false">
-<!--            <appender-ref ref="AsyncConsole"/>-->
+            <appender-ref ref="console"/>
             <appender-ref ref="logFile"/>
-<!--            <appender-ref ref="AsyncLogFile"/>-->
+            <appender-ref ref="AsyncLogFile"/>
             <appender-ref ref="logFileForAdmin"/>
         </logger>
         <logger name="tk.mybatis" level="INFO" />
         <logger name="com.alicp.jetcache" level="INFO" />
 
         <root level="ERROR">
-<!--            <appender-ref ref="AsyncConsole"/>-->
+            <appender-ref ref="console"/>
             <appender-ref ref="logFile"/>
-<!--            <appender-ref ref="AsyncLogFile"/>-->
+            <appender-ref ref="AsyncLogFile"/>
             <appender-ref ref="logFileForAdmin"/>
         </root>
     </springProfile>
