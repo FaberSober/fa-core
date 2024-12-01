@@ -31,8 +31,8 @@ public class LogFilter extends Filter<ILoggingEvent> {
                 exception,
                 ""
         );
-        // 将日志推送到队列
-        LoggerQueue.getInstance().push(loggerMessage);
+        // 将日志推送到队列-直接推送到WebSocket
+        // LoggerQueue.getInstance().push(loggerMessage);
 
         return FilterReply.ACCEPT;
     }
