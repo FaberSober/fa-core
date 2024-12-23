@@ -69,6 +69,9 @@ public class WrapperUtils {
                                 ew.notIn(list.size() > 0, fieldName, list);
                             }
                             break;
+                        case "equals":
+                            ew.eq(fieldName, entry.getValue());
+                            break;
                     }
 
                     continue;
