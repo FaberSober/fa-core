@@ -3,6 +3,7 @@ package com.faber.core.vo.msg;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.faber.core.vo.utils.DictOption;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import java.util.Map;
 /**
  * 基本的Table Response返回父类
  */
+@Slf4j
 public class TableRet<T> extends BaseRet {
 
     TableData<T> data;
@@ -83,6 +85,17 @@ public class TableRet<T> extends BaseRet {
             pagination.setTotal(result.getTotal());
             pagination.setPageSize(result.getSize());
             pagination.setCurrent(result.getCurrent());
+
+            try {
+                pagination.setPages(result.getPages());
+                pagination.setHasPreviousPage(result.getCurrent() > 1);
+                pagination.setHasNextPage(result.getCurrent() < result.getPages());
+                pagination.setStartRow((result.getCurrent() - 1) * result.getSize() + 1);
+                pagination.setEndRow((result.getCurrent() - 1) * result.getSize() + result.getRecords().size());
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+
             this.total = result.getTotal();
             this.rows = result.getRecords();
             this.pagination = pagination;
@@ -93,6 +106,13 @@ public class TableRet<T> extends BaseRet {
             pagination.setTotal(pageInfo.getTotal());
             pagination.setPageSize(pageInfo.getPageSize());
             pagination.setCurrent(pageInfo.getPageNum());
+
+            pagination.setPages(pageInfo.getPages());
+            pagination.setHasNextPage(pageInfo.isHasNextPage());
+            pagination.setHasPreviousPage(pageInfo.isHasPreviousPage());
+            pagination.setStartRow(pageInfo.getStartRow());
+            pagination.setEndRow(pageInfo.getEndRow());
+
             this.total = pageInfo.getTotal();
             this.rows = pageInfo.getList();
             this.pagination = pagination;
@@ -155,6 +175,29 @@ public class TableRet<T> extends BaseRet {
         private long pageSize;
         private long current;
 
+        /**
+         * 由于startRow和endRow不常用，这里说个具体的用法
+         * 可以在页面中"显示startRow到endRow 共size条数据"
+         * 当前页面第一个元素在数据库中的行号
+         */
+        private long startRow;
+        /**
+         * 当前页面最后一个元素在数据库中的行号
+         */
+        private long endRow;
+        /**
+         * 总页数
+         */
+        private long pages;
+        /**
+         * 是否有前一页
+         */
+        private boolean hasPreviousPage = false;
+        /**
+         * 是否有下一页
+         */
+        private boolean hasNextPage = false;
+
         public long getTotal() {
             return total;
         }
@@ -177,6 +220,46 @@ public class TableRet<T> extends BaseRet {
 
         public void setCurrent(long current) {
             this.current = current;
+        }
+
+        public long getStartRow() {
+            return startRow;
+        }
+
+        public void setStartRow(long startRow) {
+            this.startRow = startRow;
+        }
+
+        public long getEndRow() {
+            return endRow;
+        }
+
+        public void setEndRow(long endRow) {
+            this.endRow = endRow;
+        }
+
+        public long getPages() {
+            return pages;
+        }
+
+        public void setPages(long pages) {
+            this.pages = pages;
+        }
+
+        public boolean isHasPreviousPage() {
+            return hasPreviousPage;
+        }
+
+        public void setHasPreviousPage(boolean hasPreviousPage) {
+            this.hasPreviousPage = hasPreviousPage;
+        }
+
+        public boolean isHasNextPage() {
+            return hasNextPage;
+        }
+
+        public void setHasNextPage(boolean hasNextPage) {
+            this.hasNextPage = hasNextPage;
         }
     }
 }
