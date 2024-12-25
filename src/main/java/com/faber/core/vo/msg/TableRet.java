@@ -180,15 +180,15 @@ public class TableRet<T> extends BaseRet {
          * 可以在页面中"显示startRow到endRow 共size条数据"
          * 当前页面第一个元素在数据库中的行号
          */
-        private long startRow;
+        private long startRow = 0;
         /**
          * 当前页面最后一个元素在数据库中的行号
          */
-        private long endRow;
+        private long endRow = 0;
         /**
          * 总页数
          */
-        private long pages;
+        private long pages = 0;
         /**
          * 是否有前一页
          */
