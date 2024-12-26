@@ -26,6 +26,7 @@ public class FaSetting {
     private Config config;
     private Onlyoffice onlyoffice;
     private ThreadPoolConfig threadPoolConfig;
+    private Db db;
 
     /**
      * JWT配置
@@ -222,6 +223,19 @@ public class FaSetting {
          * 等待时长
          */
         private int awaitTerminationSeconds = 60;
+    }
+
+
+    /**
+     * 数据库配置
+     */
+    @Data
+    public static class Db {
+        /**
+         * 支持分表的表名数组，在每次查询是需要指定{@link com.faber.core.context.BaseContextHandler#setTableSuffix(String)}方法来指定表名追加的后缀。
+         */
+        private List<String> multiTables = new ArrayList<>();
+
     }
 
 }

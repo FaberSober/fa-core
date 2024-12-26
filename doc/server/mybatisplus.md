@@ -172,4 +172,6 @@ BaseContextHandler.setTableSuffix("1");
 // 调用查询
 IotDevice iotDevice = iotDeviceBiz.getById(1);
 // 检查日志SQL，查询的表名称为：beam_iot_device_1
+// 如果没有取消后缀，后续的查询表都会加上此后缀，一条线程中的查询
+BaseContextHandler.setTableSuffix("");
 ```

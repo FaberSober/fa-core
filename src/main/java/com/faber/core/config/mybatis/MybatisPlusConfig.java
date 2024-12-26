@@ -12,7 +12,9 @@ import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerIntercept
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.faber.core.config.mybatis.base.FaSqlInjector;
 import com.faber.core.config.mybatis.handler.MysqlMetaObjectHandler;
+import com.faber.core.constant.FaSetting;
 import com.faber.core.context.BaseContextHandler;
+import jakarta.annotation.Resource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.spring.annotation.MapperScan;
@@ -34,6 +36,9 @@ import java.util.List;
 @Configuration
 @MapperScan("com.faber.**.mapper")
 public class MybatisPlusConfig {
+
+    @Resource
+    FaSetting faSetting;
 
     /**
      * 包含租户ID(tenant_id)字段的表
@@ -123,6 +128,11 @@ public class MybatisPlusConfig {
         // 动态表名
         DynamicTableNameInnerInterceptor dynamicTableNameInnerInterceptor = new DynamicTableNameInnerInterceptor();
         dynamicTableNameInnerInterceptor.setTableNameHandler((sql, tableName) -> {
+            boolean multi = faSetting.getDb() != null && faSetting.getDb().getMultiTables() != null && faSetting.getDb().getMultiTables().contains(tableName.toLowerCase());
+            if (!multi) { // 不是多表名
+                return tableName;
+            }
+
             String suffix = BaseContextHandler.getTableSuffix();
             if (StrUtil.isEmpty(suffix)) {
                 return tableName;
