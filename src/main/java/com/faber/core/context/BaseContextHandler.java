@@ -84,6 +84,15 @@ public class BaseContextHandler {
         set(CommonConstants.CONTEXT_KEY_USER_IP, ip);
     }
 
+    // ----------------------------------------- MybatisPlus分表 -----------------------------------------
+    public static String getTableSuffix() {
+        return (String) get(CommonConstants.CONTEXT_KEY_TABLE_SUFFIX);
+    }
+
+    public static void setTableSuffix(String tableSuffix) {
+        set(CommonConstants.CONTEXT_KEY_TABLE_SUFFIX, tableSuffix);
+    }
+
     // ----------------------------------------- 日志备注 -----------------------------------------
     public static void setLogRemark(String remark) {
         set(CommonConstants.CONTEXT_KEY_LOG_REMARK, remark);

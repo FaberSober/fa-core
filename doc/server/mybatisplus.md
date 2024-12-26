@@ -163,3 +163,13 @@ Was expecting one of:
     <version>4.5</version>
 </dependency>
 ```
+
+# 分表查询（动态表名）
+## 示例
+```java
+// 线程中设置表后缀
+BaseContextHandler.setTableSuffix("1");
+// 调用查询
+IotDevice iotDevice = iotDeviceBiz.getById(1);
+// 检查日志SQL，查询的表名称为：beam_iot_device_1
+```

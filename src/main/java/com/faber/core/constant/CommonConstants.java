@@ -31,6 +31,11 @@ public class CommonConstants {
     public static final String CONTEXT_KEY_LOG_REMARK = "currentLogRemark"; // 当前请求的备注信息，自定义写入请求日志中，方便备注查看
     public static final String CONTEXT_KEY_LOG_OPR_REMARK = "currentLogOprRemark"; // 当前请求的操作信息，自定义写入请求日志中，方便备注查看
 
+    /**
+     * MyBatisPlus追加表的后缀，可以用作分表
+     */
+    public static final String CONTEXT_KEY_TABLE_SUFFIX = "currentTableSuffix";
+
     // ---------------- 上下文信息-租户特有字段 ----------------
     public static final String CONTEXT_KEY_TENANT_LOGIN = "currentTenantLogin";
     public static final String CONTEXT_KEY_TENANT_ID = "currentTenantIp"; // 当前租户所属的租户ID

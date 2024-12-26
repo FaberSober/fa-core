@@ -1,19 +1,18 @@
 package com.faber.core.config.mybatis;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.extension.MybatisMapWrapperFactory;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
 import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.DynamicTableNameInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.faber.core.config.mybatis.base.FaSqlInjector;
 import com.faber.core.config.mybatis.handler.MysqlMetaObjectHandler;
-import com.faber.core.context.TnTenantContextHandler;
-import net.sf.jsqlparser.expression.LongValue;
+import com.faber.core.context.BaseContextHandler;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.spring.annotation.MapperScan;
@@ -24,11 +23,11 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.List;
-import net.sf.jsqlparser.expression.Expression;
 
 
 /**
  * Mybatis Plus Config
+ *
  * @author xu.pengfei
  * @date 2022/11/28 11:41
  */
@@ -44,6 +43,7 @@ public class MybatisPlusConfig {
 
     /**
      * 是否是租户表
+     *
      * @return
      */
     private boolean isTenantTable(String tableName) {
@@ -119,6 +119,18 @@ public class MybatisPlusConfig {
         mybatisPlusInterceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
         // 防全表更新与删除插件
         mybatisPlusInterceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
+
+        // 动态表名
+        DynamicTableNameInnerInterceptor dynamicTableNameInnerInterceptor = new DynamicTableNameInnerInterceptor();
+        dynamicTableNameInnerInterceptor.setTableNameHandler((sql, tableName) -> {
+            String suffix = BaseContextHandler.getTableSuffix();
+            if (StrUtil.isEmpty(suffix)) {
+                return tableName;
+            }
+            return tableName + "_" + suffix;
+        });
+        mybatisPlusInterceptor.addInnerInterceptor(dynamicTableNameInnerInterceptor);
+
         sqlSessionFactory.setPlugins(mybatisPlusInterceptor);
 
         /* map 下划线转驼峰 */
