@@ -58,6 +58,10 @@ public class FaConfig implements Serializable {
      */
     private String logoWithText;
     /**
+     * 微信小程序
+     */
+    private String wxminiapp;
+    /**
      * [官网]地址
      */
     private String portalLink;
