@@ -120,11 +120,6 @@ public class MybatisPlusConfig {
 //            }
 //        }));
 
-        mybatisPlusInterceptor.addInnerInterceptor(new PaginationInnerInterceptor());
-        mybatisPlusInterceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
-        // 防全表更新与删除插件
-        mybatisPlusInterceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
-
         // 动态表名
         DynamicTableNameInnerInterceptor dynamicTableNameInnerInterceptor = new DynamicTableNameInnerInterceptor();
         dynamicTableNameInnerInterceptor.setTableNameHandler((sql, tableName) -> {
@@ -140,6 +135,11 @@ public class MybatisPlusConfig {
             return tableName + "_" + suffix;
         });
         mybatisPlusInterceptor.addInnerInterceptor(dynamicTableNameInnerInterceptor);
+
+        mybatisPlusInterceptor.addInnerInterceptor(new PaginationInnerInterceptor());
+        mybatisPlusInterceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
+        // 防全表更新与删除插件
+        mybatisPlusInterceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
 
         sqlSessionFactory.setPlugins(mybatisPlusInterceptor);
 
