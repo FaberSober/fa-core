@@ -69,6 +69,12 @@ public class WrapperUtils {
                                 ew.notIn(list.size() > 0, fieldName, list);
                             }
                             break;
+                        case "gt":
+                            ew.gt(fieldName, entry.getValue());
+                            break;
+                        case "lt":
+                            ew.lt(fieldName, entry.getValue());
+                            break;
                     }
 
                     continue;
