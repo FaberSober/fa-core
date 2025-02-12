@@ -421,6 +421,12 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         afterRemove(ids);
     }
 
+    public void removeMine() {
+        QueryWrapper<T> wrapper = new QueryWrapper<>();
+        wrapper.eq("crt_user", getCurrentUserId());
+        super.remove(wrapper);
+    }
+
     public String updateValueToStr(Field field, Object value) {
         if (value == null) return "";
         if (IEnum.class.isAssignableFrom(field.getType())) {
