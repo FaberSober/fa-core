@@ -1,7 +1,6 @@
 package com.faber.core.config.mybatis;
 
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.extension.MybatisMapWrapperFactory;
@@ -66,118 +65,97 @@ public class MybatisPlusConfig {
         return tableName.startsWith("tn_");
     }
 
-//    @Bean("mybatisSqlSession")
-//    public SqlSessionFactory sqlSessionFactory(DataSource dataSource, GlobalConfig globalConfig) throws Exception {
-//        MybatisSqlSessionFactoryBean sqlSessionFactory = new MybatisSqlSessionFactoryBean();
-//        /* 数据源 */
-//        sqlSessionFactory.setDataSource(dataSource);
-//        /* xml扫描 */
-//        sqlSessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:/mapper/**/*.xml"));
-//        /* 扫描 typeHandler */
-////        sqlSessionFactory.setTypeHandlersPackage("com.baomidou.mybatisplus.samples.mysql.type");
-//        MybatisConfiguration configuration = new MybatisConfiguration();
-//        configuration.setJdbcTypeForNull(JdbcType.NULL);
-//        /* 驼峰转下划线 */
-//        configuration.setMapUnderscoreToCamelCase(true);
-//        MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();
-//
-//        // 如果用了分页插件注意先 add TenantLineInnerInterceptor 再 add PaginationInnerInterceptor
-//        // 多租户
-////        mybatisPlusInterceptor.addInnerInterceptor(new TenantLineInnerInterceptor(new TenantLineHandler() {
-////            @Override
-////            public String getTenantIdColumn() {
-////                return "tenant_id";
-////            }
-////
-////            @Override
-////            public Expression getTenantId() {
-////                // TO-DO 这里获取上下文的租户ID
-////                return new LongValue(TnTenantContextHandler.getTenantId());
-////            }
-////
-////            // 这是 default 方法,默认返回 false 表示所有表都需要拼多租户条件
-////            @Override
-////            public boolean ignoreTable(String tableName) {
-////                return !isTenantTable(tableName);
-////            }
-////        }));
-//        // 租户下创建的企业
-////        mybatisPlusInterceptor.addInnerInterceptor(new TenantLineInnerInterceptor(new TenantLineHandler() {
-////            @Override
-////            public String getTenantIdColumn() {
-////                return "corp_id";
-////            }
-////
-////            @Override
-////            public Expression getTenantId() {
-////                // TO-DO 这里获取上下文的租户ID
-////                return new LongValue(TnTenantContextHandler.getCorpId());
-////            }
-////
-////            // 这是 default 方法,默认返回 false 表示所有表都需要拼多租户条件
-////            @Override
-////            public boolean ignoreTable(String tableName) {
-////                return !isCorpTable(tableName);
-////            }
-////        }));
-//
-//        // 动态表名
-//        DynamicTableNameInnerInterceptor dynamicTableNameInnerInterceptor = new DynamicTableNameInnerInterceptor();
-//        dynamicTableNameInnerInterceptor.setTableNameHandler((sql, tableName) -> {
-//            boolean multi = faSetting.getDb() != null && faSetting.getDb().getMultiTables() != null && faSetting.getDb().getMultiTables().contains(tableName.toLowerCase());
-//            if (!multi) { // 不是多表名
-//                return tableName;
-//            }
-//
-//            String suffix = BaseContextHandler.getTableSuffix();
-//            if (StrUtil.isEmpty(suffix)) {
-//                return tableName;
-//            }
-//            return tableName + "_" + suffix;
-//        });
-//        mybatisPlusInterceptor.addInnerInterceptor(dynamicTableNameInnerInterceptor);
-//
-//        mybatisPlusInterceptor.addInnerInterceptor(new PaginationInnerInterceptor());
-//        mybatisPlusInterceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
-//        // 防全表更新与删除插件
-//        mybatisPlusInterceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
-//
-//        sqlSessionFactory.setPlugins(mybatisPlusInterceptor);
-//
-//        /* map 下划线转驼峰 */
-//        configuration.setObjectWrapperFactory(new MybatisMapWrapperFactory());
-//        sqlSessionFactory.setConfiguration(configuration);
-//
-//        /* 自动填充插件 */
-//        globalConfig.setMetaObjectHandler(new MysqlMetaObjectHandler());
-//
-//        globalConfig.setSqlInjector(new FaSqlInjector());
-//
-//        sqlSessionFactory.setGlobalConfig(globalConfig);
-//        return sqlSessionFactory.getObject();
-//    }
-    /**
-     * 动态数据源插件配置（替换原有自定义实现）
-     */
-    @Bean
-    public MybatisPlusInterceptor mybatisPlusInterceptor() {
-        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+    @Bean("mybatisSqlSession")
+    public SqlSessionFactory sqlSessionFactory(DataSource dataSource, GlobalConfig globalConfig) throws Exception {
+        MybatisSqlSessionFactoryBean sqlSessionFactory = new MybatisSqlSessionFactoryBean();
+        /* 数据源 */
+        sqlSessionFactory.setDataSource(dataSource);
+        /* xml扫描 */
+        sqlSessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:/mapper/**/*.xml"));
+        /* 扫描 typeHandler */
+//        sqlSessionFactory.setTypeHandlersPackage("com.baomidou.mybatisplus.samples.mysql.type");
+        MybatisConfiguration configuration = new MybatisConfiguration();
+        configuration.setJdbcTypeForNull(JdbcType.NULL);
+        /* 驼峰转下划线 */
+        configuration.setMapUnderscoreToCamelCase(true);
+        MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();
 
-        // 1. 动态表名插件（保留原有业务逻辑）
-        DynamicTableNameInnerInterceptor dynamicTableInterceptor = new DynamicTableNameInnerInterceptor();
-        dynamicTableInterceptor.setTableNameHandler((sql, tableName) -> {
-            boolean multi = faSetting.getDb() != null
-                    && faSetting.getDb().getMultiTables() != null
-                    && faSetting.getDb().getMultiTables().contains(tableName.toLowerCase());
-            return multi ? tableName + "_" + BaseContextHandler.getTableSuffix() : tableName;
+        // 如果用了分页插件注意先 add TenantLineInnerInterceptor 再 add PaginationInnerInterceptor
+        // 多租户
+//        mybatisPlusInterceptor.addInnerInterceptor(new TenantLineInnerInterceptor(new TenantLineHandler() {
+//            @Override
+//            public String getTenantIdColumn() {
+//                return "tenant_id";
+//            }
+//
+//            @Override
+//            public Expression getTenantId() {
+//                // TO-DO 这里获取上下文的租户ID
+//                return new LongValue(TnTenantContextHandler.getTenantId());
+//            }
+//
+//            // 这是 default 方法,默认返回 false 表示所有表都需要拼多租户条件
+//            @Override
+//            public boolean ignoreTable(String tableName) {
+//                return !isTenantTable(tableName);
+//            }
+//        }));
+        // 租户下创建的企业
+//        mybatisPlusInterceptor.addInnerInterceptor(new TenantLineInnerInterceptor(new TenantLineHandler() {
+//            @Override
+//            public String getTenantIdColumn() {
+//                return "corp_id";
+//            }
+//
+//            @Override
+//            public Expression getTenantId() {
+//                // TO-DO 这里获取上下文的租户ID
+//                return new LongValue(TnTenantContextHandler.getCorpId());
+//            }
+//
+//            // 这是 default 方法,默认返回 false 表示所有表都需要拼多租户条件
+//            @Override
+//            public boolean ignoreTable(String tableName) {
+//                return !isCorpTable(tableName);
+//            }
+//        }));
+
+        // 动态表名
+        DynamicTableNameInnerInterceptor dynamicTableNameInnerInterceptor = new DynamicTableNameInnerInterceptor();
+        dynamicTableNameInnerInterceptor.setTableNameHandler((sql, tableName) -> {
+            boolean multi = faSetting.getDb() != null && faSetting.getDb().getMultiTables() != null && faSetting.getDb().getMultiTables().contains(tableName.toLowerCase());
+            if (!multi) { // 不是多表名
+                return tableName;
+            }
+
+            String suffix = BaseContextHandler.getTableSuffix();
+            if (StrUtil.isEmpty(suffix)) {
+                return tableName;
+            }
+            return tableName + "_" + suffix;
         });
-        interceptor.addInnerInterceptor(dynamicTableInterceptor);
+        mybatisPlusInterceptor.addInnerInterceptor(dynamicTableNameInnerInterceptor);
 
-        // 2. 分页插件
-        interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
+        mybatisPlusInterceptor.addInnerInterceptor(new PaginationInnerInterceptor());
+        mybatisPlusInterceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
+        // 防全表更新与删除插件
+        mybatisPlusInterceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
 
-        return interceptor;
+        sqlSessionFactory.setPlugins(mybatisPlusInterceptor);
+
+        /* map 下划线转驼峰 */
+        configuration.setObjectWrapperFactory(new MybatisMapWrapperFactory());
+        sqlSessionFactory.setConfiguration(configuration);
+
+        /* 自动填充插件 */
+        globalConfig.setMetaObjectHandler(new MysqlMetaObjectHandler());
+
+        globalConfig.setSqlInjector(new FaSqlInjector());
+
+        sqlSessionFactory.setGlobalConfig(globalConfig);
+        return sqlSessionFactory.getObject();
     }
+
     @Bean
     public GlobalConfig globalConfig() {
         GlobalConfig conf = new GlobalConfig();
