@@ -1,6 +1,7 @@
 package com.faber.core.web.biz;
 
 import cn.hutool.core.annotation.AnnotationUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ReflectUtil;
@@ -146,7 +147,14 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
         QueryWrapper<T> wrapper = new QueryWrapper<>();
         wrapper.in("id", ids);
-        return super.list(wrapper);
+        List<T> list = super.list(wrapper);
+        // sort by ids origin order
+        CollUtil.sort(list, (o1, o2) -> {
+            int o1IdIndex = ids.indexOf(ReflectUtil.getFieldValue(o1, "id"));
+            int o2IdIndex = ids.indexOf(ReflectUtil.getFieldValue(o2, "id"));
+            return o1IdIndex - o2IdIndex;
+        });
+        return list;
     }
 
     public List<T> mineList(QueryParams query) {
