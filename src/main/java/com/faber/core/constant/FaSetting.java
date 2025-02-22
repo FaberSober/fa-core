@@ -162,6 +162,10 @@ public class FaSetting {
          * kkFileView
          */
         private String kkFileView;
+        /**
+         * 本服务用于外网访问的域名
+         */
+        private String serverHost;
     }
 
     /**
