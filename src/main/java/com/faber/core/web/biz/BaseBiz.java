@@ -140,7 +140,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         return flag;
     }
 
-    public List<T> getByIds(List<Serializable> ids) {
+    public <ID extends Serializable> List<T> getByIds(List<ID> ids) {
         if (ids == null || ids.isEmpty()) {
             return new ArrayList<>();
         }
