@@ -33,6 +33,14 @@ public class BaseResHandler {
         return TnTenantContextHandler.getUserId();
     }
 
+    /**
+     * 获取当前登录的账户ID
+     * @return
+     */
+    public String getCurrentUserId() {
+        return BaseContextHandler.getUserId();
+    }
+
     protected <T> Ret<T> ok() {
         return Ret.ok();
     }

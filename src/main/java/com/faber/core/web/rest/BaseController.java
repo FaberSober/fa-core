@@ -40,6 +40,7 @@ import java.util.List;
  *         <tr><td>{@link BaseController#removePerBatchByIds}</td>  <td>ids批量永久删除</td></tr>
  *         <tr><td>{@link BaseController#removeByQuery}</td>        <td>通过查询条件删除</td></tr>
  *         <tr><td>{@link BaseController#removeMine}</td>           <td>删除当前用户的数据</td></tr>
+ *         <tr><td>{@link BaseController#removeMineByQuery}</td>    <td>限定当前用户通过查询条件删除</td></tr>
  *         <tr><td>{@link BaseController#all}</td>                  <td>获取所有List</td></tr>
  *         <tr><td>{@link BaseController#list}</td>                 <td>获取List，带过滤查询条件</td></tr>
  *         <tr><td>{@link BaseController#listN}</td>                <td>获取第N个，带过滤查询条件</td></tr>
@@ -181,6 +182,16 @@ public abstract class BaseController<Biz extends BaseBiz, Entity, Key extends Se
     @ResponseBody
     public Ret<Entity> removeMine() {
         baseBiz.removeMine();
+        return ok();
+    }
+
+    @FaLogOpr(value = "限定当前用户通过查询条件删除", crud = LogCrudEnum.R)
+    @LogNoRet
+    @RequestMapping(value = "/removeMineByQuery", method = RequestMethod.POST)
+    @ResponseBody
+    public Ret<Boolean> removeMineByQuery(@RequestBody QueryParams query) {
+        query.getQuery().put("crtUser", getCurrentUserId());
+        baseBiz.removeByQuery(query);
         return ok();
     }
 
