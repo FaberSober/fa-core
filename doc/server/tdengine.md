@@ -20,18 +20,30 @@ create stable if not exists equipment.equipment_info (ts timestamp,int_value Int
 
 ### 常用SQL
 ```sql
+USE demo;
+
 -- 获取超级表的结构信息
-DESCRIBE equipment.equipment_info;
+DESCRIBE equipment_info;
 
 -- 创建超级表
-create stable if not exists equipment.equipment_info (ts timestamp,int_value Integer,str_value nchar(32)) tags (eqp_id nchar(32));
+create stable if not exists equipment_info (ts timestamp,int_value Integer,str_value nchar(32)) tags (eqp_id nchar(32));
 
 -- 删除超级表
-DROP STABLE IF EXISTS equipment.equipment_info;
+DROP STABLE IF EXISTS equipment_info;
 
 -- 增加列
-ALTER STABLE equipment.equipment_info ADD COLUMN int_value2 Integer;
+ALTER STABLE equipment_info ADD COLUMN int_value2 Integer;
 
 -- 删除列
-ALTER STABLE equipment.equipment_info DROP COLUMN int_value2;
+ALTER STABLE equipment_info DROP COLUMN int_value2;
+
+-- 超级表插入数据
+insert into equipment_info (tbname, ts, int_value, str_value, eqp_id)
+values( "d1001", "2018-10-03 14:38:05", 1, "a", "sn10001");
+
+-- 查询数据
+SELECT * FROM equipment_info
+WHERE int_value > 0
+ORDER BY ts DESC
+LIMIT 5;
 ```
