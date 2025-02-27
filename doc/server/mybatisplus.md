@@ -1,5 +1,8 @@
 # MyBatis-Plus
 
+## MyBatisPlus直接执行SQL
+
+
 ## MyBatisPlus批量写入方法saveBatch速度很慢的解决方案
 解决方案很简单，在数据库配置的uri后面加上下面这个属性即可：
 ```yaml
