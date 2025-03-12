@@ -1,6 +1,5 @@
 package com.faber.core.web.biz;
 
-import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.date.DateUtil;
@@ -423,6 +422,10 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     public void removeByQuery(QueryParams query) {
         QueryWrapper<T> wrapper = parseQuery(query);
+        long count = super.count(wrapper);
+        if (count > 1000) {
+            throw new BuzzException("删除数据超过1000条，请使用批量删除");
+        }
         List<T> list = super.list(wrapper);
         super.remove(wrapper);
         List<Serializable> ids = list.stream().map(i -> getEntityId(i)).toList();

@@ -82,9 +82,9 @@ public class CommonConstants {
     public final static int ROOT = 0;
 
     /**
-     * 单次查询返回数据最大值
+     * 单次分页查询返回数据最大值
      */
-    public final static long QUERY_MAX_COUNT = 10000;
+    public final static long QUERY_MAX_COUNT = 1000;
 
     /**
      * 中国地区编码-中国编码-6位

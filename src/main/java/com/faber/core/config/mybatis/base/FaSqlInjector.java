@@ -9,6 +9,8 @@ import com.baomidou.mybatisplus.core.injector.methods.DeleteByIds;
 import com.baomidou.mybatisplus.core.injector.methods.SelectById;
 import com.baomidou.mybatisplus.core.injector.methods.UpdateById;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import com.faber.core.config.mybatis.methods.DeleteAll;
+import com.faber.core.config.mybatis.methods.DeleteAllIgnoreLogic;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
@@ -26,6 +28,9 @@ public class FaSqlInjector extends DefaultSqlInjector {
     @Override
     public List<AbstractMethod> getMethodList(Class<?> mapperClass, TableInfo tableInfo) {
         List<AbstractMethod> methodList = super.getMethodList(mapperClass, tableInfo);
+
+//        methodList.add(new DeleteAll("deleteAll"));
+//        methodList.add(new DeleteAllIgnoreLogic("deleteAllIgnoreLogic"));
 
         //增加自定义方法-忽略逻辑删除，追加后缀IgnoreLogic
         methodList.add(enhancerMethod(new SelectById()));

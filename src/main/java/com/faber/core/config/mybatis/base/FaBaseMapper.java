@@ -1,5 +1,6 @@
 package com.faber.core.config.mybatis.base;
 
+import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
@@ -36,6 +37,21 @@ public interface FaBaseMapper<T> extends BaseMapper<T> {
     default LambdaUpdateChainWrapper<T> lambdaUpdateChain() {
         return new LambdaUpdateChainWrapper<>(this);
     }
+
+
+    // 添加拦截忽略注解，指定忽略全表删除拦截器
+
+    /**
+     * 删除全表数据，谨慎使用！
+     */
+//    @InterceptorIgnore(blockAttack = "true")
+//    int deleteAll();
+
+    /**
+     * 删除全表数据，谨慎使用！
+     */
+//    @InterceptorIgnore(blockAttack = "true")
+//    int deleteAllIgnoreLogic();
 
     // ----------------------------------- 自定义追加的忽略逻辑删除字段的操作 -----------------------------------
     /**
