@@ -1,3 +1,5 @@
+[TOC]
+
 # MyBatis-Plus
 
 ## MyBatisPlus直接执行SQL
@@ -177,4 +179,18 @@ IotDevice iotDevice = iotDeviceBiz.getById(1);
 // 检查日志SQL，查询的表名称为：beam_iot_device_1
 // 如果没有取消后缀，后续的查询表都会加上此后缀，一条线程中的查询
 BaseContextHandler.setTableSuffix("");
+```
+
+# 拦截忽略注解 @InterceptorIgnore
+https://baomidou.com/plugins/#%E6%8B%A6%E6%88%AA%E5%BF%BD%E7%95%A5%E6%B3%A8%E8%A7%A3-interceptorignore
+
+实例代码如下：
+```java
+public interface StudentMapper extends FaBaseMapper<Student> {
+
+    // 添加拦截忽略注解，指定忽略全表删除拦截器
+    @InterceptorIgnore(blockAttack = "true")
+    int deleteAll();
+
+}
 ```

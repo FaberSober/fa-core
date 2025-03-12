@@ -1,10 +1,12 @@
 package com.faber.core.config.mybatis.base;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.conditions.update.UpdateChainWrapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.io.Serializable;
 
@@ -35,23 +37,31 @@ public interface FaBaseMapper<T> extends BaseMapper<T> {
         return new LambdaUpdateChainWrapper<>(this);
     }
 
+    // ----------------------------------- 自定义追加的忽略逻辑删除字段的操作 -----------------------------------
     /**
-     * 以下为自己自定义
+     * 根据 ID 删除，不受逻辑删除字段限制，物理永久删除
+     * @param id 主键ID
      */
-    int deleteAll();
+    int deleteByIdIgnoreLogic(Serializable id);
 
     /**
-     * 物理永久删除
-     * @param id
-     * @return
+     * 根据实体(ID)删除，不受逻辑删除字段限制，物理永久删除
+     *
+     * @param entity 实体对象
+     * @since 3.4.4
      */
-    int deletePermanentById(Serializable id);
+    int deleteByIdIgnoreLogic(T entity);
 
     /**
-     * id查询，不受逻辑删除字段限制
-     * @param id
-     * @return
+     * 根据 ID 查询，不受逻辑删除字段限制
+     * @param id 主键ID
      */
-    T selectByIdPure(Serializable id);
+    T selectByIdIgnoreLogic(Serializable id);
+
+    /**
+     * 根据 ID 修改
+     * @param entity 实体对象
+     */
+    int updateByIdIgnoreLogic(@Param(Constants.ENTITY) T entity);
 
 }

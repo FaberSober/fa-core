@@ -408,7 +408,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     public void removePerById(Serializable id) {
         // 用SQL进行物理删除
-        baseMapper.deletePermanentById(id);
+        baseMapper.deleteByIdIgnoreLogic(id);
         afterRemove(id);
     }
 
