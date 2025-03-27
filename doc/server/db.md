@@ -1,7 +1,56 @@
 # DB常见数据库操作
 
 ## 从列表里过滤出批量插入、批量更新列表
+### demo1
+```java
+@Override
+public void importExcel(CommonImportExcelReqVo reqVo) {
+    File file = getFileById(reqVo.getFileId());
+    Long pointId = MapUtil.getLong(reqVo, "pointId");
 
+    SubjectWeatherPoint weatherPoint = subjectWeatherPointBiz.getByIdWithCache(pointId);
+    Long factoryId = weatherPoint != null ? weatherPoint.getFactoryId() : null;
+
+    List<WeatherRealPoint> voList = new ArrayList<>();
+    FaExcelUtils.simpleRead(file, WeatherRealPoint.class, i -> {
+        i.setFactoryId(factoryId);
+        i.setPointId(pointId);
+        voList.add(i);
+    });
+
+    if (voList == null || voList.isEmpty()) return;
+
+    // query database by time
+    List<Date> timeList = voList.stream().map(i -> i.getTime()).toList();
+
+    List<WeatherRealPoint> dbList = lambdaQuery()
+            .eq(WeatherRealPoint::getPointId, pointId)
+            .in(WeatherRealPoint::getTime, timeList)
+            .list();
+
+    // 已经存在数据库的键值对
+    List<String> existKeyIdList = dbList.stream().map(i -> DateUtil.formatDateTime(i.getTime())).toList();
+
+    // 批量导入、更新
+    List<WeatherRealPoint> saveList = voList.stream()
+            .filter(i -> !existKeyIdList.contains(DateUtil.formatDateTime(i.getTime())))
+            .toList();
+
+    List<WeatherRealPoint> updateList = voList.stream()
+            .filter(i -> existKeyIdList.contains(DateUtil.formatDateTime(i.getTime())))
+            .map(i -> {
+                // 查找存在数据库的数据
+                WeatherRealPoint entityDB = CollUtil.findOne(dbList, f -> ObjUtil.equals(f.getTime(), i.getTime()));
+                BeanUtil.copyProperties(i, entityDB, "id");
+                return entityDB;
+            }).toList();
+
+    this.saveBatch(saveList);
+    this.updateBatchById(updateList);
+}
+```
+
+### demo2
 ```java
 // 读取Excel中的内容
 List<WeatherWeatherPointExcelInVo> voList = new ArrayList<>();
