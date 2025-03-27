@@ -18,7 +18,7 @@ public class CommonImportExcelReqVo extends LinkedHashMap<String, Object> {
 
     public CommonImportExcelReqVo(Map<String, Object> params) {
         this.putAll(params);
-        this.fileId = params.get("currentPage").toString();
+        this.fileId = params.get("fileId").toString();
     }
 
 

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <h3>通用Rest接口父类，包含基本的方法：</h3>
@@ -275,7 +276,8 @@ public abstract class BaseController<Biz extends BaseBiz, Entity, Key extends Se
     @FaLogOpr(value = "导入Excel数据", crud = LogCrudEnum.R)
     @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
     @ResponseBody
-    public Ret<Boolean> importExcel(@RequestBody CommonImportExcelReqVo reqVo) {
+    public Ret<Boolean> importExcel(@RequestBody Map<String, Object> params) {
+        CommonImportExcelReqVo reqVo = new CommonImportExcelReqVo(params);
         baseBiz.importExcel(reqVo);
         return ok();
     }
