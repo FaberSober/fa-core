@@ -26,4 +26,9 @@ public interface StorageService {
 
     FileInfo getFileInfoById(String fileId);
 
+    /**
+     * 保存业务关联
+     */
+    void saveFileBiz(String mainBizId, String bizId, String type, String fileId);
+
 }

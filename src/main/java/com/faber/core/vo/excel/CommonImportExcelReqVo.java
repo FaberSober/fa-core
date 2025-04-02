@@ -16,10 +16,15 @@ public class CommonImportExcelReqVo extends LinkedHashMap<String, Object> {
      */
     private String fileId;
 
+    /**
+     * 业务类型
+     */
+    private String buzzType;
+
     public CommonImportExcelReqVo(Map<String, Object> params) {
         this.putAll(params);
         this.fileId = params.get("fileId").toString();
+        this.buzzType = params.get("buzzType").toString();
     }
-
 
 }

@@ -57,6 +57,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     private ConfigSceneService configSceneService;
     private DictService dictService;
+    private StorageService storageService;
 
 
     /**
@@ -341,17 +342,32 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
     }
 
     public File getFileById(String fileId) {
-        StorageService storageService = SpringUtil.getBean(StorageService.class);
-        return storageService.getByFileId(fileId);
+        return getStorageService().getByFileId(fileId);
     }
 
     public FileInfo getFileInfoById(String fileId) {
-        StorageService storageService = SpringUtil.getBean(StorageService.class);
-        return storageService.getFileInfoById(fileId);
+        return getStorageService().getFileInfoById(fileId);
+    }
+
+    public StorageService getStorageService() {
+        if (this.storageService == null) {
+            this.storageService = SpringUtil.getBean(StorageService.class);
+        }
+        return this.storageService;
+    }
+
+    public void saveFileBiz(String mainBizId, String bizId, String type, String fileId) {
+        getStorageService().saveFileBiz("", "", type, fileId);
     }
 
     public void importExcel(CommonImportExcelReqVo reqVo) {
         File file = getFileById(reqVo.getFileId());
+
+        // save file save biz
+        if (StrUtil.isNotEmpty(reqVo.getBuzzType())) {
+            getStorageService().saveFileBiz("", "", reqVo.getBuzzType(), reqVo.getFileId());
+        }
+
         List<T> saveList = new ArrayList<>();
         FaExcelUtils.simpleRead(file, this.getEntityClass(), i -> {
             saveList.add(i);
