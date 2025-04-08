@@ -360,6 +360,13 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         getStorageService().saveFileBiz("", "", type, fileId);
     }
 
+    public void importExcelFileBizSave(CommonImportExcelReqVo reqVo) {
+        // save file save biz
+        if (StrUtil.isNotEmpty(reqVo.getBuzzType())) {
+            getStorageService().saveFileBiz("", "", reqVo.getBuzzType(), reqVo.getFileId());
+        }
+    }
+
     public void importExcel(CommonImportExcelReqVo reqVo) {
         File file = getFileById(reqVo.getFileId());
 

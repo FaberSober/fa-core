@@ -1,5 +1,6 @@
 package com.faber.core.vo.excel;
 
+import cn.hutool.core.map.MapUtil;
 import lombok.Data;
 import lombok.ToString;
 
@@ -23,8 +24,8 @@ public class CommonImportExcelReqVo extends LinkedHashMap<String, Object> {
 
     public CommonImportExcelReqVo(Map<String, Object> params) {
         this.putAll(params);
-        this.fileId = params.get("fileId").toString();
-        this.buzzType = params.get("buzzType").toString();
+        this.fileId = MapUtil.getStr(params, "fileId");
+        this.buzzType = MapUtil.getStr(params, "buzzType");
     }
 
 }
