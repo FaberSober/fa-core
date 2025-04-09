@@ -1,5 +1,11 @@
 # WebSocket
 
+# 发送数据
+## 发送简单文本
+```java
+WsHolder.sendMessage(WsTypeEnum.PLAIN_TEXT, "开始下载NWP数据...");
+```
+
 # 如何使用
 ## 接受数据
 ```typescript jsx
