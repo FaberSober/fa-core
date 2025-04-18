@@ -15,6 +15,7 @@ public class WsRet implements Serializable {
     private String type;
     private String msg = "success";
     private Object data;
+    private long timestamp = 0;
 
     public WsRet(int code, String msg) {
         WsRet wsRet = new WsRet();
@@ -31,7 +32,7 @@ public class WsRet implements Serializable {
     }
 
     public static WsRet success(String type, Object data) {
-        return new WsRet(0, type, "success", data);
+        return new WsRet(0, type, "success", data, System.currentTimeMillis());
     }
 
 }

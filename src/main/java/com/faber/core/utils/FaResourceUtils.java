@@ -18,6 +18,14 @@ import java.nio.charset.StandardCharsets;
  */
 public class FaResourceUtils {
 
+    public static InputStream getResourceInputStream(String resourceLocation) throws IOException {
+        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        // Resource[] resources = resolver.getResources("templates/layout/email.html");
+        Resource resource = resolver.getResource(resourceLocation);
+        InputStream stream = resource.getInputStream();
+        return stream;
+    }
+
     public static String getResourceString(Resource resource) throws IOException {
         //获得文件流，因为在jar文件中，不能直接通过文件资源路径拿到文件，但是可以在jar包中拿到文件流
         InputStream stream = resource.getInputStream();
