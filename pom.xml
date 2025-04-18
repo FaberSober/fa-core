@@ -138,7 +138,14 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.5.7</version>
+            <version>3.5.11</version>
+        </dependency>
+
+        <!-- jdk 11+ 引入可选模块 -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-jsqlparser</artifactId>
+            <version>3.5.11</version>
         </dependency>
 
         <!-- 注意： SpringBoot 3.0 需要 mybatis-spring 3.0.X 版本，否则会报如下错误：Invalid value type for attribute 'factoryBeanObjectType'‘': java.lang.String -->
