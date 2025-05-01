@@ -1,5 +1,7 @@
 package com.faber.core.enums;
 
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.baomidou.mybatisplus.annotation.IEnum;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -23,6 +25,22 @@ public enum AuditEnum implements IEnum<Integer> {
     AuditEnum(Integer value, String desc) {
         this.value = value;
         this.desc = desc;
+    }
+
+    public static AuditEnum fromValue(Integer value) {
+        AuditEnum result = ArrayUtil.firstMatch(i -> ObjUtil.equals(i.value, value), values());
+        if (result == null) {
+            throw new IllegalArgumentException("Invalid BoolEnum value: " + value);
+        }
+        return result;
+    }
+
+    public static AuditEnum fromDesc(String value) {
+        AuditEnum result = ArrayUtil.firstMatch(i -> ObjUtil.equals(i.desc, value), values());
+        if (result == null) {
+            throw new IllegalArgumentException("Invalid BoolEnum desc: " + value);
+        }
+        return result;
     }
 
 }
