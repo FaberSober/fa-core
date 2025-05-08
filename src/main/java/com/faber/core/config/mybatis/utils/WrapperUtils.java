@@ -219,6 +219,12 @@ public class WrapperUtils {
                     case BETWEEN:
                         ew.between(column, cond.getBegin(), cond.getEnd());
                         break;
+                    case IS_NOT_NULL:
+                        ew.isNotNull(column);
+                        break;
+                    case IS_NULL:
+                        ew.isNull(column);
+                        break;
                     default:
                         break;
                 }

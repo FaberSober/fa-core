@@ -19,7 +19,9 @@ public enum ConditionOprEnum implements IEnum<String> {
     LE("le", "le"),
     BETWEEN("between", "between"),
     IN("in", "in"),
-    NOT_IN("notIn", "notIn");
+    NOT_IN("notIn", "notIn"),
+    IS_NOT_NULL("isNotNull", "isNotNull"),
+    IS_NULL("isNull", "isNull");
 
     @JsonValue
     @EnumValue
