@@ -32,5 +32,8 @@ public interface AiRagFlowService {
      */
     @Post("datasets/{dataset_id}/documents")
     JSONObject documentUpload(@Var("dataset_id") String datasetId, @DataFile("file") File file);
+
+    @Post(url = "http://localhost:8080/hello/user")
+    String helloUser(@JSONBody Map<String, Object> user);
 }
 ```
