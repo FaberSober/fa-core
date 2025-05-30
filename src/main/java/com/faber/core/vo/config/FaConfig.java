@@ -111,4 +111,17 @@ public class FaConfig implements Serializable {
     private String qiniuDomain;
     private String qiniuBasePath;
 
+    // ------------------------- [日志配置] -------------------------
+    /**
+     * 日志保存级别：
+     * 1. all：全部
+     * 2. simple：记录请求(不记录请求内容与返回内容，节省日志空间)
+     * 3. no：不记录
+     */
+    private String logSaveLevel = "all";
+    /**
+     * 日志保存最大数量
+     */
+    private Integer logSaveMaxNum = -1;
+
 }
