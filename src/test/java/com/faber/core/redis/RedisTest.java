@@ -2,8 +2,8 @@ package com.faber.core.redis;
 
 import cn.hutool.core.thread.ThreadUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.redisson.Redisson;
 import org.redisson.api.*;
 import org.redisson.api.listener.MessageListener;
@@ -34,7 +34,7 @@ public class RedisTest {
         return Redisson.create(config);
     }
 
-    @Before
+    @BeforeEach
     public void init() {
         redisson = getRedissonClient();
     }

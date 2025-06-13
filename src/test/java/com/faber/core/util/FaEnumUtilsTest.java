@@ -3,7 +3,7 @@ package com.faber.core.util;
 import com.faber.core.enums.SexEnum;
 import com.faber.core.utils.FaEnumUtils;
 import com.faber.core.vo.utils.DictOption;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 

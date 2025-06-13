@@ -2,7 +2,7 @@ package com.faber.core.util;
 
 import cn.hutool.core.io.FileUtil;
 import com.faber.core.utils.FaImgUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
