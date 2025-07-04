@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerIntercept
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.faber.core.config.mybatis.base.FaSqlInjector;
 import com.faber.core.config.mybatis.handler.MysqlMetaObjectHandler;
+import com.faber.core.config.mybatis.interceptor.DamengSqlInterceptor;
 import com.faber.core.constant.FaSetting;
 import com.faber.core.context.BaseContextHandler;
 import jakarta.annotation.Resource;
@@ -24,6 +25,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.util.Arrays;
 import java.util.List;
 
@@ -79,6 +81,26 @@ public class MybatisPlusConfig {
         configuration.setJdbcTypeForNull(JdbcType.NULL);
         /* 驼峰转下划线 */
         configuration.setMapUnderscoreToCamelCase(true);
+
+        // 设置数据库ID，用于多数据库SQL支持
+        try {
+            Connection conn = dataSource.getConnection();
+            String databaseProductName = conn.getMetaData().getDatabaseProductName();
+            if ("DM DBMS".equalsIgnoreCase(databaseProductName) || databaseProductName.toLowerCase().contains("dm")) {
+                configuration.setDatabaseId("dm");
+                // 设置达梦数据库默认模式
+                try {
+                    conn.prepareStatement("SET SCHEMA zdj_dev").execute();
+                } catch (Exception e) {
+                    // 忽略设置模式失败的错误
+                }
+            } else if (databaseProductName.toLowerCase().contains("mysql")) {
+                configuration.setDatabaseId("mysql");
+            }
+            conn.close();
+        } catch (Exception e) {
+            configuration.setDatabaseId("mysql"); // 默认MySQL
+        }
         MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();
 
         // 如果用了分页插件注意先 add TenantLineInnerInterceptor 再 add PaginationInnerInterceptor
@@ -137,7 +159,17 @@ public class MybatisPlusConfig {
         });
         mybatisPlusInterceptor.addInnerInterceptor(dynamicTableNameInnerInterceptor);
 
-        mybatisPlusInterceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
+        // 根据数据源自动检测数据库类型
+        DbType dbType = DbType.MYSQL; // 默认MySQL
+        try {
+            String databaseProductName = dataSource.getConnection().getMetaData().getDatabaseProductName();
+            if ("DM DBMS".equalsIgnoreCase(databaseProductName) || databaseProductName.toLowerCase().contains("dm")) {
+                dbType = DbType.OTHER; // 达梦数据库使用OTHER类型
+            }
+        } catch (Exception e) {
+            // 使用默认的MySQL类型
+        }
+        mybatisPlusInterceptor.addInnerInterceptor(new PaginationInnerInterceptor(dbType));
         mybatisPlusInterceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
         // 防全表更新与删除插件
         mybatisPlusInterceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
@@ -146,6 +178,10 @@ public class MybatisPlusConfig {
 
         /* map 下划线转驼峰 */
         configuration.setObjectWrapperFactory(new MybatisMapWrapperFactory());
+
+        // 添加达梦数据库SQL拦截器
+        configuration.addInterceptor(new DamengSqlInterceptor());
+
         sqlSessionFactory.setConfiguration(configuration);
 
         /* 自动填充插件 */
@@ -158,9 +194,38 @@ public class MybatisPlusConfig {
     }
 
     @Bean
-    public GlobalConfig globalConfig() {
+    public GlobalConfig globalConfig(DataSource dataSource) {
         GlobalConfig conf = new GlobalConfig();
-        conf.setDbConfig(new GlobalConfig.DbConfig().setColumnFormat("`%s`").setPropertyFormat("`%s`"));
+        // 根据数据库类型设置不同的格式化规则
+        try {
+            String databaseProductName = dataSource.getConnection().getMetaData().getDatabaseProductName();
+            if ("DM DBMS".equalsIgnoreCase(databaseProductName) || databaseProductName.toLowerCase().contains("dm")) {
+                // 达梦数据库：字段名和表名加双引号，表名前加模式名
+                GlobalConfig.DbConfig dbConfig = new GlobalConfig.DbConfig();
+                dbConfig.setColumnFormat("\"%s\"");
+                dbConfig.setPropertyFormat("\"%s\"");
+                dbConfig.setTableFormat("zdj_dev.\"%s\""); // 模式名.表名（模式名不加引号）
+                // 设置字段策略，确保所有字段都被格式化
+                dbConfig.setInsertStrategy(com.baomidou.mybatisplus.annotation.FieldStrategy.NOT_NULL);
+                dbConfig.setUpdateStrategy(com.baomidou.mybatisplus.annotation.FieldStrategy.NOT_NULL);
+                dbConfig.setWhereStrategy(com.baomidou.mybatisplus.annotation.FieldStrategy.NOT_NULL);
+                conf.setDbConfig(dbConfig);
+            } else {
+                // MySQL等数据库使用反引号
+                GlobalConfig.DbConfig dbConfig = new GlobalConfig.DbConfig();
+                dbConfig.setColumnFormat("`%s`");
+                dbConfig.setPropertyFormat("`%s`");
+                dbConfig.setTableFormat("`%s`");
+                conf.setDbConfig(dbConfig);
+            }
+        } catch (Exception e) {
+            // 默认使用反引号（MySQL格式）
+            GlobalConfig.DbConfig dbConfig = new GlobalConfig.DbConfig();
+            dbConfig.setColumnFormat("`%s`");
+            dbConfig.setPropertyFormat("`%s`");
+            dbConfig.setTableFormat("`%s`");
+            conf.setDbConfig(dbConfig);
+        }
         return conf;
     }
 
