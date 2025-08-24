@@ -37,7 +37,7 @@ public class FaSqlUtils {
     private static void validateSingleSortItem(String sortItem) {
         // 2. 正则表达式验证：字段名只能包含字母、数字、下划线，后跻ASC或DESC
         // 支持驼峰命名和下划线命名：userId, user_id, createTime等
-        String sortPattern = "^[a-zA-Z_][a-zA-Z0-9_]*\\s+(ASC|DESC|asc|desc)$";
+        String sortPattern = "^[a-zA-Z_][a-zA-Z0-9_\\.]*\\s+(ASC|DESC|asc|desc)$";
         Pattern pattern = Pattern.compile(sortPattern);
 
         if (!pattern.matcher(sortItem).matches()) {
@@ -76,7 +76,7 @@ public class FaSqlUtils {
                 continue;
             }
 
-            if (upperItem.contains(keyword)) {
+            if (upperItem.equalsIgnoreCase(keyword)) {
                 throw new BuzzException("排序参数包含SQL关键字: '" + keyword + "'，存在安全风险");
             }
         }
