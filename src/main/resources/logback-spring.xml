@@ -60,6 +60,7 @@
             <Pattern>
                 %d{yyyy-MM-dd HH:mm:ss} - [%thread] - %-5level - %logger - %msg%n
             </Pattern>
+            <charset>UTF-8</charset>
         </layout>
     </appender>
 
@@ -95,6 +96,7 @@
             <pattern>
                 %d{yyyy-MM-dd HH:mm:ss} - [%thread] - %-5level - %logger - %msg%n
             </pattern>
+            <charset>UTF-8</charset>
         </encoder>
     </appender>
     <!--异步日志：二 使用 AspectLogbackAsyncAppender 配置异步 -->
@@ -114,6 +116,7 @@
             <Pattern>
                 %d{yyyy-MM-dd HH:mm:ss} - [%thread] - %-5level - %logger - %msg%n
             </Pattern>
+            <charset>UTF-8</charset>
         </layout>
     </appender>
 
