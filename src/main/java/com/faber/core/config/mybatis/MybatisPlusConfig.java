@@ -76,7 +76,7 @@ public class MybatisPlusConfig {
         sqlSessionFactory.setDataSource(dataSource);
         /* xml扫描 */
         sqlSessionFactory.setMapperLocations(
-                new PathMatchingResourcePatternResolver().getResources("classpath:/mapper/**/*.xml"));
+                new PathMatchingResourcePatternResolver().getResources("classpath*:/mapper/**/*.xml"));
         /* 扫描 typeHandler */
         // sqlSessionFactory.setTypeHandlersPackage("com.baomidou.mybatisplus.samples.mysql.type");
         MybatisConfiguration configuration = new MybatisConfiguration();
@@ -87,45 +87,43 @@ public class MybatisPlusConfig {
 
         // 如果用了分页插件注意先 add TenantLineInnerInterceptor 再 add PaginationInnerInterceptor
         // 多租户
-        // mybatisPlusInterceptor.addInnerInterceptor(new TenantLineInnerInterceptor(new
-        // TenantLineHandler() {
-        // @Override
-        // public String getTenantIdColumn() {
-        // return "tenant_id";
-        // }
-        //
-        // @Override
-        // public Expression getTenantId() {
-        // // TO-DO 这里获取上下文的租户ID
-        // return new LongValue(TnTenantContextHandler.getTenantId());
-        // }
-        //
-        // // 这是 default 方法,默认返回 false 表示所有表都需要拼多租户条件
-        // @Override
-        // public boolean ignoreTable(String tableName) {
-        // return !isTenantTable(tableName);
-        // }
-        // }));
+//        mybatisPlusInterceptor.addInnerInterceptor(new TenantLineInnerInterceptor(new TenantLineHandler() {
+//            @Override
+//            public String getTenantIdColumn() {
+//                return "tenant_id";
+//            }
+//
+//            @Override
+//            public Expression getTenantId() {
+//                // TO-DO 这里获取上下文的租户ID
+//                return new LongValue(TnTenantContextHandler.getTenantId());
+//            }
+//
+//            // 这是 default 方法,默认返回 false 表示所有表都需要拼多租户条件
+//            @Override
+//            public boolean ignoreTable(String tableName) {
+//                return !isTenantTable(tableName);
+//            }
+//        }));
         // 租户下创建的企业
-        // mybatisPlusInterceptor.addInnerInterceptor(new TenantLineInnerInterceptor(new
-        // TenantLineHandler() {
-        // @Override
-        // public String getTenantIdColumn() {
-        // return "corp_id";
-        // }
-        //
-        // @Override
-        // public Expression getTenantId() {
-        // // TO-DO 这里获取上下文的租户ID
-        // return new LongValue(TnTenantContextHandler.getCorpId());
-        // }
-        //
-        // // 这是 default 方法,默认返回 false 表示所有表都需要拼多租户条件
-        // @Override
-        // public boolean ignoreTable(String tableName) {
-        // return !isCorpTable(tableName);
-        // }
-        // }));
+//        mybatisPlusInterceptor.addInnerInterceptor(new TenantLineInnerInterceptor(new TenantLineHandler() {
+//            @Override
+//            public String getTenantIdColumn() {
+//                return "corp_id";
+//            }
+//
+//            @Override
+//            public Expression getTenantId() {
+//                // TO-DO 这里获取上下文的租户ID
+//                return new LongValue(TnTenantContextHandler.getCorpId());
+//            }
+//
+//            // 这是 default 方法,默认返回 false 表示所有表都需要拼多租户条件
+//            @Override
+//            public boolean ignoreTable(String tableName) {
+//                return !isCorpTable(tableName);
+//            }
+//        }));
 
         // 动态表名
         DynamicTableNameInnerInterceptor dynamicTableNameInnerInterceptor = new DynamicTableNameInnerInterceptor(
