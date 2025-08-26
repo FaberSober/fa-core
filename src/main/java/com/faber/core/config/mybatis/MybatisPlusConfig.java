@@ -76,7 +76,7 @@ public class MybatisPlusConfig {
         sqlSessionFactory.setDataSource(dataSource);
         /* xml扫描 */
         sqlSessionFactory.setMapperLocations(
-                new PathMatchingResourcePatternResolver().getResources("classpath:/mapper/**/*.xml"));
+                new PathMatchingResourcePatternResolver().getResources("classpath*:/mapper/**/*.xml"));
         /* 扫描 typeHandler */
         // sqlSessionFactory.setTypeHandlersPackage("com.baomidou.mybatisplus.samples.mysql.type");
         MybatisConfiguration configuration = new MybatisConfiguration();
