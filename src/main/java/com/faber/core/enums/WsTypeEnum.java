@@ -12,6 +12,7 @@ import lombok.Getter;
 @Getter
 public enum WsTypeEnum implements IEnum<String> {
     PLAIN_TEXT("PLAIN_TEXT", "纯文本"),
+    FLOW_TASK_INFO("FLOW_TASK_INFO", "流程消息"),
     ;
 
     @JsonValue
