@@ -76,5 +76,5 @@ MsgTjAgentOffline msgVo = MsgTjAgentOffline.builder()
     .buzzType("MsgTjAgentOffline")
     .time(DateUtil.formatDateTime(new Date()))
     .build();
-msgHelper.sendSysMsg("1", new String[]{"1"}, msgVo);
+msgHelper.sendSysMsg(CommonConstants.SUPER_ADMIN_ID, new String[]{"1"}, msgVo);
 ```
