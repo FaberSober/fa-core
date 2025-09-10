@@ -1,13 +1,9 @@
 package com.faber.core.config.websocket;
 
-import cn.hutool.json.JSONUtil;
-import jakarta.websocket.Session;
-import lombok.Data;
-
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.websocket.Session;
+import lombok.Data;
 
 /**
  * WebSocket client info entity
@@ -39,14 +35,9 @@ public class ClientInfoEntity {
      * @param wsRet
      */
     public void sendMessage(WsRet wsRet) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            String msgStr = mapper.writeValueAsString(wsRet);
-            // String msgStr = JSONUtil.toJsonStr(wsRet);
-            this.session.getAsyncRemote().sendText(msgStr);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+        String msgStr = com.alibaba.fastjson2.JSON.toJSONString(wsRet); // 可以正确转换IEnum
+        // String msgStr = JSONUtil.toJsonStr(wsRet); // hutool无法正确转换IEnum
+        this.session.getAsyncRemote().sendText(msgStr);
     }
 
     public void sendMessage(String type, Object data) {
