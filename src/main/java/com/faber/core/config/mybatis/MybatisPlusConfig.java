@@ -75,6 +75,8 @@ public class MybatisPlusConfig {
         /* 数据源 */
         sqlSessionFactory.setDataSource(dataSource);
         /* xml扫描 */
+        // classpath:/mapper/**/*.xml 只会扫描第一个 classpath 根目录
+        // 多模块项目，使用classpath*:/mapper/**/*.xml，Spring 会扫描所有依赖 jar 包和模块的 classpath，子模块的 xml 也能加载到。
         sqlSessionFactory.setMapperLocations(
                 new PathMatchingResourcePatternResolver().getResources("classpath*:/mapper/**/*.xml"));
         /* 扫描 typeHandler */

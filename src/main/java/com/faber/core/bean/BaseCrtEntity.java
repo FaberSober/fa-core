@@ -4,7 +4,6 @@ import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.faber.core.annotation.FaCol;
 import com.faber.core.annotation.FaPropIgnore;
 import com.faber.core.annotation.SqlEquals;
 import com.fasterxml.jackson.annotation.JsonFormat;
