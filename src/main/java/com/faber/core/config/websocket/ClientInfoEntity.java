@@ -6,6 +6,9 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * WebSocket client info entity
  */
@@ -36,8 +39,14 @@ public class ClientInfoEntity {
      * @param wsRet
      */
     public void sendMessage(WsRet wsRet) {
-        String msgStr = JSONUtil.toJsonStr(wsRet);
-        this.session.getAsyncRemote().sendText(msgStr);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String msgStr = mapper.writeValueAsString(wsRet);
+            // String msgStr = JSONUtil.toJsonStr(wsRet);
+            this.session.getAsyncRemote().sendText(msgStr);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
     public void sendMessage(String type, Object data) {
