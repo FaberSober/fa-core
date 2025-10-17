@@ -1,10 +1,9 @@
 package com.faber.core.config.websocket;
 
-import cn.hutool.json.JSONUtil;
+import java.time.LocalDateTime;
+
 import jakarta.websocket.Session;
 import lombok.Data;
-
-import java.time.LocalDateTime;
 
 /**
  * WebSocket client info entity
@@ -36,7 +35,8 @@ public class ClientInfoEntity {
      * @param wsRet
      */
     public void sendMessage(WsRet wsRet) {
-        String msgStr = JSONUtil.toJsonStr(wsRet);
+        String msgStr = com.alibaba.fastjson2.JSON.toJSONString(wsRet); // 可以正确转换IEnum
+        // String msgStr = JSONUtil.toJsonStr(wsRet); // hutool无法正确转换IEnum
         this.session.getAsyncRemote().sendText(msgStr);
     }
 
