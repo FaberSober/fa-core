@@ -374,12 +374,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
     }
 
     public void importExcel(CommonImportExcelReqVo reqVo) {
-        File file = getFileById(reqVo.getFileId());
-
-        // save file save biz
-        if (StrUtil.isNotEmpty(reqVo.getBuzzType())) {
-            getStorageService().saveFileBiz("", "", reqVo.getBuzzType(), reqVo.getFileId());
-        }
+        File file = getImportFile(reqVo);
 
         List<T> saveList = new ArrayList<>();
         FaExcelUtils.simpleRead(file, this.getEntityClass(), i -> {
