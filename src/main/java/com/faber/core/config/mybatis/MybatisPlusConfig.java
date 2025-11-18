@@ -144,7 +144,10 @@ public class MybatisPlusConfig {
                 });
         mybatisPlusInterceptor.addInnerInterceptor(dynamicTableNameInnerInterceptor);
 
-        mybatisPlusInterceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
+        PaginationInnerInterceptor paginationInterceptor = new PaginationInnerInterceptor();
+        // paginationInterceptor.setDbType(DbType.POSTGRE_SQL); // 指定数据库
+        // paginationInterceptor.setOptimizeJoin(true); // COUNT SQL 优化
+        mybatisPlusInterceptor.addInnerInterceptor(paginationInterceptor);
         mybatisPlusInterceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
         // 防全表更新与删除插件
         mybatisPlusInterceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
@@ -167,7 +170,7 @@ public class MybatisPlusConfig {
     @Bean
     public GlobalConfig globalConfig() {
         GlobalConfig conf = new GlobalConfig();
-        conf.setDbConfig(new GlobalConfig.DbConfig().setColumnFormat("`%s`").setPropertyFormat("`%s`"));
+        // conf.setDbConfig(new GlobalConfig.DbConfig().setColumnFormat("`%s`").setPropertyFormat("`%s`"));
         return conf;
     }
 

@@ -433,8 +433,8 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
         QueryWrapper<T> wrapper = new QueryWrapper<>();
         wrapper.eq(getTreeParentIdFieldColumnName(), parentId);
         this.enhanceTreeQueryForMaxSort(wrapper, entity);
-        wrapper.orderByDesc(this.getSortedFieldColumnName());
-        wrapper.select(String.format("IFNULL(max(%s), -1) as value", getSortedFieldColumnName()));
+        // wrapper.orderByDesc(this.getSortedFieldColumnName());
+        wrapper.select(String.format("COALESCE(max(%s), -1) as value", getSortedFieldColumnName()));
         List<Map<String, Object>> result = baseMapper.selectMaps(wrapper);
         return Integer.parseInt(result.get(0).get("value") + "");
     }
