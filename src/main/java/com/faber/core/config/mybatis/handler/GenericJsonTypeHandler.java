@@ -1,12 +1,23 @@
 package com.faber.core.config.mybatis.handler;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.apache.ibatis.logging.Log;
+import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.postgresql.util.PGobject;
 
-import java.sql.*;
+import com.fasterxml.jackson.core.JacksonException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 
 /**
  * 通用 JSON TypeHandler，支持 PostgreSQL(jsonb) / MySQL(json)
@@ -14,9 +25,11 @@ import java.sql.*;
  */
 public class GenericJsonTypeHandler<T> extends BaseTypeHandler<T> {
 
+    protected final Log log = LogFactory.getLog(this.getClass());
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private final TypeReference<T> typeReference;
+    protected Type genericType;
 
     /** 无参构造器，用于 MyBatis-Plus 自动实例化 */
     public GenericJsonTypeHandler() {
@@ -28,6 +41,11 @@ public class GenericJsonTypeHandler<T> extends BaseTypeHandler<T> {
         this.typeReference = typeReference;
     }
 
+    public GenericJsonTypeHandler(TypeReference<T> type, Field field) {
+        this(type);
+        this.genericType = field.getGenericType();
+    }
+   
     /**
      * 提供静态工厂方法，方便在 @TableField 中使用
      */
@@ -74,13 +92,22 @@ public class GenericJsonTypeHandler<T> extends BaseTypeHandler<T> {
 
     private T parseJson(String value) throws SQLException {
         if (value == null) return null;
+        ObjectMapper objectMapper = MAPPER;
+        TypeFactory typeFactory = objectMapper.getTypeFactory();
+        JavaType javaType = typeFactory.constructType(getFieldType());
         try {
-            return MAPPER.readValue(value, typeReference);
-        } catch (Exception e) {
-            throw new SQLException("Failed to parse JSON to object", e);
+            return objectMapper.readValue(value, javaType);
+        } catch (JacksonException e) {
+            log.error("deserialize json: " + value + " to " + javaType + " error ", e);
+            throw new RuntimeException(e);
         }
     }
+    
+    public Type getFieldType() {
+        return this.genericType != null ? this.genericType : this.typeReference.getType();
+    }
 }
+
 
 
 
