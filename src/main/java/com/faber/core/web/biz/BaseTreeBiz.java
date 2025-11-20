@@ -1,8 +1,13 @@
 package com.faber.core.web.biz;
 
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.ReflectUtil;
-import cn.hutool.core.util.StrUtil;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.faber.core.annotation.SqlSorter;
 import com.faber.core.annotation.SqlTreeId;
@@ -18,14 +23,9 @@ import com.faber.core.vo.tree.TreeNode;
 import com.faber.core.vo.tree.TreePathVo;
 import com.faber.core.vo.tree.TreePosChangeVo;
 
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * <h3>Tree形结构数据的Service业务方法</h3>
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * @param <M>
  * @param <T>
  */
-public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<M, T> {
+public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T, Key extends Serializable> extends BaseBiz<M, T> {
 
     /**
      * 增强Tree数据查询，有的表可能会有一些自定义字段限制Tree结构的获取，子类可以覆盖重写此方法，来增加自定义字段的查询条件。
@@ -296,7 +296,7 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
         return beanList;
     }
 
-    public void changePos(List<TreePosChangeVo> list) {
+    public void changePos(List<TreePosChangeVo<Key>> list) {
         if (list == null || list.isEmpty()) {
             return;
         }

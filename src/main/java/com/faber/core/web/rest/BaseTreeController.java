@@ -138,7 +138,7 @@ public abstract class BaseTreeController<Biz extends BaseTreeBiz, Entity, Key ex
     @FaLogOpr(value = "节点排序", crud = LogCrudEnum.U)
     @RequestMapping(value = "/changePos", method = RequestMethod.POST)
     @ResponseBody
-    public Ret<Boolean> changePos(@Valid @RequestBody List<TreePosChangeVo> list) {
+    public Ret<Boolean> changePos(@Valid @RequestBody List<TreePosChangeVo<Key>> list) {
         baseBiz.changePos(list);
         return ok();
     }

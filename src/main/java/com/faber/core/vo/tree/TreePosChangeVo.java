@@ -1,5 +1,7 @@
 package com.faber.core.vo.tree;
 
+import java.io.Serializable;
+
 import lombok.Data;
 import lombok.ToString;
 
@@ -8,12 +10,12 @@ import lombok.ToString;
  */
 @Data
 @ToString
-public class TreePosChangeVo {
+public class TreePosChangeVo<T extends Serializable> {
 
     /**
      * 对应实体的ID
      */
-    private String key;
+    private T key;
 
     /**
      * 更新排序index
@@ -23,6 +25,6 @@ public class TreePosChangeVo {
     /**
      * 更新排序pid
      */
-    private String pid;
+    private T pid;
 
 }
