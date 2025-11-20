@@ -10,12 +10,12 @@ import lombok.ToString;
  */
 @Data
 @ToString
-public class TreePosChangeVo<T extends Serializable> {
+public class TreePosChangeVo {
 
     /**
      * 对应实体的ID
      */
-    private T key;
+    private String key;
 
     /**
      * 更新排序index
@@ -25,6 +25,6 @@ public class TreePosChangeVo<T extends Serializable> {
     /**
      * 更新排序pid
      */
-    private T pid;
+    private String pid;
 
 }

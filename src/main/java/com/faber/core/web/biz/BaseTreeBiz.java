@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.faber.core.annotation.SqlSorter;
 import com.faber.core.annotation.SqlTreeId;
 import com.faber.core.annotation.SqlTreeName;
@@ -23,6 +24,7 @@ import com.faber.core.vo.tree.TreeNode;
 import com.faber.core.vo.tree.TreePathVo;
 import com.faber.core.vo.tree.TreePosChangeVo;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -33,7 +35,7 @@ import cn.hutool.core.util.StrUtil;
  * @param <M>
  * @param <T>
  */
-public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T, Key extends Serializable> extends BaseBiz<M, T> {
+public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<M, T> {
 
     /**
      * 增强Tree数据查询，有的表可能会有一些自定义字段限制Tree结构的获取，子类可以覆盖重写此方法，来增加自定义字段的查询条件。
@@ -296,13 +298,22 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T, Key extends Seri
         return beanList;
     }
 
-    public void changePos(List<TreePosChangeVo<Key>> list) {
+    public void changePos(List<TreePosChangeVo> list) {
         if (list == null || list.isEmpty()) {
             return;
         }
 
+        // 1. 获取 ID 字段的 Field 对象
+        // 假设 getTreeIdFieldName() 返回的是主键字段名，例如 "id"
+        Field idField = ReflectUtil.getField(getEntityClass(), getTreeIdFieldName());
+        
+        // 2. 获取 ID 字段的期望类型，例如 Long.class
+        Class<?> expectedType = idField.getType();
         list.forEach(item -> {
-            T bean = super.getById(item.getKey());
+            // 3. 将 item.getKey() 的值转换为期望的类型 (Long/Integer)
+            // 使用 Hutool 的 Convert.convert 方法进行安全转换
+            Object key = Convert.convert(expectedType, item.getKey());
+            T bean = super.getById((Serializable) key);
 
             ReflectUtil.setFieldValue(bean, this.getSortedFieldName(), item.getIndex());
             ReflectUtil.setFieldValue(bean, this.getTreeParentIdFieldName(), item.getPid());
