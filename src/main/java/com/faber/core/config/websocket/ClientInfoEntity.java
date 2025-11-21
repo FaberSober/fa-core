@@ -45,4 +45,8 @@ public class ClientInfoEntity {
         sendMessage(WsRet.success(type, data));
     }
 
+    public void sendMessage(String type, String channel, Object data) {
+        sendMessage(WsRet.success(type, channel, data));
+    }
+
 }
