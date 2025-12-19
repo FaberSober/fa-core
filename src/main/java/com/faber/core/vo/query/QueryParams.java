@@ -30,6 +30,8 @@ public class QueryParams implements Serializable {
     private Map<String, Object> query = new HashMap<>();
     /** 查询场景ID */
     private Integer sceneId;
+    /** 自定义表单ID */
+    private Integer flowFormId;
 
     /**
      * 高级查询组合条件
