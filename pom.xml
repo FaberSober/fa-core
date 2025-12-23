@@ -260,11 +260,11 @@
             <version>6.6.3</version>
         </dependency>
 
-        <!-- 声明式HTTP客户端框架: https://forest.dtflyx.com/ -->
+        <!-- 声明式HTTP客户端框架: https://forest.kim/ -->
         <dependency>
             <groupId>com.dtflys.forest</groupId>
             <artifactId>forest-spring-boot3-starter</artifactId>
-            <version>1.5.36</version>
+            <version>1.7.6</version>
 
             <exclusions>
                 <exclusion>
