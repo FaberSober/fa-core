@@ -380,6 +380,24 @@ public class FaFileUtils {
     }
 
     /**
+     * 在文件名后追加时间戳和文件ID。如xxx.jpg修改为xxx_20220815120000_{id}.jpg
+     *
+     * @param fileName
+     * @return
+     */
+    public static String addTsAndIdToFileName(String fileName, String id) {
+        String now = DateUtil.format(new Date(), "yyyyMMddHHmmss");
+
+        if (fileName == null) return now;
+
+        if (fileName.contains(".")) {
+            int index = fileName.lastIndexOf(".");
+            return fileName.substring(0, index) + "_" + now + "_" + id + fileName.substring(index);
+        }
+        return fileName + "_" + now + "_" + id;
+    }
+    
+    /**
      * 判断是否是图片文件
      *
      * @param fileExt
