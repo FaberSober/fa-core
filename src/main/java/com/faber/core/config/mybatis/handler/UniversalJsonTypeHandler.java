@@ -1,6 +1,8 @@
 package com.faber.core.config.mybatis.handler;
 
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
@@ -18,6 +20,7 @@ import java.sql.SQLException;
  * 1. 自动识别数据库类型
  * 2. PostgreSQL: 转换为 PGobject 存入，解决 "column is type json but expression is type varchar" 问题
  * 3. MySQL: 直接以 String 存入
+ * 4. 当字段类型为 Object 时，使用通用方式解析 JSON，兼容对象和数组
  * </p>
  */
 @Slf4j
@@ -25,13 +28,31 @@ import java.sql.SQLException;
 @MappedJdbcTypes(JdbcType.VARCHAR)
 public class UniversalJsonTypeHandler extends JacksonTypeHandler {
 
+    private final Class<?> fieldType;
+
     // 构造函数必须匹配，供 MyBatis-Plus 反射调用
     public UniversalJsonTypeHandler(Class<?> type) {
         super(type);
+        this.fieldType = type;
     }
 
     public UniversalJsonTypeHandler(Class<?> type, Field field) {
         super(type, field);
+        this.fieldType = field != null ? field.getType() : type;
+    }
+
+    @Override
+    public Object parse(String json) {
+        // 当字段类型为 Object 时，使用通用方式解析，避免类型不匹配
+        if (fieldType == Object.class) {
+            try {
+                ObjectMapper mapper = getObjectMapper();
+                return mapper.readValue(json, Object.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException("Failed to parse JSON for Object type field: " + json, e);
+            }
+        }
+        return super.parse(json);
     }
 
     @Override
