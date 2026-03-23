@@ -273,8 +273,9 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         QueryWrapper<T> wrapper = parseQuery(query);
 
         // 重新创建一个 wrapper，只保留查询条件
-        QueryWrapper<T> countWrapper = new QueryWrapper<>();
-        countWrapper.allEq(wrapper.getParamNameValuePairs(), false); // 保留条件
+        QueryWrapper<T> countWrapper = parseQuery(query);
+        // QueryWrapper<T> countWrapper = new QueryWrapper<>();
+        // countWrapper.allEq(wrapper.getParamNameValuePairs(), false); // 保留条件
         long total = super.count(countWrapper);
 //        if (total > CommonConstants.QUERY_MAX_COUNT) {
 //            throw new BuzzException("单次查询列表返回数据不可超过" + CommonConstants.QUERY_MAX_COUNT);
