@@ -269,13 +269,18 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         }
     }
 
+    public QueryWrapper<T> getQueryWrapper(QueryParams query) {
+        QueryParams queryCount = new QueryParams();
+        queryCount.setQuery(query.getQuery());
+        QueryWrapper<T> countWrapper = parseQuery(queryCount);
+        return countWrapper;
+    }
+
     public List<T> list(QueryParams query) {
         QueryWrapper<T> wrapper = parseQuery(query);
 
         // 重新创建一个 wrapper，只保留查询条件
-        QueryWrapper<T> countWrapper = parseQuery(query);
-        // QueryWrapper<T> countWrapper = new QueryWrapper<>();
-        // countWrapper.allEq(wrapper.getParamNameValuePairs(), false); // 保留条件
+        QueryWrapper<T> countWrapper = getQueryWrapper(query);
         long total = super.count(countWrapper);
 //        if (total > CommonConstants.QUERY_MAX_COUNT) {
 //            throw new BuzzException("单次查询列表返回数据不可超过" + CommonConstants.QUERY_MAX_COUNT);
@@ -453,8 +458,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         QueryWrapper<T> wrapper = parseQuery(query);
         
         // 重新创建一个 wrapper，只保留查询条件
-        QueryWrapper<T> countWrapper = new QueryWrapper<>();
-        countWrapper.allEq(wrapper.getParamNameValuePairs(), false); // 保留条件
+        QueryWrapper<T> countWrapper = getQueryWrapper(query);
         long count = super.count(countWrapper);
         if (count > 1000) {
             throw new BuzzException("删除数据超过1000条，请使用批量删除");
