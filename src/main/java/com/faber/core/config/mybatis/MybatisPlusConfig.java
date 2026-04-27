@@ -1,7 +1,6 @@
 package com.faber.core.config.mybatis;
 
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
@@ -11,33 +10,21 @@ import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerIntercep
 import com.baomidou.mybatisplus.extension.plugins.inner.DynamicTableNameInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
-import com.faber.core.bean.BaseTnDelEntity;
 import com.faber.core.config.mybatis.base.FaSqlInjector;
 import com.faber.core.config.mybatis.handler.MysqlMetaObjectHandler;
+import com.faber.core.config.mybatis.interceptor.FaTenantInterceptor;
 import com.faber.core.constant.FaSetting;
 import com.faber.core.context.BaseContextHandler;
-import com.faber.core.exception.BuzzException;
 import jakarta.annotation.Resource;
-import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.StringValue;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
-import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.util.ClassUtils;
 
 import javax.sql.DataSource;
-import java.lang.reflect.Modifier;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
 
 /**
  * Mybatis Plus Config
@@ -70,28 +57,8 @@ public class MybatisPlusConfig {
         configuration.setMapUnderscoreToCamelCase(true);
         MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();
 
-        Set<String> tenantTables = resolveTenantTables();
         // 如果用了分页插件注意先 add TenantLineInnerInterceptor 再 add PaginationInnerInterceptor
-        mybatisPlusInterceptor.addInnerInterceptor(new TenantLineInnerInterceptor(new TenantLineHandler() {
-            @Override
-            public String getTenantIdColumn() {
-                return "tenant_id";
-            }
-
-            @Override
-            public Expression getTenantId() {
-                String tenantId = BaseContextHandler.getTenantId();
-                if (StrUtil.isBlank(tenantId)) {
-                    throw new BuzzException("当前租户上下文为空");
-                }
-                return new StringValue(tenantId);
-            }
-
-            @Override
-            public boolean ignoreTable(String tableName) {
-                return !tenantTables.contains(normalizeTableName(tableName));
-            }
-        }));
+        mybatisPlusInterceptor.addInnerInterceptor(new FaTenantInterceptor());
 
         // 动态表名
         DynamicTableNameInnerInterceptor dynamicTableNameInnerInterceptor = new DynamicTableNameInnerInterceptor(
@@ -131,51 +98,6 @@ public class MybatisPlusConfig {
 
         sqlSessionFactory.setGlobalConfig(globalConfig);
         return sqlSessionFactory.getObject();
-    }
-
-    private Set<String> resolveTenantTables() {
-        Set<String> tenantTables = new HashSet<>();
-        ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
-        scanner.addIncludeFilter(new AssignableTypeFilter(BaseTnDelEntity.class));
-        ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
-
-        scanner.findCandidateComponents("com.faber").forEach(beanDefinition -> {
-            try {
-                Class<?> clazz = ClassUtils.forName(beanDefinition.getBeanClassName(), classLoader);
-                if (clazz == BaseTnDelEntity.class || clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers())) {
-                    return;
-                }
-                tenantTables.add(resolveTableName(clazz));
-            } catch (ClassNotFoundException e) {
-                throw new BuzzException("解析租户实体失败：" + beanDefinition.getBeanClassName());
-            }
-        });
-
-        return tenantTables;
-    }
-
-    private String resolveTableName(Class<?> clazz) {
-        TableName tableName = clazz.getAnnotation(TableName.class);
-        if (tableName != null && StrUtil.isNotBlank(tableName.value())) {
-            return normalizeTableName(tableName.value());
-        }
-        return normalizeTableName(camelToUnderline(clazz.getSimpleName()));
-    }
-
-    private String normalizeTableName(String tableName) {
-        return StrUtil.removeAll(tableName, "`").toLowerCase(Locale.ROOT);
-    }
-
-    private String camelToUnderline(String value) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < value.length(); i++) {
-            char c = value.charAt(i);
-            if (Character.isUpperCase(c) && i > 0) {
-                builder.append('_');
-            }
-            builder.append(Character.toLowerCase(c));
-        }
-        return builder.toString();
     }
 
     @Bean
