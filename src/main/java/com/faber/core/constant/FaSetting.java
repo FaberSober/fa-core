@@ -251,6 +251,7 @@ public class FaSetting {
          * 是否启用多租户
          */
         private boolean on = false;
+        private String column = "tenant_id";
     }
 
     /**
