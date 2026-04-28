@@ -58,7 +58,9 @@ public class MybatisPlusConfig {
         MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();
 
         // 如果用了分页插件注意先 add TenantLineInnerInterceptor 再 add PaginationInnerInterceptor
-        mybatisPlusInterceptor.addInnerInterceptor(new FaTenantInterceptor());
+        if (faSetting.getTenant() != null && faSetting.getTenant().isOn()) {
+            mybatisPlusInterceptor.addInnerInterceptor(new FaTenantInterceptor());
+        }
 
         // 动态表名
         DynamicTableNameInnerInterceptor dynamicTableNameInnerInterceptor = new DynamicTableNameInnerInterceptor(

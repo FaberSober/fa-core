@@ -448,6 +448,17 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
                 || BaseTnDelEntity.class.isAssignableFrom(entityClass);
     }
 
+    protected void addTenantQueryIfNeed(QueryWrapper<T> wrapper) {
+        if (!isTenantEntity()) {
+            return;
+        }
+        String tenantId = getCurrentTenantId();
+        if (StrUtil.isBlank(tenantId)) {
+            throw new BuzzException("当前租户上下文为空");
+        }
+        wrapper.eq("tenant_id", tenantId);
+    }
+
     public void removeBatchByIds(List<Serializable> ids) {
         super.removeBatchByIds(ids);
         afterRemove(ids);
