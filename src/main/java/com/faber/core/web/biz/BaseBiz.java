@@ -16,7 +16,9 @@ import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapp
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.faber.core.annotation.*;
+import com.faber.core.bean.BaseTnCrtEntity;
 import com.faber.core.bean.BaseTnDelEntity;
+import com.faber.core.bean.BaseTnUpdEntity;
 import com.faber.core.config.mybatis.base.FaBaseMapper;
 import com.faber.core.config.mybatis.utils.WrapperUtils;
 import com.faber.core.context.BaseContextHandler;
@@ -440,7 +442,10 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
     }
 
     protected boolean isTenantEntity() {
-        return BaseTnDelEntity.class.isAssignableFrom(getEntityClass());
+        Class<T> entityClass = getEntityClass();
+        return BaseTnCrtEntity.class.isAssignableFrom(entityClass)
+                || BaseTnUpdEntity.class.isAssignableFrom(entityClass)
+                || BaseTnDelEntity.class.isAssignableFrom(entityClass);
     }
 
     public void removeBatchByIds(List<Serializable> ids) {
