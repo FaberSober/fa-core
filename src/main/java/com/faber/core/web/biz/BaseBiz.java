@@ -21,6 +21,7 @@ import com.faber.core.bean.BaseTnDelEntity;
 import com.faber.core.bean.BaseTnUpdEntity;
 import com.faber.core.config.mybatis.base.FaBaseMapper;
 import com.faber.core.config.mybatis.utils.WrapperUtils;
+import com.faber.core.constant.CommonConstants;
 import com.faber.core.context.BaseContextHandler;
 import com.faber.core.exception.BuzzException;
 import com.faber.core.service.ConfigSceneService;
@@ -435,6 +436,10 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     public String getCurrentUserId() {
         return BaseContextHandler.getUserId();
+    }
+
+    protected boolean isSuperAdminUser(String userId) {
+        return StrUtil.equals(CommonConstants.SUPER_ADMIN_ID, userId);
     }
 
     protected String getCurrentTenantId() {

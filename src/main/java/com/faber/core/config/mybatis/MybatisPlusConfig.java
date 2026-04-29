@@ -58,7 +58,7 @@ public class MybatisPlusConfig {
         MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();
 
         // 如果用了分页插件注意先 add TenantLineInnerInterceptor 再 add PaginationInnerInterceptor
-        if (faSetting.getTenant() != null && faSetting.getTenant().isOn()) {
+        if (faSetting.getTenant() != null && faSetting.getTenant().isEnabled()) {
             mybatisPlusInterceptor.addInnerInterceptor(new FaTenantInterceptor());
         }
 
