@@ -16,8 +16,12 @@ import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapp
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.faber.core.annotation.*;
+import com.faber.core.bean.BaseTnCrtEntity;
+import com.faber.core.bean.BaseTnDelEntity;
+import com.faber.core.bean.BaseTnUpdEntity;
 import com.faber.core.config.mybatis.base.FaBaseMapper;
 import com.faber.core.config.mybatis.utils.WrapperUtils;
+import com.faber.core.constant.CommonConstants;
 import com.faber.core.context.BaseContextHandler;
 import com.faber.core.exception.BuzzException;
 import com.faber.core.service.ConfigSceneService;
@@ -432,6 +436,32 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     public String getCurrentUserId() {
         return BaseContextHandler.getUserId();
+    }
+
+    protected boolean isSuperAdminUser(String userId) {
+        return StrUtil.equals(CommonConstants.SUPER_ADMIN_ID, userId);
+    }
+
+    protected String getCurrentTenantId() {
+        return BaseContextHandler.getTenantId();
+    }
+
+    protected boolean isTenantEntity() {
+        Class<T> entityClass = getEntityClass();
+        return BaseTnCrtEntity.class.isAssignableFrom(entityClass)
+                || BaseTnUpdEntity.class.isAssignableFrom(entityClass)
+                || BaseTnDelEntity.class.isAssignableFrom(entityClass);
+    }
+
+    protected void addTenantQueryIfNeed(QueryWrapper<T> wrapper) {
+        if (!isTenantEntity()) {
+            return;
+        }
+        String tenantId = getCurrentTenantId();
+        if (StrUtil.isBlank(tenantId)) {
+            throw new BuzzException("当前租户上下文为空");
+        }
+        wrapper.eq("tenant_id", tenantId);
     }
 
     public void removeBatchByIds(List<Serializable> ids) {
