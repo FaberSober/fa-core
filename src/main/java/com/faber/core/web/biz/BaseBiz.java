@@ -22,6 +22,7 @@ import com.faber.core.bean.BaseTnUpdEntity;
 import com.faber.core.config.mybatis.base.FaBaseMapper;
 import com.faber.core.config.mybatis.utils.WrapperUtils;
 import com.faber.core.constant.CommonConstants;
+import com.faber.core.constant.FaSetting;
 import com.faber.core.context.BaseContextHandler;
 import com.faber.core.exception.BuzzException;
 import com.faber.core.service.ConfigSceneService;
@@ -62,6 +63,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
     private ConfigSceneService configSceneService;
     private DictService dictService;
     private StorageService storageService;
+    private FaSetting faSetting;
 
 
     /**
@@ -453,8 +455,15 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
                 || BaseTnDelEntity.class.isAssignableFrom(entityClass);
     }
 
+    protected boolean isTenantEnabled() {
+        if (faSetting == null) {
+            faSetting = SpringUtil.getBean(FaSetting.class);
+        }
+        return faSetting.getTenant() != null && faSetting.getTenant().isEnabled();
+    }
+
     protected void addTenantQueryIfNeed(QueryWrapper<T> wrapper) {
-        if (!isTenantEntity()) {
+        if (!isTenantEnabled() || !isTenantEntity()) {
             return;
         }
         String tenantId = getCurrentTenantId();
