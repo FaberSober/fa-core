@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerIntercept
 import com.faber.core.bean.BaseTnCrtEntity;
 import com.faber.core.bean.BaseTnDelEntity;
 import com.faber.core.bean.BaseTnUpdEntity;
+import com.faber.core.constant.CommonConstants;
 import com.faber.core.context.BaseContextHandler;
 import com.faber.core.exception.BuzzException;
 import net.sf.jsqlparser.expression.Expression;
@@ -49,6 +50,9 @@ public class FaTenantInterceptor extends TenantLineInnerInterceptor {
         public Expression getTenantId() {
             String tenantId = BaseContextHandler.getTenantId();
             if (StrUtil.isBlank(tenantId)) {
+                if (isSuperAdminWithoutTenant()) {
+                    return new StringValue("");
+                }
                 throw new BuzzException("当前租户上下文为空");
             }
             return new StringValue(tenantId);
@@ -56,7 +60,15 @@ public class FaTenantInterceptor extends TenantLineInnerInterceptor {
 
         @Override
         public boolean ignoreTable(String tableName) {
+            if (isSuperAdminWithoutTenant()) {
+                return true;
+            }
             return !tenantTables.contains(normalizeTableName(tableName));
+        }
+
+        private boolean isSuperAdminWithoutTenant() {
+            return StrUtil.equals(CommonConstants.SUPER_ADMIN_ID, BaseContextHandler.getUserId())
+                    && StrUtil.isBlank(BaseContextHandler.getTenantId());
         }
 
     }
