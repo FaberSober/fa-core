@@ -27,6 +27,7 @@ import com.faber.core.context.BaseContextHandler;
 import com.faber.core.exception.BuzzException;
 import com.faber.core.service.ConfigSceneService;
 import com.faber.core.service.DictService;
+import com.faber.core.service.SocketTaskProgressService;
 import com.faber.core.service.StorageService;
 import com.faber.core.utils.FaEnumUtils;
 import com.faber.core.utils.FaExcelUtils;
@@ -34,6 +35,7 @@ import com.faber.core.vo.excel.CommonImportExcelReqVo;
 import com.faber.core.vo.msg.TableRet;
 import com.faber.core.vo.query.ConditionGroup;
 import com.faber.core.vo.query.QueryParams;
+import com.faber.core.vo.socket.SocketTaskVo;
 import com.faber.core.vo.utils.DictOption;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -48,6 +50,7 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * 业务Service父类
@@ -59,10 +62,12 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     protected final Logger _logger = LoggerFactory.getLogger(this.getClass());
     protected final int DEFAULT_PAGE_SIZE = 1000;
+    protected final int DEFAULT_IMPORT_BATCH_SIZE = 1000;
 
     private ConfigSceneService configSceneService;
     private DictService dictService;
     private StorageService storageService;
+    private SocketTaskProgressService socketTaskProgressService;
     private FaSetting faSetting;
 
 
@@ -396,7 +401,89 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         FaExcelUtils.simpleRead(file, this.getEntityClass(), i -> {
             saveList.add(i);
         });
-        this.saveOrUpdateBatch(saveList);
+        SocketTaskVo task = initImportTask(reqVo, saveList.size());
+        saveOrUpdateBatchWithImportProgress(saveList, getImportBatchSize(reqVo), task, 0);
+    }
+
+    protected int getImportBatchSize(CommonImportExcelReqVo reqVo) {
+        Integer importBatchSize = reqVo.getImportBatchSize();
+        if (importBatchSize == null || importBatchSize <= 0) {
+            return DEFAULT_IMPORT_BATCH_SIZE;
+        }
+        return importBatchSize;
+    }
+
+    protected SocketTaskVo initImportTask(CommonImportExcelReqVo reqVo, int total) {
+        return initImportTask(reqVo, total, getImportTaskName());
+    }
+
+    protected SocketTaskVo initImportTask(CommonImportExcelReqVo reqVo, int total, String taskName) {
+        String taskId = StrUtil.trimToNull(reqVo.getTaskId());
+        if (taskId == null) {
+            return null;
+        }
+
+        SocketTaskVo task = new SocketTaskVo();
+        task.setTaskId(taskId);
+        task.setName(taskName);
+        task.setTotal(total);
+        sendImportProgress(task);
+        return task;
+    }
+
+    protected String getImportTaskName() {
+        FaModalName faModalName = getEntityClass().getAnnotation(FaModalName.class);
+        if (faModalName != null && StrUtil.isNotBlank(faModalName.name())) {
+            return faModalName.name() + "导入";
+        }
+        return getEntityClass().getSimpleName() + "导入";
+    }
+
+    protected int saveOrUpdateBatchWithImportProgress(List<T> dataList, int batchSize, SocketTaskVo task, int cur) {
+        return executeBatchWithImportProgress(dataList, batchSize, task, cur, this::saveOrUpdateBatch);
+    }
+
+    protected int saveBatchWithImportProgress(List<T> dataList, int batchSize, SocketTaskVo task, int cur) {
+        return executeBatchWithImportProgress(dataList, batchSize, task, cur, this::saveBatch);
+    }
+
+    protected int updateBatchByIdWithImportProgress(List<T> dataList, int batchSize, SocketTaskVo task, int cur) {
+        return executeBatchWithImportProgress(dataList, batchSize, task, cur, this::updateBatchById);
+    }
+
+    protected int executeBatchWithImportProgress(List<T> dataList, int batchSize, SocketTaskVo task, int cur, Consumer<List<T>> batchConsumer) {
+        if (CollUtil.isEmpty(dataList)) {
+            return cur;
+        }
+        for (int i = 0; i < dataList.size(); i += batchSize) {
+            List<T> batchList = dataList.subList(i, Math.min(i + batchSize, dataList.size()));
+            batchConsumer.accept(batchList);
+            cur += batchList.size();
+            sendImportProgress(task, cur);
+        }
+        return cur;
+    }
+
+    protected void sendImportProgress(SocketTaskVo task, int cur) {
+        if (task == null) {
+            return;
+        }
+        task.setCur(cur);
+        sendImportProgress(task);
+    }
+
+    protected void sendImportProgress(SocketTaskVo task) {
+        if (task == null) {
+            return;
+        }
+        getSocketTaskProgressService().sendTaskProgress(task);
+    }
+
+    private SocketTaskProgressService getSocketTaskProgressService() {
+        if (socketTaskProgressService == null) {
+            socketTaskProgressService = SpringUtil.getBean(SocketTaskProgressService.class);
+        }
+        return socketTaskProgressService;
     }
 
     /**
