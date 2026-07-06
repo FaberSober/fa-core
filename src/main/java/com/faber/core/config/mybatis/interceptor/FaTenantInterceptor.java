@@ -12,12 +12,14 @@ import com.faber.core.context.BaseContextHandler;
 import com.faber.core.exception.BuzzException;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.StringValue;
+import net.sf.jsqlparser.schema.Column;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.util.ClassUtils;
 
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -64,6 +66,19 @@ public class FaTenantInterceptor extends TenantLineInnerInterceptor {
                 return true;
             }
             return !tenantTables.contains(normalizeTableName(tableName));
+        }
+
+        /**
+         * MySQL 全局列名格式会把 INSERT 字段渲染为 `tenant_id`，默认实现无法识别它和 tenant_id 是同一列。
+         * 这里先规范化字段名，避免租户插件重复追加 tenant_id。
+         */
+        @Override
+        public boolean ignoreInsert(List<Column> columns, String tenantIdColumn) {
+            String normalizedTenantIdColumn = normalizeTableName(tenantIdColumn);
+            return columns.stream()
+                    .map(Column::getColumnName)
+                    .map(FaTenantInterceptor::normalizeTableName)
+                    .anyMatch(columnName -> columnName.equals(normalizedTenantIdColumn));
         }
 
         private boolean isSuperAdminWithoutTenant() {
