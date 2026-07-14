@@ -30,22 +30,22 @@ public class BaseSocketMsg implements Serializable {
 
     public static BaseSocketMsg link(String label, String link) {
         JSONObject jo = new JSONObject();
-        jo.put("label", label);
-        jo.put("link", link);
+        jo.set("label", label);
+        jo.set("link", link);
         return BaseSocketMsg.builder().act(SocketMsgActEnum.LINK.getValue()).data(jo).build();
     }
 
     public static BaseSocketMsg linkImg(String label, String link) {
         JSONObject jo = new JSONObject();
-        jo.put("label", label);
-        jo.put("link", link);
+        jo.set("label", label);
+        jo.set("link", link);
         return BaseSocketMsg.builder().act(SocketMsgActEnum.LINK_IMG.getValue()).data(jo).build();
     }
 
     public static BaseSocketMsg linkVideo(String label, String link) {
         JSONObject jo = new JSONObject();
-        jo.put("label", label);
-        jo.put("link", link);
+        jo.set("label", label);
+        jo.set("link", link);
         return BaseSocketMsg.builder().act(SocketMsgActEnum.LINK_VIDEO.getValue()).data(jo).build();
     }
 

@@ -25,6 +25,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Locale;
 
 /**
  * Mybatis Plus Config
@@ -103,10 +106,20 @@ public class MybatisPlusConfig {
     }
 
     @Bean
-    public GlobalConfig globalConfig() {
+    public GlobalConfig globalConfig(DataSource dataSource) throws SQLException {
         GlobalConfig conf = new GlobalConfig();
-        // conf.setDbConfig(new GlobalConfig.DbConfig().setColumnFormat("`%s`").setPropertyFormat("`%s`"));
+        if (isMysql(dataSource)) {
+            conf.setDbConfig(new GlobalConfig.DbConfig().setColumnFormat("`%s`").setPropertyFormat("`%s`"));
+        }
         return conf;
+    }
+
+    private boolean isMysql(DataSource dataSource) throws SQLException {
+        try (Connection connection = dataSource.getConnection()) {
+            String databaseProductName = connection.getMetaData().getDatabaseProductName();
+            return databaseProductName != null
+                    && databaseProductName.toLowerCase(Locale.ROOT).contains("mysql");
+        }
     }
 
 }
