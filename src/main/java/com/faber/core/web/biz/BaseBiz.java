@@ -574,6 +574,16 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         afterRemove(id);
     }
 
+    /**
+     * 根据ID集合批量物理删除，单条SQL，不受逻辑删除字段限制
+     */
+    public void removePerByIds(Collection<? extends Serializable> ids) {
+        if (CollUtil.isEmpty(ids)) return;
+        baseMapper.deleteByIdsIgnoreLogic(ids);
+        List<Serializable> idList = new ArrayList<>(ids);
+        afterRemove(idList);
+    }
+
     @Transactional(
             rollbackFor = {Exception.class}
     )
