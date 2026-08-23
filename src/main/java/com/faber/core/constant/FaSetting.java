@@ -2,6 +2,7 @@ package com.faber.core.constant;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
+import com.faber.core.enums.ConfigSysStorageActiveEnum;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -25,6 +26,9 @@ public class FaSetting {
     private Config config;
     private Onlyoffice onlyoffice;
     private ThreadPoolConfig threadPoolConfig;
+    private Db db;
+    private Safety safety;
+    private Tenant tenant;
 
     /**
      * JWT配置
@@ -64,9 +68,13 @@ public class FaSetting {
     @Data
     public static class File {
         /**
-         * 系统文件存储方式: local-本地存储/qiniu-七牛云/ali-阿里云/tx-腾讯云
+         * 系统文件存储方式: local-本地存储/local-plus-本地存储/qiniu-七牛云/ali-阿里云/tx-腾讯云
          */
         private String saveType;
+        /**
+         * x-file-storage存储的平台
+         */
+        private String savePlatform;
         /**
          * 增加一层最前置路径，可以用于区分不同环境
          */
@@ -89,6 +97,11 @@ public class FaSetting {
 
             String ext = FileUtil.extName(fileName);
             return this.allowFileList.contains(ext);
+        }
+
+        public void updateSaveType(ConfigSysStorageActiveEnum storageActive) {
+            this.saveType = storageActive.getValue();
+            this.savePlatform = storageActive.getDesc();
         }
     }
 
@@ -150,6 +163,10 @@ public class FaSetting {
          * kkFileView
          */
         private String kkFileView;
+        /**
+         * 本服务用于外网访问的域名
+         */
+        private String serverHost;
     }
 
     /**
@@ -212,6 +229,43 @@ public class FaSetting {
          * 等待时长
          */
         private int awaitTerminationSeconds = 60;
+    }
+
+    /**
+     * 数据库配置
+     */
+    @Data
+    public static class Db {
+        /**
+         * 支持分表的表名数组，在每次查询是需要指定{@link com.faber.core.context.BaseContextHandler#setTableSuffix(String)}方法来指定表名追加的后缀。
+         */
+        private List<String> multiTables = new ArrayList<>();
+    }
+
+    /**
+     * 多租户配置
+     */
+    @Data
+    public static class Tenant {
+        /**
+         * 是否启用多租户
+         */
+        private boolean enabled = false;
+    }
+
+    /**
+     * 安全配置
+     */
+    @Data
+    public static class Safety {
+        /**
+         * 是否校验URL、body的签名完整性
+         */
+        private boolean intact = false;
+        /**
+         * 和前端统一的签名密钥
+         */
+        private String secret;
     }
 
 }

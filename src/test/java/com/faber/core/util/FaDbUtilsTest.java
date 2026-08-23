@@ -1,7 +1,7 @@
 package com.faber.core.util;
 
 import com.faber.core.utils.FaDbUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Farando

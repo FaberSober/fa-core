@@ -1,6 +1,6 @@
 package com.faber.core.config.validator.validator;
 
-import javax.validation.groups.Default;
+import jakarta.validation.groups.Default;
 
 /**
  * Validator Group 校验分组

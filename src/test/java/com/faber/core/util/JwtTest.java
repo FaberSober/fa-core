@@ -3,7 +3,7 @@ package com.faber.core.util;
 import cn.hutool.json.JSON;
 import cn.hutool.json.JSONObject;
 import cn.hutool.jwt.JWT;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Farando

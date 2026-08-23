@@ -1,6 +1,7 @@
 package com.faber.core.service;
 
 import com.faber.core.utils.FaFileUtils;
+import com.faber.core.vo.config.FaConfig;
 import com.faber.core.vo.query.ConditionGroup;
 
 import java.io.File;
@@ -24,5 +25,7 @@ public interface ConfigSysService {
             throw new RuntimeException(e);
         }
     }
+
+    FaConfig getConfig();
 
 }

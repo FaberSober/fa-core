@@ -1,9 +1,15 @@
 package com.faber.core.web.biz;
 
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.ReflectUtil;
-import cn.hutool.core.util.StrUtil;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.faber.core.annotation.SqlSorter;
 import com.faber.core.annotation.SqlTreeId;
 import com.faber.core.annotation.SqlTreeName;
@@ -18,14 +24,10 @@ import com.faber.core.vo.tree.TreeNode;
 import com.faber.core.vo.tree.TreePathVo;
 import com.faber.core.vo.tree.TreePosChangeVo;
 
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * <h3>Tree形结构数据的Service业务方法</h3>
@@ -48,6 +50,9 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
 
     @Override
     public boolean save(T entity) {
+        if (getEntityParentId(entity) == null) {
+            setEntityParentId(entity);
+        }
         this.setNextSort(entity); // 设置entity的排序
         return super.save(entity);
     }
@@ -104,7 +109,7 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
      */
     public List<T> treeListLayer(Serializable parentId) {
         // 判断根节点
-        if (parentId == null || ObjectUtil.equal(CommonConstants.ROOT + "", parentId.toString())) {
+        if (parentId == null || ObjectUtil.equal(getRootId(), parentId.toString())) {
             return this.treeListLayerRoot(parentId);
         }
         // 其他节点
@@ -122,7 +127,7 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
             return 0;
         }
         // 判断根节点
-        if (ObjectUtil.equal(CommonConstants.ROOT + "", parentId.toString())) {
+        if (ObjectUtil.equal(getRootId(), parentId.toString())) {
             return this.treeCountLayerRoot(parentId);
         }
         // 其他节点
@@ -185,6 +190,7 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
 
     public QueryWrapper<T> treeLayerNormalWrapper(Serializable parentId) {
         QueryWrapper<T> wrapper = new QueryWrapper<>();
+        this.addTenantQueryIfNeed(wrapper);
         wrapper.eq(this.getTreeParentIdFieldColumnName(), parentId);
         this.enhanceTreeQuery(wrapper);
         wrapper.orderByAsc(this.getSortedFieldColumnName());
@@ -203,10 +209,11 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
 
     public List<TreeNode<T>> allTree() {
         QueryWrapper<T> wrapper = new QueryWrapper<>();
+        this.addTenantQueryIfNeed(wrapper);
         this.enhanceTreeQuery(wrapper);
         wrapper.orderByAsc(this.getSortedFieldColumnName());
         List<T> beanList = super.list(wrapper);
-        return this.listToTree(beanList, CommonConstants.ROOT + "");
+        return this.listToTree(beanList, getRootId());
     }
 
     /**
@@ -238,10 +245,11 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
 
     public List<TreeNode<T>> getTree(QueryParams query) {
         QueryWrapper<T> wrapper = parseQuery(query);
+        this.addTenantQueryIfNeed(wrapper);
         this.enhanceTreeQuery(wrapper);
         wrapper.orderByAsc(this.getSortedFieldColumnName());
         List<T> beanList = super.list(wrapper);
-        return this.listToTree(beanList, CommonConstants.ROOT + "");
+        return this.listToTree(beanList, getRootId());
     }
 
     /**
@@ -275,6 +283,7 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
      */
     public List<T> loopFindChildren(List<Serializable> parentIds) {
         QueryWrapper<T> wrapper = new QueryWrapper<>();
+        this.addTenantQueryIfNeed(wrapper);
         wrapper.in(getTreeParentIdFieldColumnName(), parentIds);
         this.enhanceTreeQuery(wrapper);
         List<T> beanList = super.list(wrapper);
@@ -298,8 +307,17 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
             return;
         }
 
+        // 1. 获取 ID 字段的 Field 对象
+        // 假设 getTreeIdFieldName() 返回的是主键字段名，例如 "id"
+        Field idField = ReflectUtil.getField(getEntityClass(), getTreeIdFieldName());
+        
+        // 2. 获取 ID 字段的期望类型，例如 Long.class
+        Class<?> expectedType = idField.getType();
         list.forEach(item -> {
-            T bean = super.getById(item.getKey());
+            // 3. 将 item.getKey() 的值转换为期望的类型 (Long/Integer)
+            // 使用 Hutool 的 Convert.convert 方法进行安全转换
+            Object key = Convert.convert(expectedType, item.getKey());
+            T bean = super.getById((Serializable) key);
 
             ReflectUtil.setFieldValue(bean, this.getSortedFieldName(), item.getIndex());
             ReflectUtil.setFieldValue(bean, this.getTreeParentIdFieldName(), item.getPid());
@@ -377,13 +395,22 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
     }
 
     /**
+     * 获取默认的顶级根节点ID
+     * @return
+     */
+    public Serializable getRootId() {
+        return CommonConstants.ROOT + "";
+    }
+
+
+    /**
      * 判断是否到达根节点
      *
      * @param entity
      * @return
      */
     protected boolean treeReachRootNode(T entity) {
-        return ObjectUtil.equal(ObjectUtil.toString(getEntityParentId(entity)), CommonConstants.ROOT + "");
+        return ObjectUtil.equal(ObjectUtil.toString(getEntityParentId(entity)), getRootId());
     }
 
     /**
@@ -396,7 +423,7 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
             String msg = String.format("%1$s类未设置@SqlSorter注解，未能查找到排序字段，请确认代码。", getEntityClass().getName());
             throw new BuzzException(msg);
         }
-        SqlSorter anno =field.getAnnotation(SqlSorter.class);
+        SqlSorter anno = field.getAnnotation(SqlSorter.class);
         if (!anno.autoSort()) {
             return;
         }
@@ -419,10 +446,11 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
      */
     protected Integer getMaxSort(Object parentId, T entity) {
         QueryWrapper<T> wrapper = new QueryWrapper<>();
+        this.addTenantQueryIfNeed(wrapper);
         wrapper.eq(getTreeParentIdFieldColumnName(), parentId);
         this.enhanceTreeQueryForMaxSort(wrapper, entity);
-        wrapper.orderByDesc(this.getSortedFieldColumnName());
-        wrapper.select(String.format("IFNULL(max(%s), -1) as value", getSortedFieldColumnName()));
+        // wrapper.orderByDesc(this.getSortedFieldColumnName());
+        wrapper.select(String.format("COALESCE(max(%s), -1) as value", getSortedFieldColumnName()));
         List<Map<String, Object>> result = baseMapper.selectMaps(wrapper);
         return Integer.parseInt(result.get(0).get("value") + "");
     }
@@ -433,7 +461,7 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
      * @param entity
      * @return
      */
-    protected Serializable getEntityId(T entity) {
+    public Serializable getEntityId(T entity) {
         return (Serializable) ReflectUtil.getFieldValue(entity, this.getTreeIdFieldName());
     }
 
@@ -445,6 +473,14 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
      */
     protected Serializable getEntityParentId(T entity) {
         return (Serializable) ReflectUtil.getFieldValue(entity, this.getTreeParentIdFieldName());
+    }
+
+    /**
+     * 设置父节点ID为默认的顶级根节点ID
+     * @param entity
+     */
+    protected void setEntityParentId(T entity) {
+        ReflectUtil.setFieldValue(entity, this.getTreeParentIdFieldName(), getRootId());
     }
 
     /**
@@ -512,6 +548,7 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
         List<T> list = new ArrayList<>();
 
         QueryWrapper<T> wrapper = new QueryWrapper<>();
+        this.addTenantQueryIfNeed(wrapper);
         wrapper.eq(getTreeParentIdFieldColumnName(), parentId);
 
         List<T> children = super.list(wrapper);

@@ -55,6 +55,11 @@ public class BaseContextHandler {
         return (String) get(CommonConstants.CONTEXT_KEY_USER_IP);
     }
 
+    public static String getTenantId() {
+        Object value = get(CommonConstants.CONTEXT_KEY_TENANT_ID);
+        return returnObjectValue(value);
+    }
+
     public static Boolean getLogin() {
         Object value = get(CommonConstants.CONTEXT_KEY_LOGIN);
         return value != null && (Boolean) value;
@@ -82,6 +87,31 @@ public class BaseContextHandler {
 
     public static void setUserIp(String ip) {
         set(CommonConstants.CONTEXT_KEY_USER_IP, ip);
+    }
+
+    public static void setTenantId(String tenantId) {
+        set(CommonConstants.CONTEXT_KEY_TENANT_ID, tenantId);
+    }
+
+    /**
+     * 获取WebSocket的推送channel
+     * @return
+     */
+    public static String getWsChannel() {
+        return (String) get(CommonConstants.CONTEXT_KEY_WS_CHANNEL);
+    }
+
+    public static void setWsChannel(String channel) {
+        set(CommonConstants.CONTEXT_KEY_WS_CHANNEL, channel);
+    }
+
+    // ----------------------------------------- MybatisPlus分表 -----------------------------------------
+    public static String getTableSuffix() {
+        return (String) get(CommonConstants.CONTEXT_KEY_TABLE_SUFFIX);
+    }
+
+    public static void setTableSuffix(String tableSuffix) {
+        set(CommonConstants.CONTEXT_KEY_TABLE_SUFFIX, tableSuffix);
     }
 
     // ----------------------------------------- 日志备注 -----------------------------------------
@@ -134,9 +164,9 @@ public class BaseContextHandler {
      * 代码设置-使用admin作为当前线程的用户-一般用于未登录的系统线程操作
      */
     public static void useAdmin() {
-        BaseContextHandler.setUserId("1");
-        BaseContextHandler.setName("Admin");
-        BaseContextHandler.setUsername("超级管理员");
+        BaseContextHandler.setUserId(CommonConstants.SUPER_ADMIN_ID);
+        BaseContextHandler.setName(CommonConstants.SUPER_ADMIN_NAME);
+        BaseContextHandler.setUsername(CommonConstants.SUPER_ADMIN_USER_NAME);
         BaseContextHandler.setLogin(true);
     }
 

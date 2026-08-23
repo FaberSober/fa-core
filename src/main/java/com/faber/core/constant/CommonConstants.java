@@ -5,6 +5,12 @@ package com.faber.core.constant;
  */
 public class CommonConstants {
 
+    // ---------------- 超级管理员 ----------------
+    public static final String SUPER_ADMIN_ID = "1";
+    public static final String SUPER_ADMIN_NAME = "Admin";
+    public static final String SUPER_ADMIN_USER_NAME = "超级管理员";
+
+
     // ---------------- 用户token异常 ----------------
     public static final Integer EX_USER_INVALID_CODE = 40101;
     public static final Integer EX_USER_INVALID_DEVICE_CODE = 40102;
@@ -31,11 +37,18 @@ public class CommonConstants {
     public static final String CONTEXT_KEY_LOG_REMARK = "currentLogRemark"; // 当前请求的备注信息，自定义写入请求日志中，方便备注查看
     public static final String CONTEXT_KEY_LOG_OPR_REMARK = "currentLogOprRemark"; // 当前请求的操作信息，自定义写入请求日志中，方便备注查看
 
+    public static final String CONTEXT_KEY_WS_CHANNEL = "CONTEXT_KEY_WS_CHANNEL"; // 当前请求内部的WebSocket推送channel
+
+    /**
+     * MyBatisPlus追加表的后缀，可以用作分表
+     */
+    public static final String CONTEXT_KEY_TABLE_SUFFIX = "currentTableSuffix";
+
     // ---------------- 上下文信息-租户特有字段 ----------------
     public static final String CONTEXT_KEY_TENANT_LOGIN = "currentTenantLogin";
-    public static final String CONTEXT_KEY_TENANT_ID = "currentTenantIp"; // 当前租户所属的租户ID
+    public static final String CONTEXT_KEY_TENANT_ID = "currentTenantId"; // 当前租户所属的租户ID
     public static final String CONTEXT_KEY_TENANT_NAME = "currentTenantName"; // 当前租户所属的租户名称
-    public static final String CONTEXT_KEY_CORP_ID = "currentCorpIp"; // 当前租户所属的企业ID
+    public static final String CONTEXT_KEY_CORP_ID = "currentCorpId"; // 当前租户所属的企业ID
     public static final String CONTEXT_KEY_CORP_NAME = "currentCorpName"; // 当前租户所属的企业名称
 
     public static final String JWT_KEY_USER_ID = "userId";
@@ -69,6 +82,11 @@ public class CommonConstants {
     public static final String FA_APP_DEVICE_ID = "FaAppDeviceId";
 
     /**
+     * 租户-选中的租户ID
+     */
+    public static final String FA_TN_TENANT_ID = "fa-tn-tenant-id";
+
+    /**
      * 租户-选中的企业ID
      */
     public static final String FA_TN_CORP_ID = "fa-tn-corp-id";
@@ -77,9 +95,9 @@ public class CommonConstants {
     public final static int ROOT = 0;
 
     /**
-     * 单次查询返回数据最大值
+     * 单次分页查询返回数据最大值
      */
-    public final static long QUERY_MAX_COUNT = 10000;
+    public final static long QUERY_MAX_COUNT = 1000;
 
     /**
      * 中国地区编码-中国编码-6位

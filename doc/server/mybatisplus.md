@@ -1,4 +1,9 @@
+[TOC]
+
 # MyBatis-Plus
+
+## MyBatisPlus直接执行SQL
+
 
 ## MyBatisPlus批量写入方法saveBatch速度很慢的解决方案
 解决方案很简单，在数据库配置的uri后面加上下面这个属性即可：
@@ -46,8 +51,7 @@ Mybatis通用JsonTypeHandler: http://events.jianshu.io/p/0246df229a1f
 public class Student extends BaseDelEntity {
     // ...
     
-    // 使用typeHandler = JacksonTypeHandler.class
-    @TableField(typeHandler = JacksonTypeHandler.class)
+    @TableField(typeHandler = UniversalJsonTypeHandler.class)
     @ExcelProperty("标签")
     private Tag[] tags;
 
@@ -162,4 +166,30 @@ Was expecting one of:
     <artifactId>jsqlparser</artifactId>
     <version>4.5</version>
 </dependency>
+```
+
+# 分表查询（动态表名）
+## 示例
+```java
+// 线程中设置表后缀
+BaseContextHandler.setTableSuffix("1");
+// 调用查询
+IotDevice iotDevice = iotDeviceBiz.getById(1);
+// 检查日志SQL，查询的表名称为：beam_iot_device_1
+// 如果没有取消后缀，后续的查询表都会加上此后缀，一条线程中的查询
+BaseContextHandler.setTableSuffix("");
+```
+
+# 拦截忽略注解 @InterceptorIgnore
+https://baomidou.com/plugins/#%E6%8B%A6%E6%88%AA%E5%BF%BD%E7%95%A5%E6%B3%A8%E8%A7%A3-interceptorignore
+
+实例代码如下：
+```java
+public interface StudentMapper extends FaBaseMapper<Student> {
+
+    // 添加拦截忽略注解，指定忽略全表删除拦截器
+    @InterceptorIgnore(blockAttack = "true")
+    int deleteAll();
+
+}
 ```

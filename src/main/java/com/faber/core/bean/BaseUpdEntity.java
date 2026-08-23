@@ -12,7 +12,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @ToString
@@ -24,7 +24,7 @@ public abstract class BaseUpdEntity extends BaseCrtEntity {
     @ExcelProperty("更新时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @TableField(fill = FieldFill.UPDATE)
-    private LocalDateTime updTime;
+    private Date updTime;
 
     @FaPropIgnore
     @SqlEquals

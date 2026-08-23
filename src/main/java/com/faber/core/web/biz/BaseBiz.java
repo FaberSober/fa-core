@@ -1,5 +1,6 @@
 package com.faber.core.web.biz;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ReflectUtil;
@@ -14,15 +15,23 @@ import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.faber.core.annotation.*;
+import com.faber.core.bean.BaseTnCrtEntity;
+import com.faber.core.bean.BaseTnDelEntity;
+import com.faber.core.bean.BaseTnUpdEntity;
 import com.faber.core.annotation.SqlSorter;
 import com.faber.core.annotation.SqlTreeId;
 import com.faber.core.annotation.SqlTreeName;
 import com.faber.core.annotation.SqlTreeParentId;
 import com.faber.core.config.mybatis.base.FaBaseMapper;
 import com.faber.core.config.mybatis.utils.WrapperUtils;
+import com.faber.core.constant.CommonConstants;
+import com.faber.core.constant.FaSetting;
 import com.faber.core.context.BaseContextHandler;
 import com.faber.core.exception.BuzzException;
 import com.faber.core.service.ConfigSceneService;
+import com.faber.core.service.DictService;
+import com.faber.core.service.SocketTaskProgressService;
 import com.faber.core.service.StorageService;
 import com.faber.core.utils.FaEnumUtils;
 import com.faber.core.utils.FaExcelUtils;
@@ -30,6 +39,8 @@ import com.faber.core.vo.excel.CommonImportExcelReqVo;
 import com.faber.core.vo.msg.TableRet;
 import com.faber.core.vo.query.ConditionGroup;
 import com.faber.core.vo.query.QueryParams;
+import com.faber.core.vo.socket.SocketTaskVo;
+import com.faber.core.vo.utils.DictOption;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.dromara.x.file.storage.core.FileInfo;
@@ -43,6 +54,7 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -55,8 +67,13 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     protected final Logger _logger = LoggerFactory.getLogger(this.getClass());
     protected final int DEFAULT_PAGE_SIZE = 1000;
+    protected final int DEFAULT_IMPORT_BATCH_SIZE = 1000;
 
     private ConfigSceneService configSceneService;
+    private DictService dictService;
+    private StorageService storageService;
+    private SocketTaskProgressService socketTaskProgressService;
+    private FaSetting faSetting;
 
 
     /**
@@ -139,14 +156,21 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         return flag;
     }
 
-    public List<T> getByIds(List<Serializable> ids) {
+    public <ID extends Serializable> List<T> getByIds(List<ID> ids) {
         if (ids == null || ids.isEmpty()) {
             return new ArrayList<>();
         }
 
         QueryWrapper<T> wrapper = new QueryWrapper<>();
         wrapper.in("id", ids);
-        return super.list(wrapper);
+        List<T> list = super.list(wrapper);
+        // sort by ids origin order
+        CollUtil.sort(list, (o1, o2) -> {
+            int o1IdIndex = ids.indexOf(ReflectUtil.getFieldValue(o1, "id"));
+            int o2IdIndex = ids.indexOf(ReflectUtil.getFieldValue(o2, "id"));
+            return o1IdIndex - o2IdIndex;
+        });
+        return list;
     }
 
     public List<T> mineList(QueryParams query) {
@@ -218,7 +242,8 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         Page<T> result = super.page(page, wrapper);
         TableRet<T> table = new TableRet<T>(result);
 
-        // add dict options
+        // add dict, enum options
+        this.addEnumOptions(table, getEntityClass());
         this.addDictOptions(table, getEntityClass());
 
         // decorate
@@ -227,16 +252,52 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         return table;
     }
 
-    public void addDictOptions(TableRet<?> table, Class<?> clazz) {
+    /**
+     * add enum dict options
+     * @param table
+     * @param clazz
+     */
+    public void addEnumOptions(TableRet<?> table, Class<?> clazz) {
         Field[] fields = ReflectUtil.getFields(clazz, field -> IEnum.class.isAssignableFrom(field.getType()));
         for (Field field : fields) {
             table.getData().addDict(field.getName(), FaEnumUtils.toOptions((Class<? extends IEnum<Serializable>>) field.getType()));
         }
     }
 
+    /**
+     * add db dict options
+     * @param table
+     * @param clazz
+     */
+    public void addDictOptions(TableRet<?> table, Class<?> clazz) {
+        if (dictService == null) {
+            dictService = SpringUtil.getBean(DictService.class);
+        }
+        if (dictService == null) {
+            throw new BuzzException("DictService not implemented yet");
+        }
+
+        Field[] fields = ReflectUtil.getFields(clazz, field -> field.getAnnotation(FaColDict.class) != null);
+        for (Field field : fields) {
+            FaColDict anno = field.getAnnotation(FaColDict.class);
+            List<DictOption<Serializable>> options = dictService.getOptionsByCode(anno.value());
+            table.getData().addDict(field.getName(), options);
+        }
+    }
+
+    public QueryWrapper<T> getQueryWrapper(QueryParams query) {
+        QueryParams queryCount = new QueryParams();
+        queryCount.setQuery(query.getQuery());
+        QueryWrapper<T> countWrapper = parseQuery(queryCount);
+        return countWrapper;
+    }
+
     public List<T> list(QueryParams query) {
         QueryWrapper<T> wrapper = parseQuery(query);
-        long total = super.count(wrapper);
+
+        // 重新创建一个 wrapper，只保留查询条件
+        QueryWrapper<T> countWrapper = getQueryWrapper(query);
+        long total = super.count(countWrapper);
 //        if (total > CommonConstants.QUERY_MAX_COUNT) {
 //            throw new BuzzException("单次查询列表返回数据不可超过" + CommonConstants.QUERY_MAX_COUNT);
 //        }
@@ -307,22 +368,127 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
     }
 
     public File getFileById(String fileId) {
-        StorageService storageService = SpringUtil.getBean(StorageService.class);
-        return storageService.getByFileId(fileId);
+        return getStorageService().getByFileId(fileId);
     }
 
     public FileInfo getFileInfoById(String fileId) {
-        StorageService storageService = SpringUtil.getBean(StorageService.class);
-        return storageService.getFileInfoById(fileId);
+        return getStorageService().getFileInfoById(fileId);
+    }
+
+    public StorageService getStorageService() {
+        if (this.storageService == null) {
+            this.storageService = SpringUtil.getBean(StorageService.class);
+        }
+        return this.storageService;
+    }
+
+    public void saveFileBiz(String mainBizId, String bizId, String type, String fileId) {
+        getStorageService().saveFileBiz("", "", type, fileId);
+    }
+
+    public File getImportFile(CommonImportExcelReqVo reqVo) {
+        File file = getFileById(reqVo.getFileId());
+        importExcelFileBizSave(reqVo);
+        return file;
+    }
+
+    public void importExcelFileBizSave(CommonImportExcelReqVo reqVo) {
+        // save file save biz
+        if (StrUtil.isNotEmpty(reqVo.getBuzzType())) {
+            getStorageService().saveFileBiz("", "", reqVo.getBuzzType(), reqVo.getFileId());
+        }
     }
 
     public void importExcel(CommonImportExcelReqVo reqVo) {
-        File file = getFileById(reqVo.getFileId());
+        File file = getImportFile(reqVo);
+
         List<T> saveList = new ArrayList<>();
         FaExcelUtils.simpleRead(file, this.getEntityClass(), i -> {
             saveList.add(i);
         });
-        this.saveOrUpdateBatch(saveList);
+        SocketTaskVo task = initImportTask(reqVo, saveList.size());
+        saveOrUpdateBatchWithImportProgress(saveList, getImportBatchSize(reqVo), task, 0);
+    }
+
+    protected int getImportBatchSize(CommonImportExcelReqVo reqVo) {
+        Integer importBatchSize = reqVo.getImportBatchSize();
+        if (importBatchSize == null || importBatchSize <= 0) {
+            return DEFAULT_IMPORT_BATCH_SIZE;
+        }
+        return importBatchSize;
+    }
+
+    protected SocketTaskVo initImportTask(CommonImportExcelReqVo reqVo, int total) {
+        return initImportTask(reqVo, total, getImportTaskName());
+    }
+
+    protected SocketTaskVo initImportTask(CommonImportExcelReqVo reqVo, int total, String taskName) {
+        String taskId = StrUtil.trimToNull(reqVo.getTaskId());
+        if (taskId == null) {
+            return null;
+        }
+
+        SocketTaskVo task = new SocketTaskVo();
+        task.setTaskId(taskId);
+        task.setName(taskName);
+        task.setTotal(total);
+        sendImportProgress(task);
+        return task;
+    }
+
+    protected String getImportTaskName() {
+        FaModalName faModalName = getEntityClass().getAnnotation(FaModalName.class);
+        if (faModalName != null && StrUtil.isNotBlank(faModalName.name())) {
+            return faModalName.name() + "导入";
+        }
+        return getEntityClass().getSimpleName() + "导入";
+    }
+
+    protected int saveOrUpdateBatchWithImportProgress(List<T> dataList, int batchSize, SocketTaskVo task, int cur) {
+        return executeBatchWithImportProgress(dataList, batchSize, task, cur, this::saveOrUpdateBatch);
+    }
+
+    protected int saveBatchWithImportProgress(List<T> dataList, int batchSize, SocketTaskVo task, int cur) {
+        return executeBatchWithImportProgress(dataList, batchSize, task, cur, this::saveBatch);
+    }
+
+    protected int updateBatchByIdWithImportProgress(List<T> dataList, int batchSize, SocketTaskVo task, int cur) {
+        return executeBatchWithImportProgress(dataList, batchSize, task, cur, this::updateBatchById);
+    }
+
+    protected int executeBatchWithImportProgress(List<T> dataList, int batchSize, SocketTaskVo task, int cur, Consumer<List<T>> batchConsumer) {
+        if (CollUtil.isEmpty(dataList)) {
+            return cur;
+        }
+        for (int i = 0; i < dataList.size(); i += batchSize) {
+            List<T> batchList = dataList.subList(i, Math.min(i + batchSize, dataList.size()));
+            batchConsumer.accept(batchList);
+            cur += batchList.size();
+            sendImportProgress(task, cur);
+        }
+        return cur;
+    }
+
+    protected void sendImportProgress(SocketTaskVo task, int cur) {
+        if (task == null) {
+            return;
+        }
+        task.setCur(cur);
+        sendImportProgress(task);
+    }
+
+    protected void sendImportProgress(SocketTaskVo task) {
+        if (task == null) {
+            return;
+        }
+        getSocketTaskProgressService().sendTaskProgress(task);
+    }
+
+    private SocketTaskProgressService getSocketTaskProgressService() {
+        if (socketTaskProgressService == null) {
+            socketTaskProgressService = SpringUtil.getBean(SocketTaskProgressService.class);
+        }
+        return socketTaskProgressService;
     }
 
     /**
@@ -337,7 +503,9 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
             return cache.get(id);
         }
         T entity = super.getById(id);
-        cache.put(id, entity);
+        if (entity != null) {
+            cache.put(id, entity);
+        }
         return entity;
     }
 
@@ -353,13 +521,51 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
             return cache.get(id);
         }
         T entity = super.getById(id);
-        decorateOne(entity);
-        cache.put(id, entity);
+        if (entity != null) {
+            decorateOne(entity);
+            cache.put(id, entity);
+        }
         return entity;
     }
 
     public String getCurrentUserId() {
         return BaseContextHandler.getUserId();
+    }
+
+    protected boolean isSuperAdminUser(String userId) {
+        return StrUtil.equals(CommonConstants.SUPER_ADMIN_ID, userId);
+    }
+
+    protected String getCurrentTenantId() {
+        return BaseContextHandler.getTenantId();
+    }
+
+    protected boolean isTenantEntity() {
+        Class<T> entityClass = getEntityClass();
+        return BaseTnCrtEntity.class.isAssignableFrom(entityClass)
+                || BaseTnUpdEntity.class.isAssignableFrom(entityClass)
+                || BaseTnDelEntity.class.isAssignableFrom(entityClass);
+    }
+
+    protected boolean isTenantEnabled() {
+        if (faSetting == null) {
+            faSetting = SpringUtil.getBean(FaSetting.class);
+        }
+        return faSetting.getTenant() != null && faSetting.getTenant().isEnabled();
+    }
+
+    protected void addTenantQueryIfNeed(QueryWrapper<T> wrapper) {
+        if (!isTenantEnabled() || !isTenantEntity()) {
+            return;
+        }
+        String tenantId = getCurrentTenantId();
+        if (StrUtil.isBlank(tenantId)) {
+            if (isSuperAdminUser(getCurrentUserId())) {
+                return;
+            }
+            throw new BuzzException("当前租户上下文为空");
+        }
+        wrapper.eq("tenant_id", tenantId);
     }
 
     public void removeBatchByIds(List<Serializable> ids) {
@@ -369,7 +575,18 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     public void removePerById(Serializable id) {
         // 用SQL进行物理删除
-        baseMapper.deletePermanentById(id);
+        baseMapper.deleteByIdIgnoreLogic(id);
+        afterRemove(id);
+    }
+
+    /**
+     * 根据ID集合批量物理删除，单条SQL，不受逻辑删除字段限制
+     */
+    public void removePerByIds(Collection<? extends Serializable> ids) {
+        if (CollUtil.isEmpty(ids)) return;
+        baseMapper.deleteByIdsIgnoreLogic(ids);
+        List<Serializable> idList = new ArrayList<>(ids);
+        afterRemove(idList);
         afterRemove(id);
     }
 
@@ -384,6 +601,22 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     public void removeByQuery(QueryParams query) {
         QueryWrapper<T> wrapper = parseQuery(query);
+        
+        // 重新创建一个 wrapper，只保留查询条件
+        QueryWrapper<T> countWrapper = getQueryWrapper(query);
+        long count = super.count(countWrapper);
+        if (count > 1000) {
+            throw new BuzzException("删除数据超过1000条，请使用批量删除");
+        }
+        List<T> list = super.list(wrapper);
+        super.remove(wrapper);
+        List<Serializable> ids = list.stream().map(i -> getEntityId(i)).toList();
+        afterRemove(ids);
+    }
+
+    public void removeMine() {
+        QueryWrapper<T> wrapper = new QueryWrapper<>();
+        wrapper.eq("crt_user", getCurrentUserId());
         List<T> list = super.list(wrapper);
         super.remove(wrapper);
         List<Serializable> ids = list.stream().map(i -> getEntityId(i)).collect(Collectors.toList());
@@ -405,6 +638,17 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
      * @param entity
      * @return
      */
+    public Serializable getEntityId(T entity) {
+        String idField = this.getAnnotationFieldName(TableId.class);
+        return (Serializable) ReflectUtil.getFieldValue(entity, idField);
+    }
+
+    /**
+     * 返回实体的父节点，可以子类覆盖重写
+     *
+     * @param entity
+     * @return
+     */
     protected Serializable getEntityId(T entity) {
         String idField = this.getAnnotationFieldName(TableId.class);
         return (Serializable) ReflectUtil.getFieldValue(entity, idField);
@@ -416,14 +660,27 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
      * @param colName 取最大排序的
      * @return 最大的排序
      */
-    protected Integer getMaxSort(String colName) {
+    public Integer getMaxSort(String colName) {
         QueryWrapper<T> wrapper = new QueryWrapper<>();
         wrapper.orderByDesc(colName);
-        wrapper.select(String.format("IFNULL(max(%s), -1) as value", colName));
+        wrapper.select(String.format("COALESCE(max(%s), -1) as value", colName));
         List<Map<String, Object>> result = baseMapper.selectMaps(wrapper);
         return Integer.parseInt(result.get(0).get("value") + "");
     }
 
+
+    /**
+     * 获取最大的排序，传入wrapper,在wrapper里增加查询条件
+     *
+     * @param colName 取最大排序的
+     * @return 最大的排序
+     */
+    public Integer getMaxSort(String colName ,QueryWrapper wrapper) {
+        wrapper.orderByDesc(colName);
+        wrapper.select(String.format("COALESCE(max(%s), -1) as value", colName));
+        List<Map<String, Object>> result = baseMapper.selectMaps(wrapper);
+        return Integer.parseInt(result.get(0).get("value") + "");
+    }
 
     /**
      * 获取最大的排序
@@ -431,9 +688,9 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
      * @param colName 取最大排序的
      * @return 最大的排序
      */
-    protected Integer getMaxSort(QueryWrapper<T> wrapper, String colName) {
+    public Integer getMaxSort(QueryWrapper<T> wrapper, String colName) {
         wrapper.orderByDesc(colName);
-        wrapper.select(String.format("IFNULL(max(%s), -1) as value", colName));
+        wrapper.select(String.format("COALESCE(max(%s), -1) as value", colName));
         List<Map<String, Object>> result = baseMapper.selectMaps(wrapper);
         return Integer.parseInt(result.get(0).get("value") + "");
     }
@@ -446,6 +703,44 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
      */
     public T getTop(LambdaQueryChainWrapper<T> wrapper) {
         return wrapper.last("limit 1").one();
+    }
+
+    public T getTopN(LambdaQueryChainWrapper<T> wrapper, Integer n) {
+        return wrapper.last("limit " + n).one();
+    }
+
+    /**
+     * 获取注解对应的实体字段
+     *
+     * @param annotationClass {@link SqlSorter}\{@link SqlTreeId}\{@link SqlTreeParentId}\{@link SqlTreeName}
+     * @param <AT>
+     * @return
+     */
+    public <AT extends Annotation> Field getAnnotationField(Class<AT> annotationClass) {
+        for (Field field : getEntityClass().getDeclaredFields()) {
+            AT annotation = field.getAnnotation(annotationClass);
+            if (annotation != null) {
+                return field;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取注解对应的实体字段名称
+     *
+     * @param annotationClass {@link SqlSorter}\{@link SqlTreeId}\{@link SqlTreeParentId}\{@link SqlTreeName}
+     * @param <AT>
+     * @return
+     */
+    public <AT extends Annotation> String getAnnotationFieldName(Class<AT> annotationClass) {
+        Field field = getAnnotationField(annotationClass);
+        if (field == null) {
+            String msg = String.format("%1$s类未设置@%2$s注解，未能查找到排序字段，请确认代码。", getEntityClass().getName(), annotationClass.getName());
+            _logger.error(msg);
+            throw new BuzzException(msg);
+        }
+        return field.getName();
     }
 
     public T getTopN(LambdaQueryChainWrapper<T> wrapper, Integer n) {

@@ -1,12 +1,16 @@
 package com.faber.core.config.mybatis.base;
 
+import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.conditions.update.UpdateChainWrapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * @author K
@@ -35,23 +39,53 @@ public interface FaBaseMapper<T> extends BaseMapper<T> {
         return new LambdaUpdateChainWrapper<>(this);
     }
 
-    /**
-     * 以下为自己自定义
-     */
-    int deleteAll();
+
+    // 添加拦截忽略注解，指定忽略全表删除拦截器
 
     /**
-     * 物理永久删除
-     * @param id
-     * @return
+     * 删除全表数据，谨慎使用！
      */
-    int deletePermanentById(Serializable id);
+//    @InterceptorIgnore(blockAttack = "true")
+//    int deleteAll();
 
     /**
-     * id查询，不受逻辑删除字段限制
-     * @param id
-     * @return
+     * 删除全表数据，谨慎使用！
      */
-    T selectByIdPure(Serializable id);
+//    @InterceptorIgnore(blockAttack = "true")
+//    int deleteAllIgnoreLogic();
+
+    // ----------------------------------- 自定义追加的忽略逻辑删除字段的操作 -----------------------------------
+    /**
+     * 根据 ID 删除，不受逻辑删除字段限制，物理永久删除
+     * @param id 主键ID
+     */
+    int deleteByIdIgnoreLogic(Serializable id);
+
+    /**
+     * 根据实体(ID)删除，不受逻辑删除字段限制，物理永久删除
+     *
+     * @param entity 实体对象
+     * @since 3.4.4
+     */
+    int deleteByIdIgnoreLogic(T entity);
+
+    /**
+     * 根据 ID 集合批量删除，不受逻辑删除字段限制，物理永久删除
+     *
+     * @param idList 主键ID集合
+     */
+    int deleteByIdsIgnoreLogic(@Param(Constants.COLL) Collection<? extends Serializable> idList);
+
+    /**
+     * 根据 ID 查询，不受逻辑删除字段限制
+     * @param id 主键ID
+     */
+    T selectByIdIgnoreLogic(Serializable id);
+
+    /**
+     * 根据 ID 修改
+     * @param entity 实体对象
+     */
+    int updateByIdIgnoreLogic(@Param(Constants.ENTITY) T entity);
 
 }

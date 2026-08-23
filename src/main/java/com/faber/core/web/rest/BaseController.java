@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <h3>通用Rest接口父类，包含基本的方法：</h3>
@@ -39,6 +40,8 @@ import java.util.List;
  *         <tr><td>{@link BaseController#removePer}</td>            <td>id永久删除</td></tr>
  *         <tr><td>{@link BaseController#removePerBatchByIds}</td>  <td>ids批量永久删除</td></tr>
  *         <tr><td>{@link BaseController#removeByQuery}</td>        <td>通过查询条件删除</td></tr>
+ *         <tr><td>{@link BaseController#removeMine}</td>           <td>删除当前用户的数据</td></tr>
+ *         <tr><td>{@link BaseController#removeMineByQuery}</td>    <td>限定当前用户通过查询条件删除</td></tr>
  *         <tr><td>{@link BaseController#all}</td>                  <td>获取所有List</td></tr>
  *         <tr><td>{@link BaseController#list}</td>                 <td>获取List，带过滤查询条件</td></tr>
  *         <tr><td>{@link BaseController#listN}</td>                <td>获取第N个，带过滤查询条件</td></tr>
@@ -107,7 +110,7 @@ public abstract class BaseController<Biz extends BaseBiz, Entity, Key extends Se
     @ResponseBody
     public Ret<Entity> update(@Validated(value = Vg.Crud.U.class) @RequestBody Entity entity) {
         baseBiz.updateById(entity);
-        return ok();
+        return ok(entity);
     }
 
     @FaLogOpr(value = "批量更新", crud = LogCrudEnum.U)
@@ -171,6 +174,24 @@ public abstract class BaseController<Biz extends BaseBiz, Entity, Key extends Se
     @RequestMapping(value = "/removeByQuery", method = RequestMethod.POST)
     @ResponseBody
     public Ret<Boolean> removeByQuery(@RequestBody QueryParams query) {
+        baseBiz.removeByQuery(query);
+        return ok();
+    }
+
+    @FaLogOpr(value = "删除本用户数据", crud = LogCrudEnum.D)
+    @RequestMapping(value = "/removeMine", method = RequestMethod.DELETE)
+    @ResponseBody
+    public Ret<Entity> removeMine() {
+        baseBiz.removeMine();
+        return ok();
+    }
+
+    @FaLogOpr(value = "限定当前用户通过查询条件删除", crud = LogCrudEnum.R)
+    @LogNoRet
+    @RequestMapping(value = "/removeMineByQuery", method = RequestMethod.POST)
+    @ResponseBody
+    public Ret<Boolean> removeMineByQuery(@RequestBody QueryParams query) {
+        query.getQuery().put("crtUser", getCurrentUserId());
         baseBiz.removeByQuery(query);
         return ok();
     }
@@ -255,7 +276,8 @@ public abstract class BaseController<Biz extends BaseBiz, Entity, Key extends Se
     @FaLogOpr(value = "导入Excel数据", crud = LogCrudEnum.R)
     @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
     @ResponseBody
-    public Ret<Boolean> importExcel(@RequestBody CommonImportExcelReqVo reqVo) {
+    public Ret<Boolean> importExcel(@RequestBody Map<String, Object> params) {
+        CommonImportExcelReqVo reqVo = new CommonImportExcelReqVo(params);
         baseBiz.importExcel(reqVo);
         return ok();
     }

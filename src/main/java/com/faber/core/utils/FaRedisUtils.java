@@ -23,7 +23,7 @@ public class FaRedisUtils {
     @Autowired
     private RedissonClient redisson;
 
-    @Value("${spring.redis.prefix}")
+    @Value("${spring.data.redis.prefix}")
     private String redisPrefix;
 
     public String buildKey(String key) {

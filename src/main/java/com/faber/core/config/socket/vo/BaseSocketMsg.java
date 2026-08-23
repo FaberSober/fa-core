@@ -1,7 +1,7 @@
 package com.faber.core.config.socket.vo;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import cn.hutool.json.JSONObject;
+import com.alibaba.fastjson2.JSON;
 import com.faber.core.config.socket.enums.SocketMsgActEnum;
 import lombok.Builder;
 import lombok.Data;
@@ -30,22 +30,22 @@ public class BaseSocketMsg implements Serializable {
 
     public static BaseSocketMsg link(String label, String link) {
         JSONObject jo = new JSONObject();
-        jo.put("label", label);
-        jo.put("link", link);
+        jo.set("label", label);
+        jo.set("link", link);
         return BaseSocketMsg.builder().act(SocketMsgActEnum.LINK.getValue()).data(jo).build();
     }
 
     public static BaseSocketMsg linkImg(String label, String link) {
         JSONObject jo = new JSONObject();
-        jo.put("label", label);
-        jo.put("link", link);
+        jo.set("label", label);
+        jo.set("link", link);
         return BaseSocketMsg.builder().act(SocketMsgActEnum.LINK_IMG.getValue()).data(jo).build();
     }
 
     public static BaseSocketMsg linkVideo(String label, String link) {
         JSONObject jo = new JSONObject();
-        jo.put("label", label);
-        jo.put("link", link);
+        jo.set("label", label);
+        jo.set("link", link);
         return BaseSocketMsg.builder().act(SocketMsgActEnum.LINK_VIDEO.getValue()).data(jo).build();
     }
 

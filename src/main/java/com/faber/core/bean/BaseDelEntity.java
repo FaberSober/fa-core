@@ -1,6 +1,7 @@
 package com.faber.core.bean;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.faber.core.annotation.FaPropIgnore;
@@ -18,7 +19,7 @@ public abstract class BaseDelEntity extends BaseUpdEntity {
     @SqlEquals
     @ExcelIgnore
     @TableLogic(value = "false", delval = "true")
-    @TableField(select = false)
+    @TableField(select = false, fill = FieldFill.INSERT)
     private Boolean deleted;
 
 }
