@@ -19,10 +19,6 @@ import com.faber.core.annotation.*;
 import com.faber.core.bean.BaseTnCrtEntity;
 import com.faber.core.bean.BaseTnDelEntity;
 import com.faber.core.bean.BaseTnUpdEntity;
-import com.faber.core.annotation.SqlSorter;
-import com.faber.core.annotation.SqlTreeId;
-import com.faber.core.annotation.SqlTreeName;
-import com.faber.core.annotation.SqlTreeParentId;
 import com.faber.core.config.mybatis.base.FaBaseMapper;
 import com.faber.core.config.mybatis.utils.WrapperUtils;
 import com.faber.core.constant.CommonConstants;
@@ -55,7 +51,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  * 业务Service父类
@@ -587,7 +582,6 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         baseMapper.deleteByIdsIgnoreLogic(ids);
         List<Serializable> idList = new ArrayList<>(ids);
         afterRemove(idList);
-        afterRemove(id);
     }
 
     @Transactional(
@@ -617,10 +611,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
     public void removeMine() {
         QueryWrapper<T> wrapper = new QueryWrapper<>();
         wrapper.eq("crt_user", getCurrentUserId());
-        List<T> list = super.list(wrapper);
         super.remove(wrapper);
-        List<Serializable> ids = list.stream().map(i -> getEntityId(i)).collect(Collectors.toList());
-        afterRemove(ids);
     }
 
     public String updateValueToStr(Field field, Object value) {
@@ -639,17 +630,6 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
      * @return
      */
     public Serializable getEntityId(T entity) {
-        String idField = this.getAnnotationFieldName(TableId.class);
-        return (Serializable) ReflectUtil.getFieldValue(entity, idField);
-    }
-
-    /**
-     * 返回实体的父节点，可以子类覆盖重写
-     *
-     * @param entity
-     * @return
-     */
-    protected Serializable getEntityId(T entity) {
         String idField = this.getAnnotationFieldName(TableId.class);
         return (Serializable) ReflectUtil.getFieldValue(entity, idField);
     }
@@ -734,44 +714,6 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
      * @return
      */
     public <AT extends Annotation> String getAnnotationFieldName(Class<AT> annotationClass) {
-        Field field = getAnnotationField(annotationClass);
-        if (field == null) {
-            String msg = String.format("%1$s类未设置@%2$s注解，未能查找到排序字段，请确认代码。", getEntityClass().getName(), annotationClass.getName());
-            _logger.error(msg);
-            throw new BuzzException(msg);
-        }
-        return field.getName();
-    }
-
-    public T getTopN(LambdaQueryChainWrapper<T> wrapper, Integer n) {
-        return wrapper.last("limit " + n).one();
-    }
-
-    /**
-     * 获取注解对应的实体字段
-     *
-     * @param annotationClass {@link SqlSorter}\{@link SqlTreeId}\{@link SqlTreeParentId}\{@link SqlTreeName}
-     * @param <AT>
-     * @return
-     */
-    protected <AT extends Annotation> Field getAnnotationField(Class<AT> annotationClass) {
-        for (Field field : getEntityClass().getDeclaredFields()) {
-            AT annotation = field.getAnnotation(annotationClass);
-            if (annotation != null) {
-                return field;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 获取注解对应的实体字段名称
-     *
-     * @param annotationClass {@link SqlSorter}\{@link SqlTreeId}\{@link SqlTreeParentId}\{@link SqlTreeName}
-     * @param <AT>
-     * @return
-     */
-    protected <AT extends Annotation> String getAnnotationFieldName(Class<AT> annotationClass) {
         Field field = getAnnotationField(annotationClass);
         if (field == null) {
             String msg = String.format("%1$s类未设置@%2$s注解，未能查找到排序字段，请确认代码。", getEntityClass().getName(), annotationClass.getName());
