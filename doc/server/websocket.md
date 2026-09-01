@@ -31,6 +31,41 @@ useBus(
 )
 ```
 
+# 导入数据加入导入进度
+## 前度导入Modal
+1. 设置`showMsg`为true；
+2. 设置`showMsgChannel`信号接收频道；
+```typescript jsx
+<CommonExcelUploadModal
+    fetchFinish={refreshPage}
+    apiImportExcel={api.importExcel}
+    showTemplateDownload={false}
+    showMsg
+    showMsgChannel="IMPORT_CHANNEL_XX"
+    tips="导入说明"
+>
+    <Button icon={<UploadOutlined />}>导入</Button>
+</CommonExcelUploadModal>
+```
+
+## 后端增加导入进度websocket返回
+```java
+// 1. 设置发送频道
+WsHolder.setChannel("IMPORT_CHANNEL_XX");
+// 2. 后续消息均在上述频道中发布
+WsHolder.sendMessage(WsTypeEnum.PLAIN_TEXT, "开始导入数据数据...");
+```
+
+### 后台导入使用新的线程导入
+> 导入任务如果耗时较长，建议开启新的线程导入。参考代码如下
+```java
+Map<String, Object> holdMap = BaseContextHandler.getHoldMap(); // 保存当前线程用户信息
+executor.execute(() -> {
+    BaseContextHandler.setHoldMap(holdMap); // 把保存的用户信息设置到新线程中
+    // TODO 导入逻辑
+});
+```
+
 ## 本项目websocket数据格式说明
 > 统一使用JSON格式
 ### 请求参数
