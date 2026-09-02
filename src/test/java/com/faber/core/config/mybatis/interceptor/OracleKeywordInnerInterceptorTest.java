@@ -15,9 +15,9 @@ class OracleKeywordInnerInterceptorTest {
 
     @Test
     void shouldQuoteOnlyUnquotedLevelIdentifiers() {
-        assertEquals("SELECT \"LEVEL\", t.\"LEVEL\", 'level' FROM menu t WHERE \"LEVEL\" = 1",
-                OracleKeywordInnerInterceptor.quoteReservedLevel(
-                        "SELECT level, t.level, 'level' FROM menu t WHERE \"LEVEL\" = 1"));
+        assertEquals("SELECT \"LEVEL\", t.\"LEVEL\", \"size\", 'size' FROM menu t WHERE \"LEVEL\" = 1",
+                OracleKeywordInnerInterceptor.quoteReservedIdentifiers(
+                        "SELECT level, t.level, size, 'size' FROM menu t WHERE \"LEVEL\" = 1"));
     }
 
     @Test

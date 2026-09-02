@@ -12,14 +12,15 @@ import java.util.regex.Pattern;
 public class OracleKeywordInnerInterceptor implements InnerInterceptor {
 
     private static final Pattern LEVEL = Pattern.compile("(?i)(?<![\\w\"'])\\blevel\\b(?![\\w\"'])");
+    private static final Pattern SIZE = Pattern.compile("(?i)(?<![\\w\"'])\\bsize\\b(?![\\w\"'])");
 
     @Override
     public void beforePrepare(StatementHandler statementHandler, Connection connection, Integer transactionTimeout) {
         BoundSql boundSql = statementHandler.getBoundSql();
-        SystemMetaObject.forObject(boundSql).setValue("sql", quoteReservedLevel(boundSql.getSql()));
+        SystemMetaObject.forObject(boundSql).setValue("sql", quoteReservedIdentifiers(boundSql.getSql()));
     }
 
-    static String quoteReservedLevel(String sql) {
-        return LEVEL.matcher(sql).replaceAll("\"LEVEL\"");
+    static String quoteReservedIdentifiers(String sql) {
+        return SIZE.matcher(LEVEL.matcher(sql).replaceAll("\"LEVEL\"")).replaceAll("\"size\"");
     }
 }
