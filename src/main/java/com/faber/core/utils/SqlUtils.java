@@ -128,7 +128,14 @@ public class SqlUtils {
                     dollarQuote = quote;
                 }
             } else if (currentChar == ';') {
-                addStatement(statements, current);
+                if (isOraclePlSqlBlock(current)) {
+                    current.append(currentChar);
+                } else {
+                    if (isOraclePlSqlStatement(current)) {
+                        current.append(currentChar);
+                    }
+                    addStatement(statements, current);
+                }
             } else {
                 current.append(currentChar);
             }
@@ -267,6 +274,31 @@ public class SqlUtils {
             statements.add(statement);
         }
         current.setLength(0);
+    }
+
+    private static boolean isOraclePlSqlBlock(StringBuilder current) {
+        return isOraclePlSqlStatement(current) && !current.toString().trim().toUpperCase().endsWith("END");
+    }
+
+    private static boolean isOraclePlSqlStatement(StringBuilder current) {
+        String statement = stripLeadingComments(current.toString()).toUpperCase();
+        return statement.startsWith("BEGIN ")
+                || statement.startsWith("DECLARE ")
+                || statement.startsWith("CREATE OR REPLACE TRIGGER ");
+    }
+
+    private static String stripLeadingComments(String sql) {
+        String statement = sql.trim();
+        while (statement.startsWith("--") || statement.startsWith("/*")) {
+            if (statement.startsWith("--")) {
+                int lineEnd = statement.indexOf('\n');
+                statement = lineEnd < 0 ? "" : statement.substring(lineEnd + 1).trim();
+            } else {
+                int commentEnd = statement.indexOf("*/");
+                statement = commentEnd < 0 ? "" : statement.substring(commentEnd + 2).trim();
+            }
+        }
+        return statement;
     }
 
 }

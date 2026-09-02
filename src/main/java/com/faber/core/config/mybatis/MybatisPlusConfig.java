@@ -14,11 +14,13 @@ import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.faber.core.config.mybatis.base.FaSqlInjector;
 import com.faber.core.config.mybatis.handler.MysqlMetaObjectHandler;
 import com.faber.core.config.mybatis.interceptor.FaTenantInterceptor;
+import com.faber.core.config.mybatis.interceptor.OracleKeywordInnerInterceptor;
 import com.faber.core.constant.FaSetting;
 import com.faber.core.context.BaseContextHandler;
 import jakarta.annotation.Resource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.mapping.VendorDatabaseIdProvider;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +30,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Locale;
+import java.util.Properties;
 
 /**
  * Mybatis Plus Config
@@ -47,6 +50,13 @@ public class MybatisPlusConfig {
         MybatisSqlSessionFactoryBean sqlSessionFactory = new MybatisSqlSessionFactoryBean();
         /* 数据源 */
         sqlSessionFactory.setDataSource(dataSource);
+        VendorDatabaseIdProvider databaseIdProvider = new VendorDatabaseIdProvider();
+        Properties databaseIds = new Properties();
+        databaseIds.setProperty("MySQL", "mysql");
+        databaseIds.setProperty("Oracle", "oracle");
+        databaseIds.setProperty("PostgreSQL", "postgre");
+        databaseIdProvider.setProperties(databaseIds);
+        sqlSessionFactory.setDatabaseIdProvider(databaseIdProvider);
         /* xml扫描 */
         // classpath:/mapper/**/*.xml 只会扫描第一个 classpath 根目录
         // 多模块项目，使用classpath*:/mapper/**/*.xml，Spring 会扫描所有依赖 jar 包和模块的 classpath，子模块的 xml 也能加载到。
@@ -89,6 +99,9 @@ public class MybatisPlusConfig {
         mybatisPlusInterceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
         // 防全表更新与删除插件
         mybatisPlusInterceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
+        if (getDatabaseProductName(dataSource).contains("oracle")) {
+            mybatisPlusInterceptor.addInnerInterceptor(new OracleKeywordInnerInterceptor());
+        }
 
         sqlSessionFactory.setPlugins(mybatisPlusInterceptor);
 
@@ -108,17 +121,25 @@ public class MybatisPlusConfig {
     @Bean
     public GlobalConfig globalConfig(DataSource dataSource) throws SQLException {
         GlobalConfig conf = new GlobalConfig();
-        if (isMysql(dataSource)) {
-            conf.setDbConfig(new GlobalConfig.DbConfig().setColumnFormat("`%s`").setPropertyFormat("`%s`"));
+        String databaseProductName = getDatabaseProductName(dataSource);
+        if (databaseProductName.contains("mysql")) {
+            conf.setDbConfig(new GlobalConfig.DbConfig()
+                    .setColumnFormat("`%s`").setPropertyFormat("`%s`")
+                    .setLogicNotDeleteValue("0").setLogicDeleteValue("1"));
+        } else if (databaseProductName.contains("oracle")) {
+            conf.setDbConfig(new GlobalConfig.DbConfig()
+                    .setLogicNotDeleteValue("0").setLogicDeleteValue("1"));
+        } else if (databaseProductName.contains("postgresql")) {
+            conf.setDbConfig(new GlobalConfig.DbConfig()
+                    .setLogicNotDeleteValue("false").setLogicDeleteValue("true"));
         }
         return conf;
     }
 
-    private boolean isMysql(DataSource dataSource) throws SQLException {
+    private String getDatabaseProductName(DataSource dataSource) throws SQLException {
         try (Connection connection = dataSource.getConnection()) {
             String databaseProductName = connection.getMetaData().getDatabaseProductName();
-            return databaseProductName != null
-                    && databaseProductName.toLowerCase(Locale.ROOT).contains("mysql");
+            return databaseProductName == null ? "" : databaseProductName.toLowerCase(Locale.ROOT);
         }
     }
 

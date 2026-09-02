@@ -18,7 +18,7 @@ public abstract class BaseDelEntity extends BaseUpdEntity {
     @FaPropIgnore
     @SqlEquals
     @ExcelIgnore
-    @TableLogic(value = "false", delval = "true")
+    @TableLogic
     @TableField(select = false, fill = FieldFill.INSERT)
     private Boolean deleted;
 

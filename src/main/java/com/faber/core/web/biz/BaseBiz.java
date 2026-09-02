@@ -312,8 +312,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
 
     public List<T> listN(QueryParams query, Integer topN) {
         QueryWrapper<T> wrapper = parseQuery(query);
-        wrapper.last("limit " + topN);
-        List<T> list = super.list(wrapper);
+        List<T> list = super.page(new Page<>(1, topN), wrapper).getRecords();
         this.decorateList(list);
         return list;
     }
@@ -676,17 +675,17 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
     }
 
     /**
-     * 返回最上层一条数据，使用limit 1
+     * 返回最上层一条数据
      *
      * @param wrapper mybatis-plus wrapper
      * @return 最上层一条数据
      */
     public T getTop(LambdaQueryChainWrapper<T> wrapper) {
-        return wrapper.last("limit 1").one();
+        return wrapper.page(new Page<>(1, 1)).getRecords().stream().findFirst().orElse(null);
     }
 
     public T getTopN(LambdaQueryChainWrapper<T> wrapper, Integer n) {
-        return wrapper.last("limit " + n).one();
+        return wrapper.page(new Page<>(1, n)).getRecords().stream().findFirst().orElse(null);
     }
 
     /**

@@ -42,6 +42,18 @@ class SqlUtilsTest {
     }
 
     @Test
+    void shouldKeepOraclePlSqlBlockAsOneStatement() {
+        String sql = "-- Oracle migration\n/* exported schema */\n-- table definition\n"
+                + "BEGIN EXECUTE IMMEDIATE q'~CREATE TABLE demo (id NUMBER(10))~'; "
+                + "EXCEPTION WHEN OTHERS THEN IF SQLCODE != -955 THEN RAISE; END IF; END; "
+                + "CREATE INDEX idx_demo ON demo (id);";
+
+        List<String> statements = SqlUtils.splitSqlStatements(sql);
+        assertEquals(2, statements.size());
+        assertEquals(true, statements.get(0).endsWith(";"));
+    }
+
+    @Test
     void shouldRejectDestructiveTableAndSchemaDdl() {
         assertDestructiveDdlRejected("-- comment\nDROP TABLE IF EXISTS base_job");
         assertDestructiveDdlRejected("DROP /* comment */ SCHEMA IF EXISTS public CASCADE");
