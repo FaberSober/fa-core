@@ -120,6 +120,13 @@ public class FaConfig implements Serializable {
      * 3. no：不记录
      */
     private String logSaveLevel = "all";
+
+    /**
+     * 兼容已持久化的旧版系统配置；不再参与日志清理逻辑。
+     */
+    @Deprecated
+    private Integer logSaveMaxNum = -1;
+
     /** 是否开启按月归档 */
     private Boolean logArchiveEnabled = false;
     /** 归档日志保留策略 */
