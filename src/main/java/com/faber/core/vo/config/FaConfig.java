@@ -2,6 +2,7 @@ package com.faber.core.vo.config;
 
 import com.faber.core.enums.ConfigSysSafePasswordTypeEnum;
 import com.faber.core.enums.ConfigSysStorageActiveEnum;
+import com.faber.core.enums.LogArchiveRetentionPolicyEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -119,9 +120,11 @@ public class FaConfig implements Serializable {
      * 3. no：不记录
      */
     private String logSaveLevel = "all";
-    /**
-     * 日志保存最大数量
-     */
-    private Integer logSaveMaxNum = -1;
+    /** 是否开启按月归档 */
+    private Boolean logArchiveEnabled = false;
+    /** 归档日志保留策略 */
+    private LogArchiveRetentionPolicyEnum logArchiveRetentionPolicy = LogArchiveRetentionPolicyEnum.FOREVER;
+    /** 保留归档月数，仅在 MONTHS 策略下生效 */
+    private Integer logArchiveRetentionMonths = 12;
 
 }
