@@ -134,4 +134,10 @@ public class FaConfig implements Serializable {
     /** 保留归档月数，仅在 MONTHS 策略下生效 */
     private Integer logArchiveRetentionMonths = 12;
 
+    // ------------------------- [Telemetry 生命周期] -------------------------
+    /** 客户端异常明细保留天数；Issue 聚合记录长期保留。 */
+    private Integer telemetryErrorEventRetentionDays = 180;
+    /** 业务统计明细保留天数；每日聚合记录长期保留。 */
+    private Integer telemetryStatEventRetentionDays = 180;
+
 }
