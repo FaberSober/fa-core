@@ -20,7 +20,7 @@ public abstract class TnBaseDelEntity extends TnBaseUpdEntity {
 
     @SqlEquals
     @ExcelIgnore
-    @TableLogic(value = "false", delval = "true")
+    @TableLogic
     @TableField(select = false)
     private Boolean deleted;
 
