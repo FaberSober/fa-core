@@ -43,7 +43,7 @@ public class LicenseManager {
 
     @PostConstruct
     public void initialize() {
-        if (properties.getMode() == LicenseMode.OFFLINE) {
+        if (properties.isEnabled()) {
             refresh();
         }
     }
@@ -53,8 +53,8 @@ public class LicenseManager {
     }
 
     public LicenseState getState() {
-        if (providerFailed) {
-            return properties.isEnabled() ? LicenseState.INVALID : LicenseState.BYPASSED;
+        if (providerFailed && licenseInfo == null && properties.isEnabled()) {
+            return LicenseState.INVALID;
         }
         try {
             return validate(licenseInfo);
@@ -65,18 +65,33 @@ public class LicenseManager {
 
     public boolean isValid() {
         LicenseState state = getState();
-        return state == LicenseState.ACTIVE || state == LicenseState.BYPASSED;
+        return state == LicenseState.ACTIVE || state == LicenseState.GRACE || state == LicenseState.BYPASSED;
     }
 
     public synchronized LicenseState refresh() {
         providerFailed = false;
+        if (!properties.isEnabled()) {
+            return getState();
+        }
         try {
-            LicenseProvider currentProvider = provider.getIfAvailable();
-            if (currentProvider == null || !currentProvider.supports(properties.getMode())) {
+            LicenseProvider currentProvider = provider.orderedStream()
+                    .filter(item -> item.supports(properties.getMode()))
+                    .findFirst()
+                    .orElse(null);
+            if (currentProvider == null) {
                 return getState();
             }
             Optional<LicenseInfo> loaded = currentProvider.load();
             licenseInfo = loaded == null ? null : loaded.orElse(null);
+            if (licenseInfo != null && validateCandidate(licenseInfo) == LicenseState.ACTIVE) {
+                try {
+                    currentProvider.onAccepted(licenseInfo);
+                } catch (Exception ignored) {
+                    // 缓存写入失败不影响当前进程使用刚刚校验通过的 License。
+                }
+            }
+        } catch (OnlineLicenseException ignored) {
+            providerFailed = true;
         } catch (Exception ignored) {
             licenseInfo = null;
             providerFailed = true;
@@ -97,7 +112,7 @@ public class LicenseManager {
         if (state == LicenseState.BYPASSED) {
             return true;
         }
-        return state == LicenseState.ACTIVE
+        return (state == LicenseState.ACTIVE || state == LicenseState.GRACE)
                 && feature != null
                 && licenseInfo != null
                 && licenseInfo.getFeatures() != null
@@ -127,6 +142,10 @@ public class LicenseManager {
         if (properties.getMode() != null && license.getMode() != properties.getMode()) {
             return LicenseState.INVALID;
         }
+        if (properties.getProduct() != null && !properties.getProduct().isBlank()
+                && !properties.getProduct().equals(license.getProduct())) {
+            return LicenseState.INVALID;
+        }
         try {
             if (!machineIdProvider.getMachineId().equals(license.getMachineId())) {
                 return LicenseState.MACHINE_MISMATCH;
@@ -148,8 +167,14 @@ public class LicenseManager {
         if (license.getIssuedAt().isAfter(license.getExpireAt())) {
             return LicenseState.TIME_ANOMALY;
         }
-        if (!license.getExpireAt().isAfter(Instant.now(clock))) {
-            return LicenseState.EXPIRED;
+        Instant now = Instant.now(clock);
+        if (!license.getExpireAt().isAfter(now)) {
+            if (license.getMode() == LicenseMode.ONLINE && license.getGracePeriod() != null
+                    && license.getGracePeriod() > 0
+                    && !now.isAfter(license.getExpireAt().plusSeconds(license.getGracePeriod()))) {
+                return LicenseState.GRACE;
+            }
+            return license.getMode() == LicenseMode.ONLINE ? LicenseState.BLOCKED : LicenseState.EXPIRED;
         }
         return LicenseState.ACTIVE;
     }

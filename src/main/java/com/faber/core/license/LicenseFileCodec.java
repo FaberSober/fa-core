@@ -67,4 +67,15 @@ public class LicenseFileCodec {
             throw new LicenseFileException("License 文件格式错误", e);
         }
     }
+
+    public byte[] write(LicenseInfo licenseInfo) {
+        if (licenseInfo == null || licenseInfo.getSignature() == null || licenseInfo.getSignature().isBlank()) {
+            throw new LicenseFileException("License 签名不能为空");
+        }
+        JSONObject root = new JSONObject();
+        root.put("version", VERSION);
+        root.put("payload", JSON.parseObject(licenseInfo.canonicalPayload()));
+        root.put("signature", licenseInfo.getSignature());
+        return root.toJSONString().getBytes(StandardCharsets.UTF_8);
+    }
 }

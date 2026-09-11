@@ -7,6 +7,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -51,6 +52,39 @@ class LicenseManagerTest {
     }
 
     @Test
+    void entersGraceAndThenBlocksExpiredOnlineLicense() {
+        LicenseProperties properties = new LicenseProperties();
+        properties.setMode(LicenseMode.ONLINE);
+        LicenseInfo license = license(LicenseMode.ONLINE, LicenseState.ACTIVE, NOW.minusSeconds(3600));
+        license.setGracePeriod(3600L);
+
+        assertEquals(LicenseState.GRACE,
+                manager(properties, Optional.of(license), NOW).getState());
+        assertEquals(LicenseState.BLOCKED,
+                manager(properties, Optional.of(license), NOW.plusSeconds(3601)).getState());
+    }
+
+    @Test
+    void keepsCurrentLicenseWhenOnlineRefreshTemporarilyFails() {
+        LicenseProperties properties = new LicenseProperties();
+        properties.setMode(LicenseMode.ONLINE);
+        LicenseInfo license = license(LicenseMode.ONLINE, LicenseState.ACTIVE, NOW.plusSeconds(3600));
+        ObjectProvider<LicenseProvider> providers = mock(ObjectProvider.class);
+        LicenseProvider provider = mock(LicenseProvider.class);
+        when(providers.orderedStream()).thenAnswer(invocation -> Stream.of(provider));
+        when(provider.supports(LicenseMode.ONLINE)).thenReturn(true);
+        when(provider.load()).thenReturn(Optional.of(license))
+                .thenThrow(new OnlineLicenseException("unavailable", new IllegalStateException()));
+
+        LicenseManager manager = new LicenseManager(properties, () -> "machine-1", licenseInfo -> true,
+                providers, fixedClock(NOW));
+
+        assertEquals(LicenseState.ACTIVE, manager.refresh());
+        assertEquals(LicenseState.ACTIVE, manager.refresh());
+        assertEquals(license, manager.getLicenseInfo());
+    }
+
+    @Test
     void rejectsLicenseWithDifferentMode() {
         LicenseProperties properties = new LicenseProperties();
         properties.setMode(LicenseMode.ONLINE);
@@ -73,9 +107,10 @@ class LicenseManagerTest {
     @Test
     void convertsProviderFailureToInvalid() {
         ObjectProvider<LicenseProvider> providers = mock(ObjectProvider.class);
-        when(providers.getIfAvailable()).thenReturn(() -> {
+        LicenseProvider provider = () -> {
             throw new IllegalStateException("provider unavailable");
-        });
+        };
+        when(providers.orderedStream()).thenReturn(Stream.of(provider));
         LicenseManager manager = new LicenseManager(
                 new LicenseProperties(), () -> "machine-1", licenseInfo -> true, providers, fixedClock(NOW));
 
@@ -93,7 +128,8 @@ class LicenseManagerTest {
                                           Optional<LicenseInfo> license,
                                           Instant now) {
         ObjectProvider<LicenseProvider> providers = mock(ObjectProvider.class);
-        when(providers.getIfAvailable()).thenReturn(() -> license);
+        LicenseProvider provider = () -> license;
+        when(providers.orderedStream()).thenReturn(Stream.of(provider));
         LicenseManager manager = new LicenseManager(properties, () -> "machine-1", licenseInfo -> true,
                 providers, fixedClock(now));
         manager.refresh();
@@ -101,11 +137,15 @@ class LicenseManagerTest {
     }
 
     private static LicenseInfo license(LicenseState state, Instant expireAt) {
+        return license(LicenseMode.OFFLINE, state, expireAt);
+    }
+
+    private static LicenseInfo license(LicenseMode mode, LicenseState state, Instant expireAt) {
         return LicenseInfo.builder()
                 .licenseId("license-1")
                 .product("fa-admin")
                 .machineId("machine-1")
-                .mode(LicenseMode.OFFLINE)
+                .mode(mode)
                 .issuedAt(Instant.parse("2026-01-01T00:00:00Z"))
                 .expireAt(expireAt)
                 .status(state)

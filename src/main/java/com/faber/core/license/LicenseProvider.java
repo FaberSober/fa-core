@@ -10,4 +10,7 @@ public interface LicenseProvider {
     default boolean supports(LicenseMode mode) {
         return true;
     }
+
+    default void onAccepted(LicenseInfo licenseInfo) {
+    }
 }

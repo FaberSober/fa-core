@@ -17,6 +17,7 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.Base64;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -94,7 +95,7 @@ class OfflineLicenseProviderTest {
         properties.setLicenseFile(path.toString());
         OfflineLicenseProvider offlineProvider = new OfflineLicenseProvider(properties, new LicenseFileCodec());
         ObjectProvider<LicenseProvider> providers = mock(ObjectProvider.class);
-        when(providers.getIfAvailable()).thenReturn(offlineProvider);
+        when(providers.orderedStream()).thenReturn(Stream.of(offlineProvider));
         LicenseManager manager = new LicenseManager(properties, () -> "machine-1",
                 new RsaLicenseVerifier(publicKey), providers,
                 Clock.fixed(Instant.parse("2026-09-11T00:00:00Z"), ZoneOffset.UTC));

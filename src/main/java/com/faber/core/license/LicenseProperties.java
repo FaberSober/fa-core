@@ -15,4 +15,8 @@ public class LicenseProperties {
     private String licenseKey;
     private String publicKey;
     private String licenseFile;
+    private String product = "fa-admin";
+    private String clientVersion = "unknown";
+    private String cacheFile = "./config/license-cache.lic";
+    private long refreshIntervalSeconds = 3600;
 }

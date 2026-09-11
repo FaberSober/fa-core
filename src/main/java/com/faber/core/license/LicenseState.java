@@ -8,5 +8,7 @@ public enum LicenseState {
     MACHINE_MISMATCH,
     INVALID,
     TIME_ANOMALY,
+    GRACE,
+    BLOCKED,
     BYPASSED
 }
