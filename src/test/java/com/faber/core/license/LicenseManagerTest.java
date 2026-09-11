@@ -51,6 +51,15 @@ class LicenseManagerTest {
     }
 
     @Test
+    void rejectsLicenseWithDifferentMode() {
+        LicenseProperties properties = new LicenseProperties();
+        properties.setMode(LicenseMode.ONLINE);
+
+        assertEquals(LicenseState.INVALID,
+                manager(properties, Optional.of(license(LicenseState.ACTIVE, NOW.plusSeconds(3600))), NOW).getState());
+    }
+
+    @Test
     void bypassesValidationWhenDisabled() {
         LicenseProperties properties = new LicenseProperties();
         properties.setEnabled(false);
@@ -75,7 +84,9 @@ class LicenseManagerTest {
     }
 
     private static LicenseManager manager(Optional<LicenseInfo> license, Instant now) {
-        return manager(new LicenseProperties(), license, now);
+        LicenseProperties properties = new LicenseProperties();
+        properties.setMode(LicenseMode.OFFLINE);
+        return manager(properties, license, now);
     }
 
     private static LicenseManager manager(LicenseProperties properties,

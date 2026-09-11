@@ -6,4 +6,8 @@ import java.util.Optional;
 public interface LicenseProvider {
 
     Optional<LicenseInfo> load();
+
+    default boolean supports(LicenseMode mode) {
+        return true;
+    }
 }

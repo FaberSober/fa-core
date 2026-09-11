@@ -1,5 +1,6 @@
 package com.faber.core.license;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,6 +41,13 @@ public class LicenseManager {
         this.clock = clock;
     }
 
+    @PostConstruct
+    public void initialize() {
+        if (properties.getMode() == LicenseMode.OFFLINE) {
+            refresh();
+        }
+    }
+
     public LicenseInfo getLicenseInfo() {
         return licenseInfo;
     }
@@ -64,7 +72,7 @@ public class LicenseManager {
         providerFailed = false;
         try {
             LicenseProvider currentProvider = provider.getIfAvailable();
-            if (currentProvider == null) {
+            if (currentProvider == null || !currentProvider.supports(properties.getMode())) {
                 return getState();
             }
             Optional<LicenseInfo> loaded = currentProvider.load();
@@ -74,6 +82,14 @@ public class LicenseManager {
             providerFailed = true;
         }
         return getState();
+    }
+
+    public LicenseState validateCandidate(LicenseInfo candidate) {
+        try {
+            return validateLicense(candidate);
+        } catch (Exception ignored) {
+            return LicenseState.INVALID;
+        }
     }
 
     public boolean hasFeature(String feature) {
@@ -92,6 +108,10 @@ public class LicenseManager {
         if (!properties.isEnabled()) {
             return LicenseState.BYPASSED;
         }
+        return validateLicense(license);
+    }
+
+    private LicenseState validateLicense(LicenseInfo license) {
         if (license == null) {
             return LicenseState.UNCONFIGURED;
         }
@@ -102,6 +122,9 @@ public class LicenseManager {
             verified = false;
         }
         if (!hasRequiredFields(license) || !verified) {
+            return LicenseState.INVALID;
+        }
+        if (properties.getMode() != null && license.getMode() != properties.getMode()) {
             return LicenseState.INVALID;
         }
         try {
