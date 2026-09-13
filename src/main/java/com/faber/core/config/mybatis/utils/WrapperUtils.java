@@ -1,6 +1,8 @@
 package com.faber.core.config.mybatis.utils;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -55,7 +57,7 @@ public class WrapperUtils {
                     String opr = key.substring(key.indexOf("#$") + 2);
 
                     Field javaField = ReflectUtil.getField(clazz, key.substring(0, key.indexOf("#$")));
-                    Object realValue = parseDateIfNeed(javaField, entry.getValue());
+                    Object realValue = parseValueIfNeed(javaField, entry.getValue());
 
                     switch (opr) {
                         case "min":
@@ -65,20 +67,28 @@ public class WrapperUtils {
                             ew.le(fieldName, realValue);
                             break;
                         case "likeLeft":
-                            ew.likeLeft(fieldName, entry.getValue());
+                            if (isNumberField(javaField)) {
+                                ew.eq(fieldName, realValue);
+                            } else {
+                                ew.likeLeft(fieldName, entry.getValue());
+                            }
                             break;
                         case "likeRight":
-                            ew.likeRight(fieldName, entry.getValue());
+                            if (isNumberField(javaField)) {
+                                ew.eq(fieldName, realValue);
+                            } else {
+                                ew.likeRight(fieldName, entry.getValue());
+                            }
                             break;
                         case "in":
                             if (entry.getValue() != null && StringUtils.isNotEmpty(entry.getValue().toString())) {
-                                List list = (List) entry.getValue();
+                                List<Object> list = valueToList(entry.getValue(), javaField);
                                 ew.in(list.size() > 0, fieldName, list);
                             }
                             break;
                         case "notIn":
                             if (entry.getValue() != null && StringUtils.isNotEmpty(entry.getValue().toString())) {
-                                List list = (List) entry.getValue();
+                                List<Object> list = valueToList(entry.getValue(), javaField);
                                 ew.notIn(list.size() > 0, fieldName, list);
                             }
                             break;
@@ -99,7 +109,7 @@ public class WrapperUtils {
                 Field field = ReflectUtil.getField(clazz, entry.getKey());
                 boolean forceEqual = judgeFieldEqual(field);
 
-                Object realValue = parseDateIfNeed(field, entry.getValue());
+                Object realValue = parseValueIfNeed(field, entry.getValue());
 
 //                if (field == null) {
 //                    log.warn("No field {} Found", entry.getKey());
@@ -110,7 +120,7 @@ public class WrapperUtils {
                 if (forceEqual) {
                     ew.eq(fieldColumn, realValue);
                 } else {
-                    if (realValue instanceof Boolean) {
+                    if (isNumberField(field) || realValue instanceof Boolean) {
                         ew.eq(fieldColumn, realValue);
                     } else if (realValue instanceof Date 
                             || realValue instanceof LocalDateTime 
@@ -141,7 +151,7 @@ public class WrapperUtils {
         // 高级查询-过滤条件List
         if (queryParams.getConditionList() != null && queryParams.getConditionList().size() > 0) {
             for (ConditionGroup conditionGroup : queryParams.getConditionList()) {
-                processConditionList(conditionGroup, wrapper);
+                processConditionList(conditionGroup, wrapper, clazz);
             }
         }
 
@@ -177,12 +187,16 @@ public class WrapperUtils {
         return false;
     }
 
-    private static List<String> valueToList(Object value) {
-        List<String> list = new ArrayList<>();
-        if (value instanceof List) {
-            list = (List<String>) value;
+    private static List<Object> valueToList(Object value, Field field) {
+        List<Object> list = new ArrayList<>();
+        if (value instanceof List<?> values) {
+            for (Object item : values) {
+                list.add(parseValueIfNeed(field, item));
+            }
         } else {
-            list = Arrays.asList(ObjectUtil.toString(value).split("[,，]"));
+            for (String item : Arrays.asList(ObjectUtil.toString(value).split("[,，]"))) {
+                list.add(parseValueIfNeed(field, item));
+            }
         }
         return list;
     }
@@ -191,57 +205,79 @@ public class WrapperUtils {
      * @param conditionGroup
      * @param wrapper
      */
-    private static <T> void processConditionList(ConditionGroup conditionGroup, QueryWrapper<T> wrapper) {
+    private static <T> void processConditionList(ConditionGroup conditionGroup, QueryWrapper<T> wrapper, Class<T> clazz) {
+        if (conditionGroup == null || conditionGroup.getCondList() == null) return;
+
         wrapper.and(conditionGroup.getCondList().size() > 0, ew -> {
             for (Condition cond : conditionGroup.getCondList()) {
+                if (cond == null || cond.getOpr() == null) continue;
+
                 String column = StrUtil.toUnderlineCase(cond.getKey());
+                Field field = ReflectUtil.getField(clazz, cond.getKey());
 
                 if (conditionGroup.getType() == ConditionGroupTypeEnum.OR) {
                     ew.or();
                 }
 
                 Object value = cond.getValue();
+                Object realValue = parseValueIfNeed(field, value);
                 switch (cond.getOpr()) {
                     case EQ:
-                        ew.eq(column, value);
+                        ew.eq(column, realValue);
                         break;
                     case NE:
-                        ew.ne(column, value);
+                        ew.ne(column, realValue);
                         break;
                     case IN: {
-                        List<String> list = valueToList(value);
+                        List<Object> list = valueToList(value, field);
                         ew.in(list.size() > 0, column, list);
                     } break;
                     case NOT_IN: {
-                        List<String> list = valueToList(value);
+                        List<Object> list = valueToList(value, field);
                         ew.notIn(list.size() > 0, column, list);
                     } break;
                     case LIKE:
-                        ew.like(column, SqlUtils.filterLikeValue(ObjectUtil.toString(value)));
+                        if (isNumberField(field)) {
+                            ew.eq(column, realValue);
+                        } else {
+                            ew.like(column, SqlUtils.filterLikeValue(ObjectUtil.toString(value)));
+                        }
                         break;
                     case NOT_LIKE:
-                        ew.notLike(column, SqlUtils.filterLikeValue(ObjectUtil.toString(value)));
+                        if (isNumberField(field)) {
+                            ew.ne(column, realValue);
+                        } else {
+                            ew.notLike(column, SqlUtils.filterLikeValue(ObjectUtil.toString(value)));
+                        }
                         break;
                     case LIKE_LEFT:
-                        ew.likeLeft(column, SqlUtils.filterLikeValue(ObjectUtil.toString(value)));
+                        if (isNumberField(field)) {
+                            ew.eq(column, realValue);
+                        } else {
+                            ew.likeLeft(column, SqlUtils.filterLikeValue(ObjectUtil.toString(value)));
+                        }
                         break;
                     case LIKE_RIGHT:
-                        ew.likeRight(column, SqlUtils.filterLikeValue(ObjectUtil.toString(value)));
+                        if (isNumberField(field)) {
+                            ew.eq(column, realValue);
+                        } else {
+                            ew.likeRight(column, SqlUtils.filterLikeValue(ObjectUtil.toString(value)));
+                        }
                         break;
                     case GT:
-                        ew.gt(column, value);
+                        ew.gt(column, realValue);
                         break;
                     case GE:
-                        ew.ge(column, value);
+                        ew.ge(column, realValue);
                         break;
                     case LT:
-                        ew.lt(column, value);
+                        ew.lt(column, realValue);
                         break;
                     case LE:
-                        ew.le(column, value);
+                        ew.le(column, realValue);
                         break;
                     case BETWEEN:
-                        ew.between(column, cond.getBegin(), cond.getEnd());
+                        ew.between(column, parseValueIfNeed(field, cond.getBegin()), parseValueIfNeed(field, cond.getEnd()));
                         break;
                     case IS_NOT_NULL:
                         ew.isNotNull(column);
@@ -257,13 +293,24 @@ public class WrapperUtils {
     }
 
     /**
-     * 如果字段是时间类型，则把字符串转换为对应的 Java 时间对象
+     * 根据字段类型转换查询值，避免数据库字段类型与 JDBC 参数类型不一致
      */
-    private static Object parseDateIfNeed(Field field, Object value) {
+    private static Object parseValueIfNeed(Field field, Object value) {
         if (field == null || value == null) return value;
 
         Class<?> type = field.getType();
         String str = value.toString().trim();
+
+        if (isNumberType(type)) {
+            if (type == Integer.class || type == int.class) return Integer.valueOf(str);
+            if (type == Long.class || type == long.class) return Long.valueOf(str);
+            if (type == Short.class || type == short.class) return Short.valueOf(str);
+            if (type == Byte.class || type == byte.class) return Byte.valueOf(str);
+            if (type == Double.class || type == double.class) return Double.valueOf(str);
+            if (type == Float.class || type == float.class) return Float.valueOf(str);
+            if (type == BigDecimal.class) return new BigDecimal(str);
+            if (type == BigInteger.class) return new BigInteger(str);
+        }
 
         // 支持的日期格式
         String[] patterns = new String[]{
@@ -317,6 +364,20 @@ public class WrapperUtils {
 
         // 都解析失败，返回原值
         return value;
+    }
+
+    private static boolean isNumberField(Field field) {
+        return field != null && isNumberType(field.getType());
+    }
+
+    private static boolean isNumberType(Class<?> type) {
+        return type == Integer.class || type == int.class
+                || type == Long.class || type == long.class
+                || type == Short.class || type == short.class
+                || type == Byte.class || type == byte.class
+                || type == Double.class || type == double.class
+                || type == Float.class || type == float.class
+                || type == BigDecimal.class || type == BigInteger.class;
     }
 
 }
