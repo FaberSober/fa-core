@@ -39,6 +39,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(UserTokenException.class)
     public BaseRet userTokenExceptionHandler(HttpServletResponse response, UserTokenException ex) {
+        logger.warn("用户认证失败：{}", ex.getMessage());
         return new BaseRet(ex.getStatus(), ex.getMessage());
     }
 
