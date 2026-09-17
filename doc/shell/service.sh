@@ -10,7 +10,6 @@ LICENSE_CENTER_PRIVATE_KEY_FILE="${LICENSE_CENTER_PRIVATE_KEY_FILE:-}"
 
 APP_DIR=$(dirname "${APP_NAME}")
 PID_FILE="${APP_DIR}/fa-admin.pid"
-LOG_FILE="${APP_DIR}/fa-admin.log"
 
 usage() {
   echo "Usage: sh $(basename "$0") [start|stop|restart|status]"
@@ -58,7 +57,7 @@ start() {
     LICENSE_CENTER_PRIVATE_KEY_FILE="${LICENSE_CENTER_PRIVATE_KEY_FILE}" \
     "${JAVA_BIN}" -jar "${APP_NAME}" \
     --spring.profiles.active="${SPRING_PROFILE}" \
-    >> "${LOG_FILE}" 2>&1 &
+    >/dev/null 2>&1 &
 
   pid=$!
   echo "${pid}" > "${PID_FILE}"
@@ -69,7 +68,7 @@ start() {
   fi
 
   rm -f "${PID_FILE}"
-  echo "${APP_NAME} failed to start. Check ${LOG_FILE}"
+  echo "${APP_NAME} failed to start. Check the configured application logs"
   return 1
 }
 

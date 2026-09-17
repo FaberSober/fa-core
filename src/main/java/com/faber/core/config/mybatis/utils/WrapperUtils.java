@@ -57,7 +57,9 @@ public class WrapperUtils {
                     String opr = key.substring(key.indexOf("#$") + 2);
 
                     Field javaField = ReflectUtil.getField(clazz, key.substring(0, key.indexOf("#$")));
-                    Object realValue = parseValueIfNeed(javaField, entry.getValue());
+                    Object realValue = "in".equals(opr) || "notIn".equals(opr)
+                            ? null
+                            : parseValueIfNeed(javaField, entry.getValue());
 
                     switch (opr) {
                         case "min":
