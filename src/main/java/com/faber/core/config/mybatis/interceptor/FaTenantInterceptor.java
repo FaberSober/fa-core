@@ -7,8 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerIntercept
 import com.faber.core.bean.BaseTnCrtEntity;
 import com.faber.core.bean.BaseTnDelEntity;
 import com.faber.core.bean.BaseTnUpdEntity;
-import com.faber.core.constant.CommonConstants;
-import com.faber.core.context.BaseContextHandler;
+import com.faber.core.context.TenantContext;
 import com.faber.core.exception.BuzzException;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.StringValue;
@@ -50,14 +49,10 @@ public class FaTenantInterceptor extends TenantLineInnerInterceptor {
 
         @Override
         public Expression getTenantId() {
-            String tenantId = BaseContextHandler.getTenantId();
-            if (StrUtil.isBlank(tenantId)) {
-                if (isSuperAdminWithoutTenant()) {
-                    return new StringValue("");
-                }
-                throw new BuzzException("当前租户上下文为空");
+            if (isSuperAdminWithoutTenant()) {
+                return new StringValue("");
             }
-            return new StringValue(tenantId);
+            return new StringValue(TenantContext.requireTenantId());
         }
 
         @Override
@@ -82,8 +77,7 @@ public class FaTenantInterceptor extends TenantLineInnerInterceptor {
         }
 
         private boolean isSuperAdminWithoutTenant() {
-            return StrUtil.equals(CommonConstants.SUPER_ADMIN_ID, BaseContextHandler.getUserId())
-                    && StrUtil.isBlank(BaseContextHandler.getTenantId());
+            return TenantContext.isSuperAdminWithoutTenant();
         }
 
     }
@@ -129,7 +123,7 @@ public class FaTenantInterceptor extends TenantLineInnerInterceptor {
     }
 
     private static String normalizeTableName(String tableName) {
-        return StrUtil.removeAll(tableName, "`").toLowerCase(Locale.ROOT);
+        return StrUtil.removeAll(tableName, '`', '"').toLowerCase(Locale.ROOT);
     }
 
     private static String camelToUnderline(String value) {

@@ -24,6 +24,7 @@ import com.faber.core.config.mybatis.utils.WrapperUtils;
 import com.faber.core.constant.CommonConstants;
 import com.faber.core.constant.FaSetting;
 import com.faber.core.context.BaseContextHandler;
+import com.faber.core.context.TenantContext;
 import com.faber.core.exception.BuzzException;
 import com.faber.core.service.ConfigSceneService;
 import com.faber.core.service.DictService;
@@ -531,7 +532,7 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
     }
 
     protected String getCurrentTenantId() {
-        return BaseContextHandler.getTenantId();
+        return TenantContext.getTenantId();
     }
 
     protected boolean isTenantEntity() {
@@ -545,21 +546,19 @@ public abstract class BaseBiz<M extends FaBaseMapper<T>, T> extends ServiceImpl<
         if (faSetting == null) {
             faSetting = SpringUtil.getBean(FaSetting.class);
         }
-        return faSetting.getTenant() != null && faSetting.getTenant().isEnabled();
+        return faSetting.isTenantEnabled();
     }
 
     protected void addTenantQueryIfNeed(QueryWrapper<T> wrapper) {
         if (!isTenantEnabled() || !isTenantEntity()) {
             return;
         }
-        String tenantId = getCurrentTenantId();
-        if (StrUtil.isBlank(tenantId)) {
+        if (StrUtil.isBlank(TenantContext.getTenantId())) {
             if (isSuperAdminUser(getCurrentUserId())) {
                 return;
             }
-            throw new BuzzException("当前租户上下文为空");
         }
-        wrapper.eq("tenant_id", tenantId);
+        wrapper.eq("tenant_id", TenantContext.requireTenantId());
     }
 
     public void removeBatchByIds(List<Serializable> ids) {

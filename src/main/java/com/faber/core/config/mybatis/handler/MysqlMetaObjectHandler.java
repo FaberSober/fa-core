@@ -2,6 +2,7 @@ package com.faber.core.config.mybatis.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.faber.core.context.BaseContextHandler;
+import com.faber.core.context.TenantContext;
 import org.apache.ibatis.reflection.MetaObject;
 
 import java.util.Date;
@@ -23,8 +24,9 @@ public class MysqlMetaObjectHandler implements MetaObjectHandler {
         }
 
         // multi tenant
-        if (metaObject.hasSetter("tenantId") && BaseContextHandler.getTenantId() != null) {
-            this.strictInsertFill(metaObject, "tenantId", String.class, BaseContextHandler.getTenantId());
+        String tenantId = TenantContext.getTenantId();
+        if (metaObject.hasSetter("tenantId") && tenantId != null) {
+            this.strictInsertFill(metaObject, "tenantId", String.class, tenantId);
         }
 
         // 使用 Date 类型
