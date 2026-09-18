@@ -21,7 +21,7 @@ public interface TnUserTrait {
      * 获取登录账户的tenantId
      * @return
      */
-    default Long getTenantId() {
+    default String getTenantId() {
         return TnTenantContextHandler.getTenantId();
     }
 

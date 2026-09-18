@@ -65,12 +65,12 @@ public class TnTenantContextHandler {
         return (String) get(CommonConstants.CONTEXT_KEY_USER_IP);
     }
 
-    public static void setTenantId(Long tenantId) {
+    public static void setTenantId(String tenantId) {
         set(CommonConstants.CONTEXT_KEY_TENANT_ID, tenantId);
     }
 
-    public static Long getTenantId() {
-        return (Long) get(CommonConstants.CONTEXT_KEY_TENANT_ID);
+    public static String getTenantId() {
+        return (String) get(CommonConstants.CONTEXT_KEY_TENANT_ID);
     }
 
     public static void setTenantName(String tenantName) {
@@ -124,7 +124,7 @@ public class TnTenantContextHandler {
         TnTenantContextHandler.setUserId(1L);
         TnTenantContextHandler.setName("Admin");
         TnTenantContextHandler.setTenantName("默认厂商");
-        TnTenantContextHandler.setTenantId(1L);
+        TnTenantContextHandler.setTenantId("1");
         TnTenantContextHandler.setLogin(true);
     }
 
