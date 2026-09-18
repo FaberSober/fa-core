@@ -110,7 +110,7 @@ public class MybatisPlusConfig {
         sqlSessionFactory.setConfiguration(configuration);
 
         /* 自动填充插件 */
-        globalConfig.setMetaObjectHandler(new MysqlMetaObjectHandler());
+        globalConfig.setMetaObjectHandler(new MysqlMetaObjectHandler(faSetting));
 
         globalConfig.setSqlInjector(new FaSqlInjector());
 

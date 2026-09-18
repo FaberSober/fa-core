@@ -1,6 +1,10 @@
 package com.faber.core.config.mybatis.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.faber.core.bean.BaseTnCrtEntity;
+import com.faber.core.bean.BaseTnDelEntity;
+import com.faber.core.bean.BaseTnUpdEntity;
+import com.faber.core.constant.FaSetting;
 import com.faber.core.context.BaseContextHandler;
 import com.faber.core.context.TenantContext;
 import org.apache.ibatis.reflection.MetaObject;
@@ -11,6 +15,12 @@ import java.util.Date;
  * 测试，自定义元对象字段填充控制器，实现公共字段自动写入
  */
 public class MysqlMetaObjectHandler implements MetaObjectHandler {
+
+    private final FaSetting faSetting;
+
+    public MysqlMetaObjectHandler(FaSetting faSetting) {
+        this.faSetting = faSetting;
+    }
 
     /**
      * 测试 user 表 name 字段为空自动填充
@@ -23,10 +33,9 @@ public class MysqlMetaObjectHandler implements MetaObjectHandler {
             this.strictInsertFill(metaObject, "crtName", String.class, BaseContextHandler.getName());
         }
 
-        // multi tenant
-        String tenantId = TenantContext.getTenantId();
-        if (metaObject.hasSetter("tenantId") && tenantId != null) {
-            this.strictInsertFill(metaObject, "tenantId", String.class, tenantId);
+        // multi tenant: always override client-provided tenantId with the trusted context.
+        if (faSetting.isTenantEnabled() && isTenantEntity(metaObject)) {
+            this.setFieldValByName("tenantId", TenantContext.requireTenantId(), metaObject);
         }
 
         // 使用 Date 类型
@@ -47,6 +56,13 @@ public class MysqlMetaObjectHandler implements MetaObjectHandler {
         // 使用 Date 类型
         this.strictUpdateFill(metaObject, "updTime", Date.class, new Date());
         this.strictUpdateFill(metaObject, "updHost", String.class, BaseContextHandler.getIp());
+    }
+
+    private boolean isTenantEntity(MetaObject metaObject) {
+        Class<?> entityClass = metaObject.getOriginalObject().getClass();
+        return BaseTnCrtEntity.class.isAssignableFrom(entityClass)
+                || BaseTnUpdEntity.class.isAssignableFrom(entityClass)
+                || BaseTnDelEntity.class.isAssignableFrom(entityClass);
     }
 
 }
