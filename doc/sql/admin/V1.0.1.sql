@@ -465,7 +465,7 @@ INSERT INTO `base_rbac_menu` VALUES (36, 23, '远程数据Tree', 7, 1, NULL, 1, 
 INSERT INTO `base_rbac_menu` VALUES (37, 39, '组合查询', 1, 1, NULL, 1, 1, '/admin/demo/table/conditionQuery', '2023-01-03 16:07:53', '1', '超级管理员', '221.231.188.211', '2022-11-30 17:30:53', '1', '超级管理员', '221.231.188.211', 0);
 INSERT INTO `base_rbac_menu` VALUES (38, 23, 'PDF预览', 10, 1, NULL, 1, 1, '/admin/demo/biz/pdfView', '2023-01-03 16:07:53', '1', '超级管理员', '221.231.188.211', '2023-01-03 16:10:02', '1', '超级管理员', '192.168.0.111', 0);
 INSERT INTO `base_rbac_menu` VALUES (39, 1, '表格查询', 1, 1, 'fa-solid fa-table', 1, 1, '/admin/demo/table', '2023-01-03 16:07:53', '1', '超级管理员', '192.168.58.1', '2022-11-30 21:54:57', '1', '超级管理员', '192.168.58.1', 0);
-INSERT INTO `base_rbac_menu` VALUES (40, 1, '进阶功能', 2, 0, 'fa-solid fa-rocket', 1, 1, '/admin/demo/advance', '2023-01-03 16:07:53', '1', '超级管理员', '127.0.0.1', '2022-12-06 13:54:47', '1', '超级管理员', '127.0.0.1', 0);
+INSERT INTO `base_rbac_menu` VALUES (40, 1, '进阶功能', 2, 1, 'fa-solid fa-rocket', 1, 1, '/admin/demo/advance', '2023-01-03 16:07:53', '1', '超级管理员', '127.0.0.1', '2022-12-06 13:54:47', '1', '超级管理员', '127.0.0.1', 0);
 INSERT INTO `base_rbac_menu` VALUES (41, 40, 'socket连接', 0, 1, NULL, 1, 1, '/admin/demo/advance/socket', '2023-01-03 16:07:53', '1', '超级管理员', '127.0.0.1', NULL, NULL, NULL, NULL, 0);
 INSERT INTO `base_rbac_menu` VALUES (42, 40, 'redis缓存', 1, 1, NULL, 1, 1, '/admin/demo/advance/redis', '2023-01-03 16:07:53', '1', '超级管理员', '192.168.58.1', NULL, NULL, NULL, NULL, 0);
 INSERT INTO `base_rbac_menu` VALUES (43, 5, '系统配置', 2, 1, NULL, 1, 1, '/admin/system/base/config', '2022-12-11 22:39:02', '1', '超级管理员', '192.168.58.1', '2022-12-11 22:40:21', '1', '超级管理员', '192.168.58.1', 0);
