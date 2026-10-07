@@ -173,6 +173,7 @@
             <appender-ref ref="AsyncLogFile"/>
             <appender-ref ref="logFileForAdmin"/>
         </logger>
+        <logger name="com.faber.core.config.mybatis.interceptor.FaTenantInterceptor" level="INFO" />
         <logger name="tk.mybatis" level="INFO" />
         <logger name="org.dromara.easyes" level="DEBUG" />
         <logger name="com.alicp.jetcache" level="INFO" />
