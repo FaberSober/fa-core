@@ -17,7 +17,8 @@ public class SchedulerStartupAspect {
 
     private final SchedulerStartupGate startupGate;
 
-    @Around("@annotation(org.springframework.scheduling.annotation.Scheduled)")
+    @Around("@annotation(org.springframework.scheduling.annotation.Scheduled)"
+            + " && !@within(jakarta.websocket.server.ServerEndpoint)")
     public Object checkReady(ProceedingJoinPoint point) throws Throwable {
         return startupGate.isReady() ? point.proceed() : null;
     }
