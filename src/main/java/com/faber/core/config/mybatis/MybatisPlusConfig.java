@@ -1,7 +1,6 @@
 package com.faber.core.config.mybatis;
 
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.extension.MybatisMapWrapperFactory;
@@ -15,7 +14,6 @@ import com.faber.core.config.mybatis.base.FaSqlInjector;
 import com.faber.core.config.mybatis.handler.MysqlMetaObjectHandler;
 import com.faber.core.config.mybatis.interceptor.FaTenantInterceptor;
 import com.faber.core.config.mybatis.interceptor.OracleKeywordInnerInterceptor;
-import com.faber.core.config.mybatis.interceptor.FaTenantInterceptor;
 import com.faber.core.constant.FaSetting;
 import com.faber.core.context.BaseContextHandler;
 import jakarta.annotation.Resource;
@@ -55,6 +53,7 @@ public class MybatisPlusConfig {
         Properties databaseIds = new Properties();
         databaseIds.setProperty("MySQL", "mysql");
         databaseIds.setProperty("Oracle", "oracle");
+        databaseIds.setProperty("DM", "dm8");
         databaseIds.setProperty("PostgreSQL", "postgre");
         databaseIdProvider.setProperties(databaseIds);
         sqlSessionFactory.setDatabaseIdProvider(databaseIdProvider);
@@ -124,9 +123,12 @@ public class MybatisPlusConfig {
         GlobalConfig conf = new GlobalConfig();
         String databaseProductName = getDatabaseProductName(dataSource);
         if (databaseProductName.contains("mysql")) {
-            if (isMysql(dataSource)) {
             conf.setDbConfig(new GlobalConfig.DbConfig()
                     .setColumnFormat("`%s`").setPropertyFormat("`%s`")
+                    .setLogicNotDeleteValue("0").setLogicDeleteValue("1"));
+        } else if (databaseProductName.startsWith("dm")) {
+            conf.setDbConfig(new GlobalConfig.DbConfig()
+                    .setColumnFormat("\"%s\"").setPropertyFormat("\"%s\"")
                     .setLogicNotDeleteValue("0").setLogicDeleteValue("1"));
         } else if (databaseProductName.contains("oracle")) {
             conf.setDbConfig(new GlobalConfig.DbConfig()
@@ -135,7 +137,6 @@ public class MybatisPlusConfig {
             conf.setDbConfig(new GlobalConfig.DbConfig()
                     .setLogicNotDeleteValue("false").setLogicDeleteValue("true"));
         }
-        }
         return conf;
     }
 
@@ -143,14 +144,6 @@ public class MybatisPlusConfig {
         try (Connection connection = dataSource.getConnection()) {
             String databaseProductName = connection.getMetaData().getDatabaseProductName();
             return databaseProductName == null ? "" : databaseProductName.toLowerCase(Locale.ROOT);
-        }
-    }
-
-    private boolean isMysql(DataSource dataSource) throws SQLException {
-        try (Connection connection = dataSource.getConnection()) {
-            String databaseProductName = connection.getMetaData().getDatabaseProductName();
-            return databaseProductName != null
-                    && databaseProductName.toLowerCase(Locale.ROOT).contains("mysql");
         }
     }
 
