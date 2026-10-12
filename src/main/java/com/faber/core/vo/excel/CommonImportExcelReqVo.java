@@ -1,6 +1,7 @@
 package com.faber.core.vo.excel;
 
 import cn.hutool.core.map.MapUtil;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Data;
 import lombok.ToString;
 
@@ -32,6 +33,7 @@ public class CommonImportExcelReqVo extends LinkedHashMap<String, Object> {
      */
     private Integer importBatchSize;
 
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public CommonImportExcelReqVo(Map<String, Object> params) {
         this.putAll(params);
         this.fileId = MapUtil.getStr(params, "fileId");

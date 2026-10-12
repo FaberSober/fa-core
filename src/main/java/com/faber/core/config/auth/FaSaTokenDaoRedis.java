@@ -35,7 +35,9 @@ public class FaSaTokenDaoRedis extends SaTokenDaoRedisJackson {
     }
 
     public void update(String key, String value) {
-        super.update(getKey(key), value);
+        // 父类 update 会虚调用 getTimeout/set，传入已加前缀的 key 会再次添加前缀。
+        long timeout = getTimeout(key);
+        if (timeout != NOT_VALUE_EXPIRE) set(key, value, timeout);
     }
 
     public void delete(String key) {
@@ -47,7 +49,13 @@ public class FaSaTokenDaoRedis extends SaTokenDaoRedisJackson {
     }
 
     public void updateTimeout(String key, long timeout) {
-        super.updateTimeout(getKey(key), timeout);
+        if (timeout == NEVER_EXPIRE) {
+            // 父类永久有效分支也会虚调用 get/set，保持逻辑 key 只转换一次。
+            long remaining = getTimeout(key);
+            if (remaining != NOT_VALUE_EXPIRE && remaining != NEVER_EXPIRE) set(key, get(key), timeout);
+        } else {
+            super.updateTimeout(getKey(key), timeout);
+        }
     }
 
     public Object getObject(String key) {
@@ -59,7 +67,8 @@ public class FaSaTokenDaoRedis extends SaTokenDaoRedisJackson {
     }
 
     public void updateObject(String key, Object object) {
-        super.updateObject(getKey(key), object);
+        long timeout = getObjectTimeout(key);
+        if (timeout != NOT_VALUE_EXPIRE) setObject(key, object, timeout);
     }
 
     public void deleteObject(String key) {
@@ -71,7 +80,12 @@ public class FaSaTokenDaoRedis extends SaTokenDaoRedisJackson {
     }
 
     public void updateObjectTimeout(String key, long timeout) {
-        super.updateObjectTimeout(getKey(key), timeout);
+        if (timeout == NEVER_EXPIRE) {
+            long remaining = getObjectTimeout(key);
+            if (remaining != NOT_VALUE_EXPIRE && remaining != NEVER_EXPIRE) setObject(key, getObject(key), timeout);
+        } else {
+            super.updateObjectTimeout(getKey(key), timeout);
+        }
     }
 
     public List<String> searchData(String prefix, String keyword, int start, int size, boolean sortType) {

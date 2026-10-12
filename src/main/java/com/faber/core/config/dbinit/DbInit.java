@@ -19,7 +19,7 @@ public interface DbInit {
 
     /**
      * 返回模块编码，如：fa-base。
-     * sql文件需要存放到sql/fa-base目录下
+     * sql文件需要存放到sql/{模块编码}/{数据库类型}目录下，例如sql/fa-base/mysql目录
      * @return
      */
     String getNo();

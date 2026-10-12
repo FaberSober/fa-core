@@ -19,6 +19,8 @@ public class CommonConstants {
     // ---------------- 用户无权访问 ----------------
     public static final Integer EX_USER_NO_PERMISSION = 40301;
 
+    public static final Integer EX_LICENSE_INVALID_CODE = 40303;
+
     // ---------------- 其他异常 ----------------
     public static final Integer EX_OTHER_CODE = 500;
 

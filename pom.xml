@@ -188,6 +188,11 @@
             <artifactId>postgresql</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+        </dependency>
+
         <!-- 达梦数据库jdbc -->
         <!-- https://mvnrepository.com/artifact/com.dameng/DmJdbcDriver18 -->
         <dependency>

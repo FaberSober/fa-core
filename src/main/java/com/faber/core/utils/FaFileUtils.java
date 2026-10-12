@@ -7,6 +7,7 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson2.JSONObject;
+import com.faber.core.exception.BuzzWarnException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.core.io.ClassPathResource;
@@ -134,7 +135,7 @@ public class FaFileUtils {
 
     public static void downloadFileShard(File file, String filename) throws IOException {
         if (!file.exists()) {
-            throw new RuntimeException("文件路径有误");
+            throw new BuzzWarnException("文件路径有误");
         }
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();

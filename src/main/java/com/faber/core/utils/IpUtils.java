@@ -102,7 +102,7 @@ public class IpUtils {
                return ipAddr;
            }
        } catch (Exception e) {
-           log.error(e.getMessage(), e);
+           log.warn(e.getMessage());
        }
         return null;
     }

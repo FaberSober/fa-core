@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.conditions.update.UpdateChainWrapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * @author K
@@ -67,6 +68,13 @@ public interface FaBaseMapper<T> extends BaseMapper<T> {
      * @since 3.4.4
      */
     int deleteByIdIgnoreLogic(T entity);
+
+    /**
+     * 根据 ID 集合批量删除，不受逻辑删除字段限制，物理永久删除
+     *
+     * @param idList 主键ID集合
+     */
+    int deleteByIdsIgnoreLogic(@Param(Constants.COLL) Collection<? extends Serializable> idList);
 
     /**
      * 根据 ID 查询，不受逻辑删除字段限制

@@ -188,11 +188,16 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
         return this.treeCountLayerNormal(parentId);
     }
 
-    public QueryWrapper<T> treeLayerNormalWrapper(Serializable parentId) {
+    protected QueryWrapper<T> treeLayerNormalConditionWrapper(Serializable parentId) {
         QueryWrapper<T> wrapper = new QueryWrapper<>();
         this.addTenantQueryIfNeed(wrapper);
         wrapper.eq(this.getTreeParentIdFieldColumnName(), parentId);
         this.enhanceTreeQuery(wrapper);
+        return wrapper;
+    }
+
+    public QueryWrapper<T> treeLayerNormalWrapper(Serializable parentId) {
+        QueryWrapper<T> wrapper = this.treeLayerNormalConditionWrapper(parentId);
         wrapper.orderByAsc(this.getSortedFieldColumnName());
         return wrapper;
     }
@@ -203,7 +208,7 @@ public abstract class BaseTreeBiz<M extends FaBaseMapper<T>, T> extends BaseBiz<
     }
 
     public long treeCountLayerNormal(Serializable parentId) {
-        QueryWrapper<T> wrapper = this.treeLayerNormalWrapper(parentId);
+        QueryWrapper<T> wrapper = this.treeLayerNormalConditionWrapper(parentId);
         return super.count(wrapper);
     }
 

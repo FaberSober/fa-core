@@ -30,6 +30,10 @@ public class FaSetting {
     private Safety safety;
     private Tenant tenant;
 
+    public boolean isTenantEnabled() {
+        return tenant != null && tenant.isEnabled();
+    }
+
     /**
      * JWT配置
      */

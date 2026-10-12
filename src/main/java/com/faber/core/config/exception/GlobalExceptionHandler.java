@@ -3,6 +3,7 @@ package com.faber.core.config.exception;
 import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
 import com.faber.core.constant.CommonConstants;
 import com.faber.core.exception.BaseException;
+import com.faber.core.exception.BuzzWarnException;
 import com.faber.core.exception.auth.UserInvalidException;
 import com.faber.core.exception.auth.UserNoPermissionException;
 import com.faber.core.exception.auth.UserTokenException;
@@ -39,6 +40,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(UserTokenException.class)
     public BaseRet userTokenExceptionHandler(HttpServletResponse response, UserTokenException ex) {
+        logger.warn("用户认证失败：{}", ex.getMessage());
         return new BaseRet(ex.getStatus(), ex.getMessage());
     }
 
@@ -51,6 +53,13 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UserNoPermissionException.class)
     public BaseRet userNoPermissionExceptionHandler(HttpServletResponse response, UserNoPermissionException ex) {
+        return new BaseRet(ex.getStatus(), ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BuzzWarnException.class)
+    public BaseRet buzzWarnExceptionHandler(HttpServletResponse response, BuzzWarnException ex) {
+        logger.warn(ex.getMessage());
         return new BaseRet(ex.getStatus(), ex.getMessage());
     }
 
