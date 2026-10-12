@@ -55,7 +55,11 @@ start() {
 
   nohup env \
     LICENSE_CENTER_PRIVATE_KEY_FILE="${LICENSE_CENTER_PRIVATE_KEY_FILE}" \
-    "${JAVA_BIN}" -jar "${APP_NAME}" \
+    "${JAVA_BIN}" \
+    --add-opens=java.base/sun.security.ssl=ALL-UNNAMED \
+    --add-opens=java.base/sun.security.util=ALL-UNNAMED \
+    -Djdk.tls.client.enableSessionTicketExtension=false \
+    -jar "${APP_NAME}" \
     --spring.profiles.active="${SPRING_PROFILE}" \
     >/dev/null 2>&1 &
 
