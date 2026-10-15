@@ -148,7 +148,12 @@ public class FaFileUtils {
         OutputStream outputStream = null;
         try {
             outputStream = response.getOutputStream();
+            String cacheControl = response.getHeader(HttpHeaders.CACHE_CONTROL);
+            String referrerPolicy = response.getHeader("Referrer-Policy");
             response.reset();
+            // 保留调用方为私有文件设置的缓存和引用来源策略。
+            if (cacheControl != null) response.setHeader(HttpHeaders.CACHE_CONTROL, cacheControl);
+            if (referrerPolicy != null) response.setHeader("Referrer-Policy", referrerPolicy);
             //获取请求头中Range的值
             String rangeString = request.getHeader(HttpHeaders.RANGE);
 
