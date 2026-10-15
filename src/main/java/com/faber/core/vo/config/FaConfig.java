@@ -2,6 +2,7 @@ package com.faber.core.vo.config;
 
 import com.faber.core.enums.ConfigSysSafePasswordTypeEnum;
 import com.faber.core.enums.ConfigSysStorageActiveEnum;
+import com.faber.core.enums.ConfigSysQiniuAccessTypeEnum;
 import com.faber.core.enums.LogArchiveRetentionPolicyEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -111,6 +112,12 @@ public class FaConfig implements Serializable {
     private String qiniuBucketName;
     private String qiniuDomain;
     private String qiniuBasePath;
+    /** 七牛空间访问类型，旧配置默认公开。 */
+    private ConfigSysQiniuAccessTypeEnum qiniuAccessType = ConfigSysQiniuAccessTypeEnum.PUBLIC;
+
+    public ConfigSysQiniuAccessTypeEnum getQiniuAccessType() {
+        return qiniuAccessType == null ? ConfigSysQiniuAccessTypeEnum.PUBLIC : qiniuAccessType;
+    }
 
     // ------------------------- [日志配置] -------------------------
     /**
