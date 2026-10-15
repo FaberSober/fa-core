@@ -1,0 +1,27 @@
+{
+  "producer": "Web Crypto via @fa/core/crypto; generated test-only key, never use in production",
+  "testOnlyPrivateKey": "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDBmG+L/ekW/OoZK6g9YgiwrN4vZTSEEl9hXrtkT+FrzI5FboVY0+ufBKGhrQETQAhVnTNRGviff0u9uUigLiZ3Hwd8EZyh2xBbJSNyUa302EO/wmKHbRTq9aTnTaOzsrGwYFCEisn7oUZJIFvBdwAn6LojYnpw2VaR7fhXKo96cTaTJ0dU9DU5CP6tZ9FsU3U/xLiUBvT+d4Duiyu8Dc91/g5/D9YPeI3pYCkxE6DrqN74xhYeVU2po2RWp0+XqW+FmFXSmtPwixZm2KJnWW/VKxnLUmJWZu9dokhKcan8H/Fcbns6bDKjYYZ4zeiP39eEv9LijUGUE60xb+Hl8OWJAgMBAAECggEAJkLCbuwqXDL1cC6O5DzDA2nSypKpn52C8Ls4dVGNN1EY4BOA8qaFZ2rSp+GJeBy8WPFF0lZugxU1KqSa/B9K1lmRUN2pM1rYX28WU5JdeymfsB8SenneO7Z7FgSj4RCkqftLBnrogtzjh3HH+JMUeo619ObSVIm7oIEjxtRgQV4VCbLZ0rkHDaEqBt8qqSpHCwxpUKwtdqaKTNnoEQVcera8ehQStrEmrLdoSi6QVJgiWlbMlRo8YD0aQsVSfx/gBo1WYqkNN5qvAejqHjcobHredgKm4DKSBQMuS3+IbBRvWsAJb4ixXuu+Nql236isR0RjfSeSiUn6WMcvI3A1BQKBgQDo13ulO4O86tdfDpI20c0++BJFvPQB1N0BkLuIHR/1CfV0REGACH3mxBZEfQEZ0GwUk9p94MmSAfeKrasQ0thMu/O4J/VYdy7uIFbvwXxW7Itg08ryMGHtOMQqmA3gN/OEXYr0Ijl2Hl4uBHrgZtbwz4PFTZt8PiEyCfF+JSLinQKBgQDU2a5C8dkmOT+mCJAcIFlFvBarU5pbRcnGsfiN2yyJoGQ6kjwtvbuo7BPXVy9mK4T+Kz5IYJe0v2UAwK1Hc5xESSJi2yzp861UX796OfYqlKqsZ1yR++vffVOSoJ6etg8szO9kkt8ZIDRxnzcyfoltvjMZdGkA+WDC+ZHAQ+sU3QKBgQC78AHrMoh42g0QutAl014ZL16AT62cNNZWRx43FVsQDAPE3rsHvtLwiuF2UnerAGHckiLPa7sHUPMfSmJDaAwSk7p6sDYGO9zzc8L4LnJQLwmpFApBRfAk66bawnSgwEicVGyt9VnwDz7xYchUjG19XeH8RVH1DKj6nLABo7PuuQKBgCgDQ98R1+B3op9zvKOM8TtKwHg0ny/JTsUrb647JYQ5wp3AH8/5eu2mc5Rnr2FljPq65lp0zhAMatBZaDmmYhn0JaKv0SGpzUuvNC+l9cDLcco3JA/Na+n3hV5rE2aCkxe47sfZVFdE1pcFdzrmzq7ysmh2mca1GpuMjvm1ytuBAoGBALMveMc2ysUph96A7G2DpvAReRkqmmRWdxbcaL5noxAeZ6AviOJJilDEshJPH2buQhWWodxX+ptouwc58OW5fkxPyPbpnXXqFmHSaHlDUOYfK9zlBTIm0OlNQjj8oU+9EiPpXKwropvr5v7Gdh+jXu0kYU3BLiYUVqE5P/k0X84c",
+  "plaintext": {
+    "text": "中文 🔐\n\"roundtrip\"  "
+  },
+  "envelopes": [
+    {
+      "v": 1,
+      "kid": "test-v1",
+      "challengeId": null,
+      "purpose": "CRYPTO_DEMO",
+      "encryptedKey": "vjfGyTnu+0iBcMA0E3ijTRmFGG7AZxg2wWJIppqN/HI6GP6Jgf32oTWYd1zfbNENsMN+mpa0NMylTj/flC9n4nUvQKWbZwbcKXGIGmpsCVYuxfeoxJDwwYfwyJ1rL2gpC0Ird61+FcV/Y1l9UsaQfX5aq2+LkZrO+uuZwuZVTNX6AIdUeFzuF2EuxsibRiCedNL6kKb+qtvvwBvijUw/QklKa8MU3X+xw3ReHN2oRGkLRHL8XvGPVT5RbWX5UsxnigCDVTa/18dbCwTBEvXVKG1dO8CqDRTSerXsH67mNyZdCR2DXCWjSaBi1UWJp2T2RCqqYenvgRV8qD27vrNyAQ==",
+      "iv": "KOFDlhK3gxSk9F2G",
+      "ciphertext": "5fNNnuj9KH5WwiMPlQzGV5eD6M8pIKBN+tJCDl4wSXZwcW4eteudCTd54pO93e8RdcbYDowtLg=="
+    },
+    {
+      "v": 1,
+      "kid": "test-v1",
+      "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "purpose": "CRYPTO_DEMO",
+      "encryptedKey": "Qg8OXKFZ4BMW73kJ1qMtckOXVX/UF+nqDpDyaT8L0jNqgCS0WoCk/01echGkvPR6eMf2qaQAS7y3pjbXIMrVZOAQ8WlOr2/thr9SJYeaaF/CbUlaZy31/I+FmFNDmRlSzMj1u8wKJ+InA0IQOSRRbKnvvKKTO4xeWpI4PT4ElKNqEjtri6julRbrd9Vxgn6bKokdUWK6M8KvBYujUrayNuoTUAv6aRNxEX9a78DM9TOTeplm7haenk9ogJSfmTLs4hfdcXhmJZFvaZ9S3BkR4JDiz9JpczC1cH3blPcpbTCWXx3JxL71IfCXqw9JI96ShVG0D/nyRB1Upw42UZAtSQ==",
+      "iv": "v/+9tRU3iJUersJ4",
+      "ciphertext": "/KVp7xxFMs72XmMXrkAlfVbBYZCKfapaDjbVQQ/Kor5tAp7ykt/XRMCmu8jXMFFdu1c6PySCpA=="
+    }
+  ]
+}
