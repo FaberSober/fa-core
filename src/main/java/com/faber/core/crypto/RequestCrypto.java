@@ -34,9 +34,31 @@ public final class RequestCrypto {
                 || (envelope.challengeId() != null && !envelope.challengeId().matches("[A-Za-z0-9_-]{43}"))) {
             throw new GeneralSecurityException("无效加密信封");
         }
-        byte[] encryptedKey = decode(envelope.encryptedKey(), 256, 256);
-        byte[] iv = decode(envelope.iv(), 12, 12);
-        byte[] ciphertext = decode(envelope.ciphertext(), 16, MAX_PLAINTEXT_BYTES + 16);
+        return decryptParts(envelope.encryptedKey(), envelope.iv(), envelope.ciphertext(), privateKey, aad(envelope, method, path));
+    }
+
+    public static byte[] fieldAad(String kid, String challengeId, String purpose, String method, String path, String field)
+            throws IOException {
+        return JSON.writeValueAsBytes(Arrays.asList(2, kid, challengeId, purpose, method, path, field));
+    }
+
+    public static byte[] decryptField(String value, PrivateKey privateKey, String kid, String challengeId,
+                                     String purpose, String method, String path, String field)
+            throws GeneralSecurityException, IOException {
+        if (value == null || value.length() > 5860 || kid == null || !kid.matches("[A-Za-z0-9._-]{1,64}")
+                || (challengeId != null && !challengeId.matches("[A-Za-z0-9_-]{43}"))) {
+            throw new GeneralSecurityException("无效字段密文");
+        }
+        String[] parts = value.split("\\.", -1);
+        if (parts.length != 3) throw new GeneralSecurityException("无效字段密文");
+        return decryptParts(parts[0], parts[1], parts[2], privateKey, fieldAad(kid, challengeId, purpose, method, path, field));
+    }
+
+    private static byte[] decryptParts(String encryptedKeyText, String ivText, String ciphertextText,
+                                       PrivateKey privateKey, byte[] aad) throws GeneralSecurityException {
+        byte[] encryptedKey = decode(encryptedKeyText, 256, 256);
+        byte[] iv = decode(ivText, 12, 12);
+        byte[] ciphertext = decode(ciphertextText, 16, MAX_PLAINTEXT_BYTES + 16);
         Cipher rsa = Cipher.getInstance("RSA/ECB/OAEPPadding");
         rsa.init(Cipher.DECRYPT_MODE, privateKey,
                 new OAEPParameterSpec("SHA-256", "MGF1", MGF1ParameterSpec.SHA256, PSource.PSpecified.DEFAULT));
@@ -45,7 +67,7 @@ public final class RequestCrypto {
             if (key.length != 32) throw new GeneralSecurityException("无效加密信封");
             Cipher aes = Cipher.getInstance("AES/GCM/NoPadding");
             aes.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"), new GCMParameterSpec(128, iv));
-            aes.updateAAD(aad(envelope, method, path));
+            aes.updateAAD(aad);
             return aes.doFinal(ciphertext);
         } finally {
             Arrays.fill(key, (byte) 0);

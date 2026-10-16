@@ -1,0 +1,65 @@
+{
+  "notes": "Public test assets reusing web-crypto-v1 test key. Swift executed on macOS and compiled Android Kotlin on JVM with test-only Base64 adapter; not device runtime evidence.",
+  "vectors": [
+    {
+      "source": "Web Crypto",
+      "kid": "test-v1",
+      "challengeId": null,
+      "purpose": "CRYPTO_DEMO",
+      "path": "/api/base/demo/crypto/roundtrip",
+      "field": "text",
+      "value": " 字段加密 🔐\n",
+      "packed": "dLxY4kT+l7HqVrcpS1Ld5R7kvsHx3P/JBCyCejFGTgi4RYi4KH5tDxo0aDEfzAhFtJhoDvIeWb0m2ekH2vw7hLBlaoTTLX/SgEvq+2iyXDceCXzTkIRm3boKzrPH6e7hdCJ7JXbBec5jJfrvj+fnPtNWZDNpDY1an/C0XARjVz3VijDwauPCn6LDx0YW10G8emlGa6lzqMNIzVonO5fJILvXMkcyXytIn7i5RwWBPUFUFFhJ/IwscwBqngRfrMF0amF9+bedWnp3kdt+sQf074msEQfvLZ1OmP+XgurVEXwjJle9pflWU4NlF0Y9zYFGgGHk0UX84qARgM2FBi7Spw==.67Y5j9AhC7r1YHBw.Erw6idLp1uy5DD7S8f9Fq1s3fG8PsXHZIqTh8HFTpZncyow="
+    },
+    {
+      "source": "Web Crypto",
+      "kid": "test-v1",
+      "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "purpose": "CRYPTO_DEMO",
+      "path": "/api/base/demo/crypto/roundtrip",
+      "field": "text",
+      "value": " 字段加密 🔐\n",
+      "packed": "h0UsGmX8DNv+SNZnYJ3oNisGoMosK3Nk0GYGOQvEbFTBvcpXPUuKWKMo2AdMpFpRcyl1Mx9EGha68hfW3yva3GtBFS1e1aAV5gTkkwbAEDSzLTgDX8AhGaWnhEn9OG6PlZij+6uefn6V2T6SO3c1tSP9UDrs0Y7ZYCQf1inTXg4/+VIsuBxHe6HeTBx1avSaKvshFiWfPdiSXSkFgj3OAEzqRgJLR3Hy9AAK2g+QGiuD5s+dGTK4eD2bWoqI1Ac5gCvQ3tp5MYgd66/KEDjA/E323UodUvRUu/SFe7PBGFgzAaReMuXxXUvASCqM2cNnP/6ZFZTtp9LlaP5awAytqQ==.LEyJ87AwjmE9YNog.4SkiK/JqNIHnmOxRIHHq5vh4iZvNgx15DnAgppaS22gejY4="
+    },
+    {
+      "source": "Swift on macOS",
+      "kid": "test-v1",
+      "challengeId": null,
+      "purpose": "CRYPTO_DEMO",
+      "path": "/api/base/demo/crypto/roundtrip",
+      "field": "text",
+      "value": " 字段加密 🔐\n",
+      "packed": "AO1N5G1o0+qbcslbID07sNJ+lsKaDiKChhRF06Bk6vYVy6E6A2It/IFVYzcE8d2m9iaPJNyL8nAHL+5qrtKC5Wx5kCrmJro8XKzibZmeL36PvqegORubZZ8+qzg3pTobNC/pKRTxC7BXmuCmTbF2O/22tSUNGOcm6LdA8fhneL6sioXOVnZZrsU+UXTIb6d8H9aeyJsppIlTlnRX1uxHn6ydVM3fkf4+NwOWG8HgKVXkD9gudAsMCSoA44V5n8TrCiWz7bimTc4hSyWMke9SgqMOOjThGsp/EEg/PzGfEFxKnoOP1OD1+N71TgGQ6HuCJ7JxeL1K57Z0Xd575t3Cpw==.v16mZ/C9SLLT8Qx6.V0dDyu4WPtM9uIRJkRgrynfCS8FR87RTxfgMaIIUG0nnuAU="
+    },
+    {
+      "source": "Swift on macOS",
+      "kid": "test-v1",
+      "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "purpose": "CRYPTO_DEMO",
+      "path": "/api/base/demo/crypto/roundtrip",
+      "field": "text",
+      "value": " 字段加密 🔐\n",
+      "packed": "oHYVxabJuu4iZ4PLgHD/HM8VV+ah8GsirsEtslDK/Q88TCTGRgunFdtLVlziyuA2RkfsMgKcH1W58oIvjePX3Mx/60h3YvyCM6YrhiFm3R9EHH/xKWAuGfW72kqfEB/xpixdgna9LSo3uSDaMmfQuXU3SlHkHzhB0x+nMf1X96od82GSBECvU5XLDGPrQEnlWjbb/ck6UMw1OaTncK5hahWWsKPuHHr+8P/9eebA9Wkd+SjhiAdx/UCu2HyNAGPQUPQFIaEcwpoJCr+ZFvPCXkQiVl/CGj7DVqzbPH6hZSwM3pWMVtQeu9nJzxFjdpsUop9B0SQbWxQHS/eTiTJd1w==.JSQdgw0LmBUUbeWO.PhPlLZSVgm+H37g7PBdGzeOR3/H1dti7kT3lDUBU+P6POAI="
+    },
+    {
+      "source": "Android Kotlin on JVM",
+      "kid": "test-v1",
+      "challengeId": null,
+      "purpose": "CRYPTO_DEMO",
+      "path": "/api/base/demo/crypto/roundtrip",
+      "field": "text",
+      "value": " 字段加密 🔐\n",
+      "packed": "isVHfxK/DsRNuTWqxJSDKniXJvgpyoRGHCeosowGCZHzz60IWm1QkvTOvYO5XCI8ZeqP2kiLIgXD2/G7RQqOo2P6Yp7xMezeT8kjcltanG9pAclNxThvx49s5QcoLodn0HRlyXRdGhKrnRftVChsTu0Um8yVWCcTzvavWD54NtSbXsNX1TUrmTlzIiCz0dPCfCk1V6Dp4+zF5NCG7I7nFUTub7FQX50XvRujWt7eWLL7YzFc3gKx2hPk5VlvCQDIU39e50k3MaKBoUnuV0JAUcqWJWRkLqhxHZpUqb5MtH5KhhAvw4TV/F1wfZmBY/AeoWWn+ULQTLkRu/lF1cVjoA==.EylS66ZmYNYgNcEW.BkpaW8AYo8vIm+xkyGQeed1sxUvPIW8xpjU/TAs32D3OpKQ="
+    },
+    {
+      "source": "Android Kotlin on JVM",
+      "kid": "test-v1",
+      "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "purpose": "CRYPTO_DEMO",
+      "path": "/api/base/demo/crypto/roundtrip",
+      "field": "text",
+      "value": " 字段加密 🔐\n",
+      "packed": "YTfIK2Ag4lfktKnsdkadUsy5ROf4Cp/Wq9c1AoiIsyY/Qv0aP1vQ19K3kX3A5RGf9jfR5Oz0wICTKGuzd1628cnl7hAHI/Jg2TsuEhTY2uQffNQ5ruptGQNJULN0lNExKKYyYTeoP92qPCqPE2kk2xUpRsIy4F+puaUyQ8mariwtxgYh4XnZ/+ZIkyduAeN2OQjUNd9x98fzM98G9lnynNAbTRlUOTKRcGm7yYq1gaA4+c0SzKGTy4S1r7YF/6vV7EftmOxXKqCFxz7loihClYbughuC1V1O8NyID1c+ZC2PCcFaDfAH0MqfnREA1yB/3jqo5BfNJqUZ8TajUJ0xAA==.+O/AVlfrZwss5gij.cDswc49AE5bslZVr7+9cNvlaE5VAjL/EePJTPVdove18Q1w="
+    }
+  ]
+}

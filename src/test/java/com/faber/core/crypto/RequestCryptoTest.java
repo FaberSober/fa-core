@@ -56,6 +56,25 @@ class RequestCryptoTest {
     }
 
     @Test
+    void decryptsV2FieldVectorsFromWebSwiftAndKotlinAndBindsFieldAndRoute() throws Exception {
+        try (var stream = RequestCryptoTest.class.getResourceAsStream("/crypto/field-crypto-v2.json")) {
+            assertNotNull(stream);
+            var vectors = JSON.readTree(stream).get("vectors");
+            assertEquals(6, vectors.size());
+            for (var value : vectors) {
+                String challenge = value.get("challengeId").isNull() ? null : value.get("challengeId").asText();
+                var decoded = RequestCrypto.decryptField(value.get("packed").asText(), privateKey, value.get("kid").asText(),
+                        challenge, value.get("purpose").asText(), "POST", value.get("path").asText(), value.get("field").asText());
+                assertEquals(value.get("value").asText(), new String(decoded, java.nio.charset.StandardCharsets.UTF_8), value.get("source").asText());
+                assertThrows(GeneralSecurityException.class, () -> RequestCrypto.decryptField(value.get("packed").asText(),
+                        privateKey, value.get("kid").asText(), challenge, value.get("purpose").asText(), "POST", PATH, "password"));
+                assertThrows(GeneralSecurityException.class, () -> RequestCrypto.decryptField(value.get("packed").asText(),
+                        privateKey, value.get("kid").asText(), challenge, value.get("purpose").asText(), "POST", PATH + "2", "text"));
+            }
+        }
+    }
+
+    @Test
     void rejectsTamperingAndRouteSubstitution() {
         byte[] bytes = Base64.getDecoder().decode(envelope.ciphertext());
         bytes[0] ^= 1;
