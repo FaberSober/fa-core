@@ -1,0 +1,53 @@
+{
+  "notes": "Test-only vectors reuse the public Web fixture test key. Swift executed on macOS; compiled Android Kotlin executed on JVM with an android.util.Base64 adapter. These are not device runtime verification.",
+  "vectors": [
+    {
+      "platform": "ios-swift-macos",
+      "envelope": {
+        "v": 1,
+        "kid": "test-v1",
+        "challengeId": null,
+        "purpose": "CRYPTO_DEMO",
+        "encryptedKey": "mUR40473qWvjvSx0W4H7Rqi08fj5jidN5Y5t5mQuHEDs00w+K8kIqgs/N/DKDn1iMasCq2ltxEJkEm/FB4W4oqJLIog6qIquwuNtiYhZiKNbr23JGVZCgeCh8h7dYq2PSDJoGEPLrwhlcjFGcMUVaO4dCFrlfz5b/Ijjbe9OfRTIMOkrB1FLttrnHqILtP9O0658ruTe0fbfqm5hUhTA6vfwVzvOSEykb/ZlLqjSNaNe67o3s0LyCRLc+ZDzed67ASfUcK5aZ4uqMhwmB3Dt9+OXxX+oJpMrTtwQFvHvYMwRC04bkv7cBbcha6e4ffaxbpLjLxPzx4A+Aoo45Er7zA==",
+        "iv": "7MxTKYxcdjJiTUHv",
+        "ciphertext": "qXHl13IH+gDYlu/KlRP/v08wyhWuse7KjT/z6G+hlSXKr0tKxdOKIee5qgCPTKpcnsjRMg1ldQ=="
+      }
+    },
+    {
+      "platform": "ios-swift-macos",
+      "envelope": {
+        "v": 1,
+        "kid": "test-v1",
+        "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "purpose": "CRYPTO_DEMO",
+        "encryptedKey": "cl4VlDqSKFv3Y5LlZaoKT68Nl4UbTPJjgfR2omxv0JqCEscIaZxONvUORVtWjAGF32mqC1CKqTiGfwcBaxRIjG8ZBbfJREKAVRYjPbRFt8pjlqcT90XQY3aqC68GvgO+8z5MHMs6puZNbuvIK11kRx64AIo6XikplRK7Ot386pGn09g8kXzc52IiN2KxyRyWwjHkGBaqnfPo9kVZ2/vCGzq6mv/0g4UtoTi0/TMOYAZl6Hpq9M/yzHrGzqOUamRHMkOWbhw5Tuu5N5UwmR3IsLwOzy0p7zU0a46IiMElbZYsA/3qXhE9PKxo7t2iTl0efX5FlI+woNb+qbMwlKUNtQ==",
+        "iv": "uVZ7gx0C6ZGZlY0G",
+        "ciphertext": "S/iSFHqS3Mpc6h2kjOQJ6pwx5qTfZ8W1m0F4uel5FfTyeq9wRRaYEeReD6PKWkeQroyKTtIKQw=="
+      }
+    },
+    {
+      "platform": "android-kotlin-jvm",
+      "envelope": {
+        "v": 1,
+        "kid": "test-v1",
+        "challengeId": null,
+        "purpose": "CRYPTO_DEMO",
+        "encryptedKey": "jQV4DYDbnjeWsmArNZbKpvyPpFMBSkCxR4n838v7HojKqx2/1S2eonvaxBhnFCPmgJ93eLEAu9BmGSsEtctdlwi4fvY8vqyPhmN7sOUjYpnBWqDWyj1IDh98h3RM4Ce9N2s/XoaNOb/aHYNPc91LWUePNj2M66XeMMozw+CYMJ7aP2jH/CDKdjq9uLEm9sMyPbpEHKSq+XNdlaQaTo+E/O8Dp8B+YZaoFaPdSEE5BGPs2NKB294cd4ZOpQKxzLwbxcTHebH/A/AiTGQA6QsZYmcW5SntyHXjMNWIFbzlg/fQx4YAbbhtZwamQYS3CfzAKWBqXfNDHcq3iifT8gryBQ==",
+        "iv": "g5URbeiUhwXOFqJH",
+        "ciphertext": "FRFE6+tHmV5WfiiZ70PXdLH/JKFIyPwfasJC4ei+qWwG3mNJxNpnDAx3oOZPICJN0D5wX3D3bg=="
+      }
+    },
+    {
+      "platform": "android-kotlin-jvm",
+      "envelope": {
+        "v": 1,
+        "kid": "test-v1",
+        "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "purpose": "CRYPTO_DEMO",
+        "encryptedKey": "VANNYSo8Bh48GVScI1oIAbIDbpcx+aAKLwLqnm/iCmcuup58pDFTKV1DlRZVUutBapTkMHB9EXx//wARHGV4E4goExMz2+JcWemqGZvvaLTL6Em/kGXQ8DbxeaECp6JcbwdACOz+EkzA5V8BjWnyYas5dczEGIruqV3DWdDszZCpDttI6CMyMy87awEBFF69MpuBUZRmovg52Pf0SorXpf8oGtofR7jw7A6YVql2NuMkIq5FwYC9FzzQVUxt5TgSztYnVihJDPgRwfP2UvWUyqmwH78lnzr23JQ3wN40JWyIxHpzlAyGt66OlAx66xqu/GomdPkpGCQkjYP93xM7Cg==",
+        "iv": "aZ7/HOrb4ve2vCh0",
+        "ciphertext": "BUnItlY9YO2ytYnBtfrk+PkfaYCggL/CF1JmnA1u7Bn3UUdFYGUo9tTWMCdp1k8P5psia0cvDQ=="
+      }
+    }
+  ]
+}

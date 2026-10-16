@@ -42,6 +42,20 @@ class RequestCryptoTest {
     }
 
     @Test
+    void decryptsNativeSwiftAndKotlinVectors() throws Exception {
+        try (var stream = RequestCryptoTest.class.getResourceAsStream("/crypto/native-crypto-v1.json")) {
+            assertNotNull(stream);
+            var vectors = JSON.readTree(stream).get("vectors");
+            assertEquals(4, vectors.size());
+            for (JsonNode value : vectors) {
+                var request = JSON.treeToValue(value.get("envelope"), CryptoEnvelope.class);
+                assertEquals(fixture.get("plaintext"), JSON.readTree(RequestCrypto.decrypt(request, privateKey, "POST", PATH)),
+                        value.get("platform").asText());
+            }
+        }
+    }
+
+    @Test
     void rejectsTamperingAndRouteSubstitution() {
         byte[] bytes = Base64.getDecoder().decode(envelope.ciphertext());
         bytes[0] ^= 1;
