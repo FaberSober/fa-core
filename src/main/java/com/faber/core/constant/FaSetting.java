@@ -80,6 +80,10 @@ public class FaSetting {
          */
         private String savePlatform;
         /**
+         * 本机调试时保留YAML本地存储配置，不受共享数据库存储设置覆盖。默认关闭。
+         */
+        private boolean localOverride = false;
+        /**
          * 增加一层最前置路径，可以用于区分不同环境
          */
         private String prefix;
