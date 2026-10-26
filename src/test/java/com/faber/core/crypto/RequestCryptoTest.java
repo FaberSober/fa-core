@@ -60,7 +60,7 @@ class RequestCryptoTest {
         try (var stream = RequestCryptoTest.class.getResourceAsStream("/crypto/field-crypto-v2.json")) {
             assertNotNull(stream);
             var vectors = JSON.readTree(stream).get("vectors");
-            assertEquals(6, vectors.size());
+            assertEquals(8, vectors.size());
             for (var value : vectors) {
                 String challenge = value.get("challengeId").isNull() ? null : value.get("challengeId").asText();
                 var decoded = RequestCrypto.decryptField(value.get("packed").asText(), privateKey, value.get("kid").asText(),

@@ -60,6 +60,26 @@
       "field": "text",
       "value": " 字段加密 🔐\n",
       "packed": "YTfIK2Ag4lfktKnsdkadUsy5ROf4Cp/Wq9c1AoiIsyY/Qv0aP1vQ19K3kX3A5RGf9jfR5Oz0wICTKGuzd1628cnl7hAHI/Jg2TsuEhTY2uQffNQ5ruptGQNJULN0lNExKKYyYTeoP92qPCqPE2kk2xUpRsIy4F+puaUyQ8mariwtxgYh4XnZ/+ZIkyduAeN2OQjUNd9x98fzM98G9lnynNAbTRlUOTKRcGm7yYq1gaA4+c0SzKGTy4S1r7YF/6vV7EftmOxXKqCFxz7loihClYbughuC1V1O8NyID1c+ZC2PCcFaDfAH0MqfnREA1yB/3jqo5BfNJqUZ8TajUJ0xAA==.+O/AVlfrZwss5gij.cDswc49AE5bslZVr7+9cNvlaE5VAjL/EePJTPVdove18Q1w="
+    },
+    {
+      "source": "web-http-node-forge",
+      "kid": "http-test",
+      "challengeId": null,
+      "purpose": "CRYPTO_DEMO",
+      "path": "/api/base/demo/crypto/roundtrip",
+      "field": "text",
+      "value": " HTTP 内网 🔐\n  password  ",
+      "packed": "gVpG/cn2I1nillQG20Qm2nGA6Jvz3XspE8oKZE9jaf52NGittR3o2QQbZKCVcpujMepcsspu9vyf67nIDuKeMQIifIPJ81B28YwpgZRm/k0hr0gaR6inNSxJsAOO4yzxm74WefTyuhUWXpNueEumHPYMIlLilIgzAIjPfnM6ur8vXY4FBr91cdtzbUDKGnI+wft7Ix2w+IkiV91NGGAj0d3uT7KmaSVM5ejno4z94zq0+mpStWxAtYqy+XJPkxAdn5A7scFRvqcYVwfdvBreo51iKu+eafq9wZfcVEM6mLzGDNQjtsClAO++OzueHFbWYTTZP+Crd+pLAmPyM9kJsQ==.8TGUtIGvhO616IFb.6QYBEiPt6Gch+9zRUmtF8F2vbmMQvx93wrSlI6srFTQqzW5naNKyNi/se+42vQ=="
+    },
+    {
+      "source": "web-http-node-forge",
+      "kid": "http-test",
+      "challengeId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "purpose": "CRYPTO_DEMO",
+      "path": "/api/base/demo/crypto/roundtrip",
+      "field": "text",
+      "value": " HTTP 内网 🔐\n  password  ",
+      "packed": "EBFxUt5ZsW/dgXqQnTIwOU0e/WbZKL3oEUWjurSbBmqSJabBHx6UZqVaoa91XcwZGDiLrznc05kUUKBNRKv6gKgECbDE5j2G8qBtShpHNkdlGKQJMJx/z5BXGETxUnrpF45K6wJC+X+4AJUMwaMNmZr7LTw+Cfx2qSbPyIcYOjMH2FUJTVHjUihNECGNDGxyD5GWJjMCXpbQPv/rfeWfQ8KYF546/xgpP3CxG+M05qzq6SqCGRMB+22ITPcmOZrObM1CYDQfiiC51lyCIuyC1JF7huCasAeVYB52vz5MDPG6743w3Ko1W/YonsJa8Lg+2NC4dvwvTNFSUMqdqZpiYA==.8pNmDLcZXEiIkSwn.nB2qPHrEgKOSSOx1Xh9TvoKxO90FUq7wVOEMdOYK2zfvRflzclHmH4WXOiXp6w=="
     }
   ]
 }
