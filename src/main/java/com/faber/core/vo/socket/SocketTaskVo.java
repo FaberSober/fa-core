@@ -37,6 +37,12 @@ public class SocketTaskVo implements Serializable {
      */
     private int error;
 
+    /** 任务状态：RUNNING、COMPLETED、FAILED；未设置时兼容原进度协议。 */
+    private String status;
+
+    /** 任务完成结果或失败原因。 */
+    private String message;
+
     /**
      * 任务开始时间
      */
