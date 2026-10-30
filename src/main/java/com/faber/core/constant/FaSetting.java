@@ -6,6 +6,7 @@ import com.faber.core.enums.ConfigSysStorageActiveEnum;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+import org.springframework.util.unit.DataSize;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +30,15 @@ public class FaSetting {
     private Db db;
     private Safety safety;
     private Tenant tenant;
+    private JobLogConfig jobLog = new JobLogConfig();
+
+    /** 定时任务文件日志，配置前缀 fa.setting.job-log。 */
+    @Data
+    public static class JobLogConfig {
+        private String rootPath = "./log/job";
+        private int retentionDays = 30;
+        private DataSize maxFileSize = DataSize.ofMegabytes(100);
+    }
 
     public boolean isTenantEnabled() {
         return tenant != null && tenant.isEnabled();
