@@ -1,7 +1,6 @@
 package com.faber.core.config.thread;
 
 import com.faber.core.constant.FaSetting;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -31,7 +30,7 @@ public class ThreadPoolConfig {
             config = new FaSetting.ThreadPoolConfig();
         }
 
-        ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
+        ThreadPoolTaskExecutor taskExecutor = new TrackingThreadPoolTaskExecutor();
         // 线程池维护线程的最少数量
         taskExecutor.setCorePoolSize(config.getCorePoolSize());
         // 线程池维护线程的最大数量,只有在缓冲队列满了之后才会申请超过核心线程数的线程
