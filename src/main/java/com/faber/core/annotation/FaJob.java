@@ -14,4 +14,15 @@ public @interface FaJob {
 
     String value() default "";
 
+    /** 任务目录分组；空值在页面归入未分组。 */
+    String group() default "";
+
+    /** 任务能力说明，不替代具体调度配置的描述。 */
+    String description() default "";
+
+    String[] tags() default {};
+
+    /** 分组内排序，越小越靠前。 */
+    int sort() default 0;
+
 }
